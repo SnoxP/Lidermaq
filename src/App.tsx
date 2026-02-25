@@ -22,9 +22,10 @@ export default function App() {
             <Route path="/produto/:id" element={<ProductDetail />} />
             <Route path="/contato" element={<Contact />} />
             <Route path="/sobre" element={<About />} /> 
-            {/* Fallback for other routes requested in prompt */}
             <Route path="/assistencia" element={<Home />} />
+            <Route path="/componentes" element={<Home />} />
             <Route path="/blog" element={<Home />} />
+            <Route path="/blog/:id" element={<Home />} />
           </Routes>
         </main>
         <Footer />
