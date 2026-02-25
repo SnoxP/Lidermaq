@@ -1,0 +1,7 @@
+{
+  "name": "Lidermaq - Móveis e Design",
+  "description": "Site institucional e catálogo de móveis profissionais da Lidermaq. Qualidade, durabilidade e design para sua casa ou escritório.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
