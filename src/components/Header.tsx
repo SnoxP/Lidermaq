@@ -95,6 +95,14 @@ export const Header = () => {
                           <LayoutDashboard size={18} className="text-accent" /> Painel Admin
                         </Link>
                       )}
+
+                      <Link 
+                        to="/perfil" 
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm font-bold text-primary hover:bg-neutral-bg rounded-xl transition-colors"
+                      >
+                        <User size={18} className="text-accent" /> Meu Perfil
+                      </Link>
                       
                       <button 
                         onClick={() => { logout(); setIsUserMenuOpen(false); }}

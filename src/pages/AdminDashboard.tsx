@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, PackagePlus, Users, Settings, TrendingUp, Package } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { LayoutDashboard, PackagePlus, Users, Settings, TrendingUp, Package, FileText } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { PRODUCTS } from '../data/mockData';
 
 export const AdminDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const stats = [
     { label: 'Total de Produtos', value: PRODUCTS.length, icon: Package, color: 'text-blue-600', bg: 'bg-blue-100' },
@@ -51,19 +53,31 @@ export const AdminDashboard = () => {
               <PackagePlus className="text-accent" /> Ações Rápidas
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group">
+              <button 
+                onClick={() => navigate('/admin/novo-produto')}
+                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+              >
                 <p className="font-bold mb-1">Novo Produto</p>
                 <p className="text-xs opacity-60">Adicione um item ao catálogo</p>
               </button>
-              <button className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group">
+              <button 
+                onClick={() => navigate('/admin/categorias')}
+                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+              >
                 <p className="font-bold mb-1">Editar Categorias</p>
                 <p className="text-xs opacity-60">Gerencie os setores do site</p>
               </button>
-              <button className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group">
+              <button 
+                onClick={() => navigate('/admin/novo-post')}
+                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+              >
                 <p className="font-bold mb-1">Nova Postagem</p>
                 <p className="text-xs opacity-60">Escreva para o blog</p>
               </button>
-              <button className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group">
+              <button 
+                onClick={() => navigate('/admin/configuracoes')}
+                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+              >
                 <p className="font-bold mb-1">Configurações</p>
                 <p className="text-xs opacity-60">Ajustes gerais do sistema</p>
               </button>

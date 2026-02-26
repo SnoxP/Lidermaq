@@ -11,7 +11,12 @@ import { Contact } from './pages/Contact';
 import { About } from './pages/About';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { Profile } from './pages/Profile';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { NewProduct } from './pages/admin/NewProduct';
+import { Categories } from './pages/admin/Categories';
+import { NewPost } from './pages/admin/NewPost';
+import { Settings } from './pages/admin/Settings';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -30,13 +35,53 @@ export default function App() {
               <Route path="/sobre" element={<About />} /> 
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Register />} />
+              <Route 
+                path="/perfil" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
               
-              {/* Rota Protegida para Admin */}
+              {/* Rotas Protegidas para Admin */}
               <Route 
                 path="/admin" 
                 element={
                   <ProtectedRoute adminOnly>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/novo-produto" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <NewProduct />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/categorias" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <Categories />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/novo-post" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <NewPost />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/configuracoes" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <Settings />
                   </ProtectedRoute>
                 } 
               />
