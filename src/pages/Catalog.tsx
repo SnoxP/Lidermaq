@@ -41,7 +41,7 @@ export const Catalog = () => {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-5xl font-black tracking-tighter mb-4">CATÁLOGO COMPLETO</h1>
-          <p className="text-primary/60 max-w-2xl">Explore nossa linha completa de móveis para todos os ambientes da sua casa ou escritório.</p>
+          <p className="text-primary/60 max-w-2xl">Explore nossa linha completa de equipamentos para gastronomia, refrigeração e escritório.</p>
         </div>
 
         {/* Filters & Search */}
@@ -77,7 +77,7 @@ export const Catalog = () => {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40" size={20} />
                 <input 
                   type="text" 
-                  placeholder="Buscar móveis..."
+                  placeholder="Buscar equipamentos..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"

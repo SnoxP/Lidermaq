@@ -11,7 +11,7 @@ export const Home = () => {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative h-[85vh] min-h-[700px] flex items-center overflow-hidden bg-primary pt-20 md:pt-0">
+      <section className="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden bg-primary">
         <div className="absolute inset-0 opacity-40">
           <img 
             src="https://picsum.photos/seed/lidermaq-hero/1920/1080" 
@@ -26,18 +26,17 @@ export const Home = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl pt-10"
+            className="max-w-3xl"
           >
             <span className="inline-block bg-accent text-white text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6">
               Qualidade & Tradição
             </span>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-6 tracking-tighter">
-              MÁQUINAS E EQUIPAMENTOS DE <br className="hidden md:block" />
-              <span className="text-accent">GASTRONOMIA, REFRIGERAÇÃO</span> <br className="hidden md:block" />
-              <span className="text-accent">E ESCRITÓRIO.</span>
+            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tighter">
+              MÁQUINAS E EQUIPAMENTOS DE<br />
+              <span className="text-accent text-3xl md:text-5xl">GASTRONOMIA, REFRIGERAÇÃO E ESCRITÓRIO.</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl leading-relaxed">
-              Soluções completas para seu negócio. Da cozinha industrial ao escritório moderno, a Lidermaq oferece a tecnologia e durabilidade que você precisa.
+            <p className="text-xl text-white/70 mb-10 max-w-xl leading-relaxed">
+              Equipamentos de alta performance, durabilidade e a garantia de quem entende do seu negócio há mais de 30 anos. Potencialize sua empresa com a Lidermaq.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -50,7 +49,7 @@ export const Home = () => {
             </div>
 
             <div className="mt-16 flex flex-wrap gap-8">
-              {['Gastronomia', 'Refrigeração', 'Escritório', 'Cozinha Industrial'].map((cat) => (
+              {['Gastronomia', 'Refrigeração', 'Escritório', 'Equipamentos'].map((cat) => (
                 <Link 
                   key={cat} 
                   to={`/catalogo?cat=${cat}`}
@@ -75,7 +74,7 @@ export const Home = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold mb-2">Garantia Estendida</h3>
-                <p className="text-primary/60">Todos os nossos equipamentos e móveis possuem garantia de fábrica e suporte especializado.</p>
+                <p className="text-primary/60">Todos os nossos equipamentos possuem garantia de fábrica e suporte especializado.</p>
               </div>
             </div>
             <div className="flex gap-6">
@@ -84,7 +83,7 @@ export const Home = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold mb-2">Entrega Rápida</h3>
-                <p className="text-primary/60">Logística própria para garantir que seu móvel chegue impecável e no prazo.</p>
+                <p className="text-primary/60">Logística própria para garantir que seu equipamento chegue impecável e no prazo.</p>
               </div>
             </div>
             <div className="flex gap-6">
@@ -92,8 +91,8 @@ export const Home = () => {
                 <Tool size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2">Instalação & Montagem</h3>
-                <p className="text-primary/60">Equipe técnica qualificada para realizar a instalação de máquinas e montagem de móveis em seu negócio.</p>
+                <h3 className="text-xl font-bold mb-2">Montagem Grátis</h3>
+                <p className="text-primary/60">Equipe técnica qualificada para realizar a instalação completa em seu estabelecimento.</p>
               </div>
             </div>
           </div>
@@ -129,7 +128,7 @@ export const Home = () => {
               <img src="https://picsum.photos/seed/assist/800/600" alt="Assistência" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/50 p-10 flex flex-col justify-end">
                 <h3 className="text-3xl font-black text-white mb-4">ASSISTÊNCIA TÉCNICA</h3>
-                <p className="text-white/70 mb-6 max-w-sm">Suporte especializado para suas máquinas e móveis Lidermaq, garantindo vida longa ao seu investimento.</p>
+                <p className="text-white/70 mb-6 max-w-sm">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
                 <Link to="/assistencia" className="btn-primary w-fit">Acessar Suporte</Link>
               </div>
             </div>
@@ -150,7 +149,7 @@ export const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black tracking-tighter mb-4">BLOG LIDERMAQ</h2>
-            <p className="text-primary/60 max-w-2xl mx-auto">Dicas de gestão, manutenção de equipamentos e as últimas tendências do mercado de gastronomia e escritório.</p>
+            <p className="text-primary/60 max-w-2xl mx-auto">Dicas técnicas, manutenção preventiva e as últimas novidades do mercado de equipamentos industriais.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
