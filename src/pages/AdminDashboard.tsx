@@ -64,6 +64,13 @@ export const AdminDashboard = () => {
                 <p className="text-xs opacity-60">Ver e editar todos os itens</p>
               </button>
               <button 
+                onClick={() => navigate('/admin/usuarios-registrados')}
+                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+              >
+                <p className="font-bold mb-1">Usuários Registrados</p>
+                <p className="text-xs opacity-60">Ver quem está logado no site</p>
+              </button>
+              <button 
                 onClick={() => navigate('/admin/usuarios')}
                 className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >

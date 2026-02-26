@@ -16,6 +16,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { NewProduct } from './pages/admin/NewProduct';
 import { EditProduct } from './pages/admin/EditProduct';
 import { ProductList } from './pages/admin/ProductList';
+import { UserList } from './pages/admin/UserList';
 import { Categories } from './pages/admin/Categories';
 import { NewPost } from './pages/admin/NewPost';
 import { Settings } from './pages/admin/Settings';
@@ -101,6 +102,14 @@ export default function App() {
                 element={
                   <ProtectedRoute adminOnly>
                     <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/usuarios-registrados" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <UserList />
                   </ProtectedRoute>
                 } 
               />

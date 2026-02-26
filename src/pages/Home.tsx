@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
-import { BLOG_POSTS } from '../data/mockData';
 import { useProducts } from '../hooks/useProducts';
+import { usePosts } from '../hooks/usePosts';
 
 export const Home = () => {
-  const { products, loading } = useProducts();
+  const { products, loading: productsLoading } = useProducts();
+  const { posts, loading: postsLoading } = usePosts();
   const featuredProducts = products.slice(0, 4);
 
   return (
@@ -115,7 +116,7 @@ export const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {loading ? (
+            {productsLoading ? (
               Array(4).fill(0).map((_, i) => (
                 <div key={i} className="h-80 bg-white rounded-3xl animate-pulse" />
               ))
@@ -161,21 +162,27 @@ export const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {BLOG_POSTS.map((post) => (
-              <div key={post.id} className="bg-white rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-md transition-shadow">
-                <div className="sm:w-1/3 h-48 sm:h-auto">
-                  <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+            {postsLoading ? (
+              Array(2).fill(0).map((_, i) => (
+                <div key={i} className="h-48 bg-white rounded-3xl animate-pulse shadow-sm" />
+              ))
+            ) : (
+              posts.slice(0, 2).map((post) => (
+                <div key={post.id} className="bg-white rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-md transition-shadow">
+                  <div className="sm:w-1/3 h-48 sm:h-auto">
+                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="p-8 flex-1 flex flex-col justify-center">
+                    <span className="text-accent text-xs font-bold uppercase mb-2">{post.category}</span>
+                    <h3 className="text-xl font-bold mb-4">{post.title}</h3>
+                    <p className="text-sm text-primary/60 mb-6">{post.excerpt}</p>
+                    <Link to={`/blog/${post.id}`} className="text-primary font-bold text-sm flex items-center gap-2 hover:text-accent transition-colors">
+                      Leia mais <ArrowRight size={16} />
+                    </Link>
+                  </div>
                 </div>
-                <div className="p-8 flex-1 flex flex-col justify-center">
-                  <span className="text-accent text-xs font-bold uppercase mb-2">{post.category}</span>
-                  <h3 className="text-xl font-bold mb-4">{post.title}</h3>
-                  <p className="text-sm text-primary/60 mb-6">{post.excerpt}</p>
-                  <Link to={`/blog/${post.id}`} className="text-primary font-bold text-sm flex items-center gap-2 hover:text-accent transition-colors">
-                    Leia mais <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>

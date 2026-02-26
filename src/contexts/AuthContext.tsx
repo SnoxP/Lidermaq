@@ -4,10 +4,11 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut,
+  updateProfile,
   User as FirebaseUser 
 } from 'firebase/auth';
 import { auth, db } from '../services/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 interface User {
   id: string;
@@ -45,6 +46,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const syncUserToFirestore = async (firebaseUser: FirebaseUser, name?: string) => {
+    if (!firebaseUser.email) return;
+    
+    const userRef = doc(db, 'users', firebaseUser.uid);
+    await setDoc(userRef, {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email,
+      name: name || firebaseUser.displayName || firebaseUser.email.split('@')[0],
+      lastSeen: serverTimestamp(),
+      isOnline: true
+    }, { merge: true });
+  };
+
   useEffect(() => {
     if (!auth) {
       console.error("Firebase Auth not initialized. Check your environment variables.");
@@ -62,6 +76,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
           isAdmin: isAdmin,
         });
+        // Atualiza o status online
+        syncUserToFirestore(firebaseUser);
       } else {
         setUser(null);
       }
@@ -72,16 +88,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    if (result.user) {
+      await syncUserToFirestore(result.user);
+    }
   };
 
-  const register = async (email: string, password: string, _name: string) => {
-    // Nota: O Firebase não salva o nome no registro inicial por padrão, 
-    // mas poderíamos usar updateProfile se necessário.
-    await createUserWithEmailAndPassword(auth, email, password);
+  const register = async (email: string, password: string, name: string) => {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    if (result.user) {
+      await updateProfile(result.user, { displayName: name });
+      await syncUserToFirestore(result.user, name);
+    }
   };
 
   const logout = async () => {
+    if (user) {
+      // Opcional: marcar como offline no Firestore antes de deslogar
+      try {
+        await setDoc(doc(db, 'users', user.id), { isOnline: false }, { merge: true });
+      } catch (e) {
+        console.error("Erro ao atualizar status offline:", e);
+      }
+    }
     await signOut(auth);
   };
 
