@@ -9,7 +9,7 @@ export const About = () => {
         <div className="max-w-4xl mx-auto text-center mb-20">
           <h1 className="text-5xl font-black tracking-tighter mb-6">NOSSA HISTÓRIA</h1>
           <p className="text-xl text-primary/60 leading-relaxed">
-            Desde 1995, a Lidermaq impulsiona negócios com equipamentos que unem tecnologia de ponta, durabilidade excepcional e a eficiência que seu empreendimento merece.
+            Desde 1995, a Lidermaq transforma ambientes com móveis que unem design contemporâneo, durabilidade excepcional e o conforto que sua família merece.
           </p>
         </div>
 
@@ -20,10 +20,10 @@ export const About = () => {
           <div className="space-y-6">
             <h2 className="text-3xl font-black tracking-tighter">QUALIDADE QUE VEM DE BERÇO</h2>
             <p className="text-primary/70 leading-relaxed">
-              Fundada em Picos, Piauí, a Lidermaq nasceu do sonho de oferecer equipamentos de alto padrão com fabricação própria e curadoria rigorosa. Hoje, somos referência em toda a região, atendendo desde pequenos comércios até grandes indústrias e projetos corporativos.
+              Fundada em Picos, Piauí, a Lidermaq nasceu do sonho de oferecer móveis de alto padrão com fabricação própria e curadoria rigorosa. Hoje, somos referência em toda a região, atendendo desde residências sofisticadas até grandes projetos corporativos.
             </p>
             <p className="text-primary/70 leading-relaxed">
-              Nossa missão é simples: fornecer equipamentos que não sejam apenas ferramentas, mas partes fundamentais do seu sucesso. Por isso, investimos constantemente em tecnologia e na capacitação de nossa equipe técnica.
+              Nossa missão é simples: criar móveis que não sejam apenas objetos, mas partes fundamentais da sua história. Por isso, investimos constantemente em tecnologia e na capacitação de nossos artesãos.
             </p>
             <div className="grid grid-cols-2 gap-6 pt-6">
               <div className="flex items-center gap-3">
