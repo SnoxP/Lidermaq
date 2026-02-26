@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -8,7 +8,7 @@ export interface ProductCardProps {
   product: Product;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = memo(({ product }) => {
   return (
     <motion.div 
       whileHover={{ y: -10 }}
@@ -62,4 +62,4 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
     </motion.div>
   );
-};
+});
