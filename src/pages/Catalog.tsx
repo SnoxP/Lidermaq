@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ProductCard } from '../components/ProductCard';
 import { CATEGORIES } from '../data/mockData';
 import { useProducts } from '../hooks/useProducts';
+import { SEO } from '../components/SEO';
 
 export const Catalog = () => {
   const { products, loading } = useProducts();
@@ -39,6 +40,10 @@ export const Catalog = () => {
 
   return (
     <div className="pt-32 pb-20">
+      <SEO 
+        title={`Catálogo de Equipamentos ${activeCategory !== 'Todos' ? `- ${activeCategory}` : ''}`}
+        description={`Confira nossa linha completa de equipamentos para ${activeCategory !== 'Todos' ? activeCategory : 'padarias, restaurantes e muito mais'}. Qualidade Lidermaq.`}
+      />
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12">

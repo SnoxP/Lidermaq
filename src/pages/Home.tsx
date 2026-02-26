@@ -5,6 +5,7 @@ import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool } from 'lucid
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
 import { usePosts } from '../hooks/usePosts';
+import { SEO } from '../components/SEO';
 
 export const Home = () => {
   const { products, loading: productsLoading } = useProducts();
@@ -13,6 +14,7 @@ export const Home = () => {
 
   return (
     <div className="pt-20">
+      <SEO />
       {/* Hero Section */}
       <section className="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden bg-primary">
         <div className="absolute inset-0 opacity-40">

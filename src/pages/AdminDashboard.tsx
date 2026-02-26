@@ -3,15 +3,16 @@ import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { LayoutDashboard, PackagePlus, Users, Settings, TrendingUp, Package, FileText, Database } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { PRODUCTS } from '../data/mockData';
+import { useProducts } from '../hooks/useProducts';
 import { SeedData } from '../components/admin/SeedData';
 
 export const AdminDashboard = () => {
   const { user } = useAuth();
+  const { products, loading } = useProducts();
   const navigate = useNavigate();
 
   const stats = [
-    { label: 'Total de Produtos', value: PRODUCTS.length, icon: Package, color: 'text-blue-600', bg: 'bg-blue-100' },
+    { label: 'Total de Produtos', value: loading ? '...' : products.length, icon: Package, color: 'text-blue-600', bg: 'bg-blue-100' },
     { label: 'Categorias', value: 6, icon: LayoutDashboard, color: 'text-purple-600', bg: 'bg-purple-100' },
     { label: 'Visualizações', value: '1.2k', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-100' },
     { label: 'Usuários', value: 1, icon: Users, color: 'text-orange-600', bg: 'bg-orange-100' },
@@ -111,20 +112,28 @@ export const AdminDashboard = () => {
           <div className="bg-white p-8 rounded-3xl shadow-sm">
             <h3 className="text-xl font-bold mb-6">Últimos Produtos Adicionados</h3>
             <div className="space-y-4">
-              {PRODUCTS.slice(0, 4).map((product) => (
-                <div key={product.id} className="flex items-center gap-4 p-3 hover:bg-neutral-bg rounded-2xl transition-colors">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0">
-                    <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              {loading ? (
+                Array(4).fill(0).map((_, i) => (
+                  <div key={i} className="h-16 bg-neutral-bg rounded-2xl animate-pulse" />
+                ))
+              ) : products.length === 0 ? (
+                <p className="text-primary/40 italic text-center py-8">Nenhum produto cadastrado.</p>
+              ) : (
+                products.slice(0, 4).map((product) => (
+                  <div key={product.id} className="flex items-center gap-4 p-3 hover:bg-neutral-bg rounded-2xl transition-colors">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-neutral-bg">
+                      <img src={product.image || product.images?.[0]} alt={product.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm truncate">{product.name}</p>
+                      <p className="text-xs text-primary/40">{product.category}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-sm">R$ {product.price.toLocaleString('pt-BR')}</p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm truncate">{product.name}</p>
-                    <p className="text-xs text-primary/40">{product.category}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm">R$ {product.price.toLocaleString('pt-BR')}</p>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

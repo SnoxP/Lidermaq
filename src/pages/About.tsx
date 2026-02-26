@@ -1,10 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Users, Award, History, ExternalLink } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 export const About = () => {
   return (
     <div className="pt-32 pb-20">
+      <SEO 
+        title="Nossa História"
+        description="Conheça a trajetória da Lidermaq Equipamentos em Picos-PI. Mais de 10 anos de tradição e compromisso com o empreendedor."
+      />
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center mb-20">
           <h1 className="text-5xl font-black tracking-tighter mb-6">NOSSA HISTÓRIA</h1>
