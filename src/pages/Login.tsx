@@ -1,0 +1,106 @@
+import React, { useState } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+
+export const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      await login(email, password);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError('Falha no login. Verifique suas credenciais.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="pt-40 pb-20 min-h-screen bg-neutral-bg flex items-center justify-center px-4">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 md:p-12"
+      >
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-black tracking-tighter mb-2">BEM-VINDO DE VOLTA</h1>
+          <p className="text-primary/60">Acesse sua conta Lidermaq</p>
+          <div className="mt-4 p-3 bg-accent/10 rounded-xl text-accent text-xs font-bold">
+            DICA: Use um email com "admin" (ex: admin@teste.com) para testar o painel administrativo.
+          </div>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl flex items-center gap-3 text-sm font-medium">
+            <AlertCircle size={20} />
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2 ml-1">E-mail</label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30" size={20} />
+              <input 
+                type="email" 
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                placeholder="seu@email.com"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2 ml-1">Senha</label>
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30" size={20} />
+              <input 
+                type="password" 
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                placeholder="••••••••"
+              />
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={isLoading}
+            className="w-full btn-primary py-4 text-lg flex justify-center items-center gap-2"
+          >
+            {isLoading ? 'Entrando...' : (
+              <>Entrar <LogIn size={20} /></>
+            )}
+          </button>
+        </form>
+
+        <div className="mt-8 text-center">
+          <p className="text-primary/60 text-sm">
+            Não tem uma conta? <Link to="/cadastro" className="text-accent font-bold hover:underline">Cadastre-se</Link>
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  );
+};

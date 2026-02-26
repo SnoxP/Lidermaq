@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Search, ShoppingCart } from 'lucide-react';
+import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -55,10 +58,62 @@ export const Header = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <button className="p-2 hover:bg-neutral-bg rounded-full transition-colors">
+          <button className="p-2 hover:bg-neutral-bg rounded-full transition-colors hidden sm:block">
             <Search size={20} />
           </button>
-          <a href="tel:+558999999999" className="hidden md:flex items-center gap-2 text-sm font-semibold text-accent">
+          
+          {/* User Auth Menu */}
+          <div className="relative">
+            {user ? (
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center hover:bg-accent/20 transition-all"
+                >
+                  <User size={20} />
+                </button>
+                
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 top-12 w-48 bg-white rounded-2xl shadow-xl border border-neutral-bg p-2 z-[60]"
+                    >
+                      <div className="px-4 py-3 border-b border-neutral-bg mb-2">
+                        <p className="text-xs font-bold text-primary/40 uppercase tracking-widest">Usuário</p>
+                        <p className="text-sm font-bold truncate">{user.email}</p>
+                      </div>
+                      
+                      {user.isAdmin && (
+                        <Link 
+                          to="/admin" 
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2 text-sm font-bold text-primary hover:bg-neutral-bg rounded-xl transition-colors"
+                        >
+                          <LayoutDashboard size={18} className="text-accent" /> Painel Admin
+                        </Link>
+                      )}
+                      
+                      <button 
+                        onClick={() => { logout(); setIsUserMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                      >
+                        <LogOut size={18} /> Sair
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link to="/login" className="btn-primary py-2 px-6 text-xs">
+                Login
+              </Link>
+            )}
+          </div>
+
+          <a href="tel:+558999999999" className="hidden xl:flex items-center gap-2 text-sm font-semibold text-accent">
             <Phone size={18} />
             (89) 9999-9999
           </a>
