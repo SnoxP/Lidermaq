@@ -14,7 +14,7 @@ export const Home = () => {
       <section className="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden bg-primary">
         <div className="absolute inset-0 opacity-40">
           <img 
-            src="https://picsum.photos/seed/lidermaq-hero/1920/1080" 
+            src="https://picsum.photos/seed/lidermaq-hero/1280/720" 
             alt="Hero Background" 
             className="w-full h-full object-cover"
           />
