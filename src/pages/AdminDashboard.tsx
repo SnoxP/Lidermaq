@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
-import { LayoutDashboard, PackagePlus, Users, Settings, TrendingUp, Package, FileText } from 'lucide-react';
+import { LayoutDashboard, PackagePlus, Users, Settings, TrendingUp, Package, FileText, Database } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { PRODUCTS } from '../data/mockData';
+import { SeedData } from '../components/admin/SeedData';
 
 export const AdminDashboard = () => {
   const { user } = useAuth();
@@ -47,7 +48,9 @@ export const AdminDashboard = () => {
         </div>
 
         {/* Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <SeedData />
+          
           <div className="bg-white p-8 rounded-3xl shadow-sm">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <PackagePlus className="text-accent" /> Ações Rápidas

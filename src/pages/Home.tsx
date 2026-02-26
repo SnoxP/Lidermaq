@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
-import { PRODUCTS, BLOG_POSTS } from '../data/mockData';
+import { BLOG_POSTS } from '../data/mockData';
+import { useProducts } from '../hooks/useProducts';
 
 export const Home = () => {
-  const featuredProducts = PRODUCTS.slice(0, 4);
+  const { products, loading } = useProducts();
+  const featuredProducts = products.slice(0, 4);
 
   return (
     <div className="pt-20">
@@ -113,9 +115,15 @@ export const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              Array(4).fill(0).map((_, i) => (
+                <div key={i} className="h-80 bg-white rounded-3xl animate-pulse" />
+              ))
+            ) : (
+              featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
           </div>
         </div>
       </section>

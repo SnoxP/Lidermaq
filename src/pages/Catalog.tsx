@@ -3,9 +3,11 @@ import { useSearchParams } from 'react-router-dom';
 import { Filter, Search, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ProductCard } from '../components/ProductCard';
-import { PRODUCTS, CATEGORIES } from '../data/mockData';
+import { CATEGORIES } from '../data/mockData';
+import { useProducts } from '../hooks/useProducts';
 
 export const Catalog = () => {
+  const { products, loading } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
@@ -13,7 +15,7 @@ export const Catalog = () => {
   const activeCategory = searchParams.get('cat') || 'Todos';
 
   const filteredProducts = useMemo(() => {
-    let result = PRODUCTS;
+    let result = products;
 
     if (activeCategory !== 'Todos') {
       result = result.filter(p => p.category === activeCategory);
@@ -98,7 +100,13 @@ export const Catalog = () => {
             </div>
 
             {/* Grid */}
-            {filteredProducts.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                {Array(6).fill(0).map((_, i) => (
+                  <div key={i} className="h-80 bg-neutral-bg rounded-3xl animate-pulse" />
+                ))}
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />

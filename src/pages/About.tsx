@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Users, Award, History } from 'lucide-react';
+import { Shield, Users, Award, History, ExternalLink } from 'lucide-react';
 
 export const About = () => {
   return (
@@ -20,11 +20,21 @@ export const About = () => {
           <div className="space-y-6">
             <h2 className="text-3xl font-black tracking-tighter">QUALIDADE QUE VEM DE BERÇO</h2>
             <p className="text-primary/70 leading-relaxed">
-              Fundada em Picos, Piauí, a Lidermaq nasceu do sonho de oferecer equipamentos de alto padrão com fabricação própria e curadoria rigorosa. Hoje, somos referência em toda a região, atendendo desde pequenos comércios até grandes indústrias e projetos corporativos.
+              A Lidermaq Equipamentos, sediada em Picos-PI, é uma empresa com mais de 10 anos de atuação no mercado de máquinas e equipamentos comerciais e industriais. Fundada com um forte DNA familiar, a empresa se destaca pelo atendimento personalizado e pela oferta de soluções completas para diversos setores, como padarias, restaurantes, açougues e supermercados.
             </p>
             <p className="text-primary/70 leading-relaxed">
-              Nossa missão é simples: fornecer equipamentos que não sejam apenas ferramentas, mas partes fundamentais do seu sucesso. Por isso, investimos constantemente em tecnologia e na capacitação de nossa equipe técnica.
+              Sob a liderança da família, a Lidermaq consolidou-se como referência na região, prezando pela qualidade dos produtos e pelo suporte técnico especializado aos seus clientes. Nossa missão é fornecer equipamentos que sejam partes fundamentais do sucesso de cada empreendedor que confia em nosso trabalho.
             </p>
+            <div className="pt-4">
+              <a 
+                href="https://cidadesnanet.com/news/municipios/picos/picos-conheca-a-lidermaq-que-atua-ha-10-anos-com-maquinas-e-equipamentos/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-accent font-bold hover:underline"
+              >
+                Saiba mais sobre nossa história <ExternalLink size={18} />
+              </a>
+            </div>
             <div className="grid grid-cols-2 gap-6 pt-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center text-accent">

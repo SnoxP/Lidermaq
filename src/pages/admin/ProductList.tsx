@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X } from 'lucide-react';
+import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X, Database } from 'lucide-react';
 import { db } from '../../services/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,13 @@ export const ProductList = () => {
 
   const fetchProducts = async () => {
     setIsLoading(true);
+    const timeout = setTimeout(() => {
+      if (isLoading) {
+        setIsLoading(false);
+        console.warn("Busca de produtos excedeu o tempo limite.");
+      }
+    }, 10000); // 10 segundos de timeout
+
     try {
       const querySnapshot = await getDocs(collection(db, 'products'));
       const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -20,6 +27,7 @@ export const ProductList = () => {
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
     } finally {
+      clearTimeout(timeout);
       setIsLoading(false);
     }
   };
@@ -89,7 +97,15 @@ export const ProductList = () => {
                   </tr>
                 ) : filteredProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 italic">Nenhum produto encontrado.</td>
+                    <td colSpan={5} className="px-6 py-12 text-center">
+                      <p className="text-primary/40 italic mb-4">Nenhum produto encontrado no banco de dados.</p>
+                      <button 
+                        onClick={() => navigate('/admin')}
+                        className="text-accent font-bold hover:underline flex items-center gap-2 mx-auto"
+                      >
+                        <Database size={16} /> Importar catálogo inicial no Painel
+                      </button>
+                    </td>
                   </tr>
                 ) : (
                   filteredProducts.map((product) => (
