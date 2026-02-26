@@ -11,7 +11,7 @@ export const Register = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,11 +20,10 @@ export const Register = () => {
     setIsLoading(true);
 
     try {
-      // Simulação de registro seguido de login automático
-      await login(email, password);
+      await register(email, password, name);
       navigate('/');
     } catch (err) {
-      setError('Falha no cadastro. Tente novamente.');
+      setError('Falha no cadastro. Verifique se o e-mail é válido e a senha tem 6+ caracteres.');
     } finally {
       setIsLoading(false);
     }
