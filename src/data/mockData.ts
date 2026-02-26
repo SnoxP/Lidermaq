@@ -17,11 +17,11 @@ export interface Product {
 }
 
 export const PRODUCTS: Product[] = [
-  // Padaria
+  // Padarias
   {
     id: "forno-turbo-pratica",
     name: "Forno Turbo Digital",
-    category: "Padaria",
+    category: "Padarias",
     brand: "Prática",
     price: 12500.00,
     installments: "10x de R$ 1.250,00",
@@ -38,7 +38,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "amassadeira-gpaniz",
     name: "Amassadeira Espiral",
-    category: "Padaria",
+    category: "Padarias",
     brand: "G.Paniz",
     price: 8900.00,
     installments: "10x de R$ 890,00",
@@ -52,63 +52,48 @@ export const PRODUCTS: Product[] = [
     },
     available: true
   },
+
+  // Restaurantes
   {
-    id: "divisora-venancio",
-    name: "Divisora de Massa Manual",
-    category: "Padaria",
-    brand: "Venâncio",
-    price: 3200.00,
-    installments: "10x de R$ 320,00",
-    image: "https://picsum.photos/seed/bakery3/800/600",
-    description: "Divisora de massa precisa para padronização de pães. Fácil operação e limpeza.",
+    id: "fogao-industrial-6-bocas",
+    name: "Fogão Industrial 6 Bocas",
+    category: "Restaurantes",
+    brand: "Tron",
+    price: 3490.00,
+    installments: "10x de R$ 349,00",
+    image: "https://picsum.photos/seed/stove1/800/600",
+    description: "Fogão industrial de alta potência com forno integrado. Ideal para restaurantes e cozinhas profissionais.",
     specs: {
-      dimensions: "50cm x 50cm x 150cm",
-      weight: "65kg",
-      material: "Aço Carbono",
-      finish: "Pintura Eletrostática"
+      dimensions: "120cm x 80cm x 90cm",
+      weight: "85kg",
+      material: "Aço Inox Escovado",
+      finish: "Grelhas em ferro fundido"
     },
     available: true
   },
   {
-    id: "modeladora-gastromaq",
-    name: "Modeladora de Pães",
-    category: "Padaria",
-    brand: "Gastromaq",
-    price: 4500.00,
-    installments: "10x de R$ 450,00",
-    image: "https://picsum.photos/seed/bakery4/800/600",
-    description: "Modeladora profissional para diversos tipos de pães. Alta produtividade.",
+    id: "fritadeira-eletrica-tedesco",
+    name: "Fritadeira Elétrica Água e Óleo",
+    category: "Restaurantes",
+    brand: "Tedesco",
+    price: 2100.00,
+    installments: "10x de R$ 210,00",
+    image: "https://picsum.photos/seed/fryer1/800/600",
+    description: "Fritadeira de alto rendimento com sistema de filtragem água e óleo.",
     specs: {
-      dimensions: "60cm x 70cm x 120cm",
-      weight: "80kg",
-      material: "Aço Inox e Nylon",
+      dimensions: "50cm x 50cm x 110cm",
+      weight: "25kg",
+      material: "Aço Inox",
       finish: "Polido"
     },
     available: true
   },
-  {
-    id: "fatiadora-braesi",
-    name: "Fatiadora de Pão de Forma",
-    category: "Padaria",
-    brand: "Braesi",
-    price: 2800.00,
-    installments: "10x de R$ 280,00",
-    image: "https://picsum.photos/seed/bakery5/800/600",
-    description: "Fatiadora rápida e segura para pães de forma e similares.",
-    specs: {
-      dimensions: "50cm x 60cm x 70cm",
-      weight: "45kg",
-      material: "Aço Inox",
-      finish: "Escovado"
-    },
-    available: true
-  },
 
-  // Açougue
+  // Açougues
   {
     id: "moedor-beccaro",
     name: "Moedor de Carne Industrial",
-    category: "Açougue",
+    category: "Açougues",
     brand: "Beccaro",
     price: 3800.00,
     installments: "10x de R$ 380,00",
@@ -125,7 +110,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "serra-fita-metvisa",
     name: "Serra Fita para Ossos",
-    category: "Açougue",
+    category: "Açougues",
     brand: "Metvisa",
     price: 5200.00,
     installments: "10x de R$ 520,00",
@@ -139,63 +124,12 @@ export const PRODUCTS: Product[] = [
     },
     available: true
   },
-  {
-    id: "amaciador-skymsen",
-    name: "Amaciador de Carne",
-    category: "Açougue",
-    brand: "Skymsen",
-    price: 2400.00,
-    installments: "10x de R$ 240,00",
-    image: "https://picsum.photos/seed/butcher3/800/600",
-    description: "Amaciador de bifes profissional. Garante maciez e uniformidade.",
-    specs: {
-      dimensions: "30cm x 40cm x 45cm",
-      weight: "15kg",
-      material: "Aço Inox",
-      finish: "Escovado"
-    },
-    available: true
-  },
-  {
-    id: "balanca-toledo",
-    name: "Balança Computadora Digital",
-    category: "Açougue",
-    brand: "Toledo",
-    price: 1850.00,
-    installments: "10x de R$ 185,00",
-    image: "https://picsum.photos/seed/butcher4/800/600",
-    description: "Balança de alta precisão com cálculo de preço e etiqueta.",
-    specs: {
-      dimensions: "40cm x 40cm x 15cm",
-      weight: "8kg",
-      material: "Plástico ABS e Inox",
-      finish: "Fosco"
-    },
-    available: true
-  },
-  {
-    id: "ensacadeira-picelli",
-    name: "Ensacadeira de Linguiça",
-    category: "Açougue",
-    brand: "Picelli",
-    price: 1200.00,
-    installments: "5x de R$ 240,00",
-    image: "https://picsum.photos/seed/butcher5/800/600",
-    description: "Ensacadeira manual em aço inox para produção artesanal.",
-    specs: {
-      dimensions: "25cm x 25cm x 60cm",
-      weight: "10kg",
-      material: "Aço Inox",
-      finish: "Polido"
-    },
-    available: true
-  },
 
-  // Supermercado
+  // Supermercados
   {
     id: "checkout-innal",
     name: "Check-out com Esteira",
-    category: "Supermercado",
+    category: "Supermercados",
     brand: "Innal",
     price: 4200.00,
     installments: "10x de R$ 420,00",
@@ -210,43 +144,9 @@ export const PRODUCTS: Product[] = [
     available: true
   },
   {
-    id: "gondola-amapa",
-    name: "Gôndola Central Reforçada",
-    category: "Supermercado",
-    brand: "Amapá",
-    price: 950.00,
-    installments: "5x de R$ 190,00",
-    image: "https://picsum.photos/seed/market2/800/600",
-    description: "Gôndola de aço para exposição de produtos pesados.",
-    specs: {
-      dimensions: "100cm x 80cm x 170cm",
-      weight: "40kg",
-      material: "Aço Carbono",
-      finish: "Pintura Epóxi"
-    },
-    available: true
-  },
-  {
-    id: "carrinho-atila",
-    name: "Carrinho de Compras 150L",
-    category: "Supermercado",
-    brand: "Metalúrgica Átila",
-    price: 480.00,
-    installments: "3x de R$ 160,00",
-    image: "https://picsum.photos/seed/market3/800/600",
-    description: "Carrinho de compras aramado com rodas de alta resistência.",
-    specs: {
-      dimensions: "60cm x 90cm x 100cm",
-      weight: "18kg",
-      material: "Aço Zincado",
-      finish: "Zincagem Brilhante"
-    },
-    available: true
-  },
-  {
     id: "expositor-esmaltec",
     name: "Expositor Vertical Frios",
-    category: "Supermercado",
+    category: "Supermercados",
     brand: "Esmaltec",
     price: 5900.00,
     installments: "10x de R$ 590,00",
@@ -260,26 +160,81 @@ export const PRODUCTS: Product[] = [
     },
     available: true
   },
+
+  // Lanchonetes
   {
-    id: "cortador-filizola",
-    name: "Cortador de Frios Automático",
-    category: "Supermercado",
-    brand: "Filizola",
-    price: 3600.00,
-    installments: "10x de R$ 360,00",
-    image: "https://picsum.photos/seed/market5/800/600",
-    description: "Cortador de frios de alta precisão com lâmina de 300mm.",
+    id: "chapa-bifeteira-metalcubas",
+    name: "Chapa Bifeteira a Gás",
+    category: "Lanchonetes",
+    brand: "Metalcubas",
+    price: 1250.00,
+    installments: "5x de R$ 250,00",
+    image: "https://picsum.photos/seed/snack1/800/600",
+    description: "Chapa profissional para lanches com espessura ideal para retenção de calor.",
     specs: {
-      dimensions: "50cm x 60cm x 50cm",
-      weight: "32kg",
-      material: "Alumínio Anodizado",
-      finish: "Anodizado"
+      dimensions: "80cm x 50cm x 20cm",
+      weight: "22kg",
+      material: "Aço Carbono e Inox",
+      finish: "Retificado"
+    },
+    available: true
+  },
+  {
+    id: "refresqueira-venancio",
+    name: "Refresqueira 2 Cubas",
+    category: "Lanchonetes",
+    brand: "Venâncio",
+    price: 2850.00,
+    installments: "10x de R$ 285,00",
+    image: "https://picsum.photos/seed/snack2/800/600",
+    description: "Refresqueira de alta capacidade para sucos e bebidas. Mantém a temperatura ideal.",
+    specs: {
+      dimensions: "40cm x 50cm x 70cm",
+      weight: "18kg",
+      material: "Inox e Policarbonato",
+      finish: "Transparente"
+    },
+    available: true
+  },
+
+  // Móveis Para Escritório
+  {
+    id: "cadeira-presidente-ergon",
+    name: "Cadeira Presidente Ergon",
+    category: "Móveis Para Escritório",
+    brand: "Frisokar",
+    price: 1290.00,
+    installments: "10x de R$ 129,00",
+    image: "https://picsum.photos/seed/chair1/800/600",
+    description: "Cadeira ergonômica de alto padrão com diversos ajustes e revestimento em couro sintético.",
+    specs: {
+      dimensions: "70cm x 70cm x 120-130cm",
+      weight: "18kg",
+      material: "Base em Alumínio e Couro PU",
+      finish: "Costura dupla"
+    },
+    available: true
+  },
+  {
+    id: "mesa-escritorio-l",
+    name: "Mesa de Escritório em L",
+    category: "Móveis Para Escritório",
+    brand: "Marelli",
+    price: 950.00,
+    installments: "10x de R$ 95,00",
+    image: "https://picsum.photos/seed/desk1/800/600",
+    description: "Mesa em L espaçosa para otimizar seu ambiente de trabalho. Design moderno e funcional.",
+    specs: {
+      dimensions: "150cm x 150cm x 75cm",
+      weight: "35kg",
+      material: "MDP 25mm",
+      finish: "Melamínico"
     },
     available: true
   }
 ];
 
-export const CATEGORIES = ["Todos", "Padaria", "Açougue", "Supermercado"];
+export const CATEGORIES = ["Todos", "Padarias", "Restaurantes", "Açougues", "Supermercados", "Lanchonetes", "Móveis Para Escritório"];
 
 export const BLOG_POSTS = [
   {

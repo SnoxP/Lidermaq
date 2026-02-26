@@ -33,7 +33,7 @@ export const Home = () => {
             </span>
             <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tighter">
               MÁQUINAS E EQUIPAMENTOS DE<br />
-              <span className="text-accent text-3xl md:text-5xl">PADARIA, AÇOUGUE E SUPERMERCADO.</span>
+              <span className="text-accent text-3xl md:text-5xl">PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.</span>
             </h1>
             <p className="text-xl text-white/70 mb-10 max-w-xl leading-relaxed">
               Equipamentos de alta performance, durabilidade e a garantia de quem entende do seu negócio há mais de 30 anos. Potencialize sua empresa com a Lidermaq.
@@ -49,7 +49,7 @@ export const Home = () => {
             </div>
 
             <div className="mt-16 flex flex-wrap gap-8">
-              {['Padaria', 'Açougue', 'Supermercado'].map((cat) => (
+              {['Padarias', 'Restaurantes', 'Açougues', 'Supermercados', 'Lanchonetes', 'Móveis Para Escritório'].map((cat) => (
                 <Link 
                   key={cat} 
                   to={`/catalogo?cat=${cat}`}
