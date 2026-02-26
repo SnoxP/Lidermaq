@@ -62,7 +62,11 @@ export const ProductDetail = () => {
           {/* Info */}
           <div className="flex flex-col">
             <div className="mb-8">
-              <span className="text-accent font-bold uppercase tracking-widest text-sm mb-2 block">{product.category}</span>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-accent font-bold uppercase tracking-widest text-sm">{product.category}</span>
+                <span className="w-1 h-1 bg-primary/20 rounded-full" />
+                <span className="text-primary/40 font-bold uppercase tracking-widest text-sm">{product.brand}</span>
+              </div>
               <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">{product.name}</h1>
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-primary">

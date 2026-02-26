@@ -29,6 +29,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </Link>
       
       <div className="p-6">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-[10px] font-bold text-accent uppercase tracking-widest">{product.brand}</span>
+        </div>
         <Link to={`/produto/${product.id}`}>
           <h3 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors line-clamp-1">
             {product.name}

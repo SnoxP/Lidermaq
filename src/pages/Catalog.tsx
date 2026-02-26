@@ -41,7 +41,7 @@ export const Catalog = () => {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-5xl font-black tracking-tighter mb-4">CATÁLOGO COMPLETO</h1>
-          <p className="text-primary/60 max-w-2xl">Explore nossa linha completa de equipamentos para gastronomia, refrigeração e escritório.</p>
+          <p className="text-primary/60 max-w-2xl">Explore nossa linha completa de equipamentos para padaria, açougue e supermercado.</p>
         </div>
 
         {/* Filters & Search */}
