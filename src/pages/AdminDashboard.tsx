@@ -54,6 +54,20 @@ export const AdminDashboard = () => {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button 
+                onClick={() => navigate('/admin/produtos')}
+                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+              >
+                <p className="font-bold mb-1">Listar Produtos</p>
+                <p className="text-xs opacity-60">Ver e editar todos os itens</p>
+              </button>
+              <button 
+                onClick={() => navigate('/admin/usuarios')}
+                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+              >
+                <p className="font-bold mb-1">Gerenciar Admins</p>
+                <p className="text-xs opacity-60">Adicione novos administradores</p>
+              </button>
+              <button 
                 onClick={() => navigate('/admin/novo-produto')}
                 className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >

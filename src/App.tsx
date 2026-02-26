@@ -14,9 +14,12 @@ import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { NewProduct } from './pages/admin/NewProduct';
+import { EditProduct } from './pages/admin/EditProduct';
+import { ProductList } from './pages/admin/ProductList';
 import { Categories } from './pages/admin/Categories';
 import { NewPost } from './pages/admin/NewPost';
 import { Settings } from './pages/admin/Settings';
+import { AdminManagement } from './pages/admin/AdminManagement';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -62,6 +65,22 @@ export default function App() {
                 } 
               />
               <Route 
+                path="/admin/editar-produto/:id" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <EditProduct />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/produtos" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <ProductList />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
                 path="/admin/categorias" 
                 element={
                   <ProtectedRoute adminOnly>
@@ -82,6 +101,14 @@ export default function App() {
                 element={
                   <ProtectedRoute adminOnly>
                     <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/usuarios" 
+                element={
+                  <ProtectedRoute adminOnly>
+                    <AdminManagement />
                   </ProtectedRoute>
                 } 
               />

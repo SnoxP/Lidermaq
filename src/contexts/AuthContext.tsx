@@ -6,7 +6,8 @@ import {
   signOut,
   User as FirebaseUser 
 } from 'firebase/auth';
-import { auth } from '../services/firebase';
+import { auth, db } from '../services/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface User {
   id: string;
@@ -25,12 +26,24 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Email que terá status de Admin
-const ADMIN_EMAIL = "pedronobreneto27@gmail.com";
+// Email mestre que sempre será admin
+const MASTER_ADMIN = "pedronobreneto27@gmail.com";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const checkAdminStatus = async (email: string): Promise<boolean> => {
+    if (email === MASTER_ADMIN) return true;
+    
+    try {
+      const adminDoc = await getDoc(doc(db, 'admins', email));
+      return adminDoc.exists();
+    } catch (error) {
+      console.error("Erro ao verificar status de admin:", error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (!auth) {
@@ -40,13 +53,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // Escuta mudanças no estado de autenticação do Firebase
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
-      if (firebaseUser) {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser && firebaseUser.email) {
+        const isAdmin = await checkAdminStatus(firebaseUser.email);
         setUser({
           id: firebaseUser.uid,
-          email: firebaseUser.email || '',
-          name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário',
-          isAdmin: firebaseUser.email === ADMIN_EMAIL,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
+          isAdmin: isAdmin,
         });
       } else {
         setUser(null);
