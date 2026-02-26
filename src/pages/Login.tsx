@@ -41,9 +41,6 @@ export const Login = () => {
         <div className="text-center mb-10">
           <h1 className="text-3xl font-black tracking-tighter mb-2">BEM-VINDO DE VOLTA</h1>
           <p className="text-primary/60">Acesse sua conta Lidermaq</p>
-          <div className="mt-4 p-3 bg-accent/10 rounded-xl text-accent text-xs font-bold">
-            DICA: Use um email com "admin" (ex: admin@teste.com) para testar o painel administrativo.
-          </div>
         </div>
 
         {error && (

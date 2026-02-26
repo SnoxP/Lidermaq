@@ -33,6 +33,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      console.error("Firebase Auth not initialized. Check your environment variables.");
+      setLoading(false);
+      return;
+    }
+
     // Escuta mudanças no estado de autenticação do Firebase
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
