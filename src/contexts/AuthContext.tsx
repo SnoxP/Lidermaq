@@ -62,8 +62,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    if (!auth) {
-      console.error("Firebase Auth not initialized. Check your environment variables.");
+    if (!auth || !db) {
+      console.warn("Auth or DB not initialized. Check environment variables.");
       setLoading(false);
       return;
     }
@@ -71,15 +71,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Escuta mudanças no estado de autenticação do Firebase
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser && firebaseUser.email) {
-        const isAdmin = await checkAdminStatus(firebaseUser.email);
-        setUser({
-          id: firebaseUser.uid,
-          email: firebaseUser.email,
-          name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
-          isAdmin: isAdmin,
-        });
-        // Atualiza o status online
-        syncUserToFirestore(firebaseUser);
+        try {
+          const isAdmin = await checkAdminStatus(firebaseUser.email);
+          setUser({
+            id: firebaseUser.uid,
+            email: firebaseUser.email,
+            name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
+            isAdmin: isAdmin,
+          });
+          // Atualiza o status online sem travar a UI
+          syncUserToFirestore(firebaseUser);
+        } catch (e) {
+          console.error("Erro ao sincronizar usuário:", e);
+        }
       } else {
         setUser(null);
       }
@@ -90,6 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
+    if (!auth) throw new Error("Sistema de autenticação não disponível.");
     const result = await signInWithEmailAndPassword(auth, email, password);
     if (result.user) {
       await syncUserToFirestore(result.user);
@@ -97,6 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (email: string, password: string, name: string) => {
+    if (!auth) throw new Error("Sistema de autenticação não disponível.");
     const result = await createUserWithEmailAndPassword(auth, email, password);
     if (result.user) {
       await updateProfile(result.user, { displayName: name });
@@ -105,8 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
+    if (!auth) return;
     if (user) {
-      // Opcional: marcar como offline no Firestore antes de deslogar
       try {
         await setDoc(doc(db, 'users', user.id), { isOnline: false }, { merge: true });
       } catch (e) {
@@ -117,6 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const resetPassword = async (email: string) => {
+    if (!auth) throw new Error("Sistema de autenticação não disponível.");
     await sendPasswordResetEmail(auth, email);
   };
 

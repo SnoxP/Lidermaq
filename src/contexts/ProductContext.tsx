@@ -16,10 +16,19 @@ export const ProductProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!db) {
+      console.warn("Database not initialized. Showing empty catalog.");
+      setLoading(false);
+      return;
+    }
+
     const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const productList = querySnapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      }));
       setProducts(productList);
       setLoading(false);
     }, (err) => {

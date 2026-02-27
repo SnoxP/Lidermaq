@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2 } from 'lucide-react';
+import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../services/firebase';
+import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { generateOrImproveDescription, identifyProductSector } from '../../services/geminiService';
 
@@ -138,6 +138,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             <X size={24} />
           </button>
         </div>
+
+        {!db && (
+          <div className="mb-8 p-6 bg-amber-50 border border-amber-200 rounded-3xl flex items-start gap-4">
+            <AlertCircle className="text-amber-600 shrink-0" size={24} />
+            <div>
+              <h3 className="font-bold text-amber-900">Banco de Dados não configurado</h3>
+              <p className="text-sm text-amber-700 mt-1">
+                O arquivo <strong>.env</strong> com as chaves do Firebase foi removido ou está incompleto. 
+                Os produtos salvos agora não serão persistidos no banco de dados real.
+              </p>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">

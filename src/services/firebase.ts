@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,17 +13,29 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app;
+let app: any;
 let auth: any;
 let db: any;
 
 try {
-  if (!firebaseConfig.apiKey) {
-    throw new Error("Firebase API Key is missing. Check your environment variables.");
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined") {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+
+    // Habilita persistência offline para velocidade e uso sem rede
+    if (typeof window !== "undefined") {
+      enableIndexedDbPersistence(db).catch((err) => {
+        if (err.code === 'failed-precondition') {
+          console.warn("Persistência falhou: múltiplas abas abertas.");
+        } else if (err.code === 'unimplemented') {
+          console.warn("Persistência não suportada pelo navegador.");
+        }
+      });
+    }
+  } else {
+    console.warn("Firebase API Key is missing. App will run in limited mode.");
   }
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
 } catch (error) {
   console.error("Firebase initialization failed:", error);
 }
