@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2, AlertCircle, Upload, Loader2 } from 'lucide-react';
+import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2, AlertCircle, Upload, Loader2, Link as LinkIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db, storage } from '../../services/firebase';
+import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { generateOrImproveDescription, identifyProductSector } from '../../services/geminiService';
 
 interface ProductFormProps {
@@ -25,17 +24,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [isUploading, setIsUploading] = useState<number | null>(null);
   
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
 
   useEffect(() => {
     const fetchCategories = async () => {
       if (!db) return;
-      const querySnapshot = await getDocs(collection(db, 'categories'));
-      const cats = querySnapshot.docs.map(doc => doc.data().name);
-      if (cats.length === 0) {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'categories'));
+        const cats = querySnapshot.docs.map(doc => doc.data().name);
+        if (cats.length === 0) {
+          setAvailableCategories(['Padarias', 'Restaurantes', 'Açougues', 'Supermercados', 'Lanchonetes', 'Móveis Para Escritório']);
+        } else {
+          setAvailableCategories(cats);
+        }
+      } catch (e) {
         setAvailableCategories(['Padarias', 'Restaurantes', 'Açougues', 'Supermercados', 'Lanchonetes', 'Móveis Para Escritório']);
-      } else {
-        setAvailableCategories(cats);
       }
     };
 
@@ -60,20 +63,35 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
   const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !storage) return;
+    if (!file) return;
+
+    if (!IMGBB_API_KEY || IMGBB_API_KEY === "sua_chave_aqui") {
+      alert("Chave de API do ImgBB não configurada. Por favor, adicione VITE_IMGBB_API_KEY ao seu .env");
+      return;
+    }
 
     setIsUploading(index);
     try {
-      const storageRef = ref(storage, `products/${Date.now()}-${file.name}`);
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      
-      const newImages = [...images];
-      newImages[index] = downloadURL;
-      setImages(newImages);
-    } catch (error) {
-      console.error("Erro no upload:", error);
-      alert("Falha ao carregar imagem. Verifique as permissões do Firebase Storage.");
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const newImages = [...images];
+        newImages[index] = data.data.url;
+        setImages(newImages);
+      } else {
+        throw new Error(data.error?.message || "Erro no upload");
+      }
+    } catch (error: any) {
+      console.error("Erro no upload ImgBB:", error);
+      alert(`Falha no upload: ${error.message || "Verifique sua chave de API."}`);
     } finally {
       setIsUploading(null);
     }
@@ -287,17 +305,23 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
               {images.map((url, index) => (
                 <div key={index} className="flex gap-4 items-center">
                   <div className="flex-1 relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30">
+                      <LinkIcon size={18} />
+                    </div>
                     <input 
                       type="url" value={url} onChange={(e) => handleImageChange(index, e.target.value)}
-                      className="w-full pl-4 pr-12 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                      className="w-full pl-12 pr-12 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                       placeholder="https://link-da-imagem.com/foto.jpg"
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                      <label className="p-2 hover:bg-white rounded-lg cursor-pointer transition-colors text-accent" title="Upload do dispositivo">
+                      <label className="p-2 hover:bg-white rounded-lg cursor-pointer transition-colors text-accent group" title="Upload do dispositivo (Grátis via ImgBB)">
                         {isUploading === index ? (
                           <Loader2 size={20} className="animate-spin" />
                         ) : (
-                          <Upload size={20} />
+                          <div className="flex items-center gap-1">
+                            <Upload size={20} />
+                            <span className="text-[8px] font-bold uppercase hidden group-hover:block">Upload</span>
+                          </div>
                         )}
                         <input 
                           type="file" 
