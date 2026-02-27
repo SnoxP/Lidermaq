@@ -124,13 +124,6 @@ export const AdminDashboard = () => {
                 <p className="text-xs opacity-60">Gerencie os setores do site</p>
               </button>
               <button 
-                onClick={() => navigate('/admin/novo-post')}
-                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
-              >
-                <p className="font-bold mb-1">Nova Postagem</p>
-                <p className="text-xs opacity-60">Escreva para o blog</p>
-              </button>
-              <button 
                 onClick={() => navigate('/admin/configuracoes')}
                 className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >

@@ -36,7 +36,6 @@ export const Footer = () => {
               <li><Link to="/sobre" className="hover:text-accent transition-colors">Sobre a Lidermaq</Link></li>
               <li><Link to="/catalogo" className="hover:text-accent transition-colors">Nossos Produtos</Link></li>
               <li><Link to="/assistencia" className="hover:text-accent transition-colors">Assistência Técnica</Link></li>
-              <li><Link to="/blog" className="hover:text-accent transition-colors">Blog & Dicas</Link></li>
               <li><Link to="/politica-privacidade" className="hover:text-accent transition-colors">Política de Privacidade</Link></li>
             </ul>
           </div>
@@ -45,11 +44,11 @@ export const Footer = () => {
           <div>
             <h4 className="text-lg font-bold mb-6">Categorias</h4>
             <ul className="flex flex-col gap-4 text-white/60 text-sm">
-              <li><Link to="/catalogo?cat=Sofás" className="hover:text-accent transition-colors">Sofás</Link></li>
-              <li><Link to="/catalogo?cat=Mesas" className="hover:text-accent transition-colors">Mesas e Cadeiras</Link></li>
-              <li><Link to="/catalogo?cat=Dormitórios" className="hover:text-accent transition-colors">Dormitórios</Link></li>
-              <li><Link to="/catalogo?cat=Armários" className="hover:text-accent transition-colors">Armários e Estantes</Link></li>
-              <li><Link to="/catalogo?cat=Office" className="hover:text-accent transition-colors">Escritório</Link></li>
+              <li><Link to="/catalogo?cat=Padarias" className="hover:text-accent transition-colors">Padarias</Link></li>
+              <li><Link to="/catalogo?cat=Restaurantes" className="hover:text-accent transition-colors">Restaurantes</Link></li>
+              <li><Link to="/catalogo?cat=Açougues" className="hover:text-accent transition-colors">Açougues</Link></li>
+              <li><Link to="/catalogo?cat=Supermercados" className="hover:text-accent transition-colors">Supermercados</Link></li>
+              <li><Link to="/catalogo?cat=Lanchonetes" className="hover:text-accent transition-colors">Lanchonetes</Link></li>
             </ul>
           </div>
 

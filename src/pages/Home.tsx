@@ -4,14 +4,12 @@ import { motion } from 'framer-motion';
 import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
-import { usePosts } from '../hooks/usePosts';
 import { SEO } from '../components/SEO';
 import { db } from '../services/firebase';
 import { doc, updateDoc, increment, setDoc, getDoc } from 'firebase/firestore';
 
 export const Home = () => {
   const { products, loading: productsLoading } = useProducts();
-  const { posts, loading: postsLoading } = usePosts();
   const featuredProducts = products.slice(0, 4);
 
   useEffect(() => {
@@ -154,10 +152,10 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Institutional Blocks */}
+      {/* Institutional Block */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="max-w-4xl mx-auto">
             <div className="relative h-[400px] rounded-3xl overflow-hidden group">
               <img src="https://picsum.photos/seed/assist/800/600" alt="Assistência" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/50 p-10 flex flex-col justify-end">
@@ -166,48 +164,6 @@ export const Home = () => {
                 <Link to="/assistencia" className="btn-primary w-fit">Acessar Suporte</Link>
               </div>
             </div>
-            <div className="relative h-[400px] rounded-3xl overflow-hidden group">
-              <img src="https://picsum.photos/seed/parts/800/600" alt="Componentes" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-black/50 p-10 flex flex-col justify-end">
-                <h3 className="text-3xl font-black text-white mb-4">COMPONENTES DE REPOSIÇÃO</h3>
-                <p className="text-white/70 mb-6 max-w-sm">Precisa de uma peça específica? Temos um catálogo completo de componentes originais.</p>
-                <Link to="/componentes" className="btn-primary w-fit">Ver Peças</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Blog Section */}
-      <section className="py-20 bg-neutral-bg">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black tracking-tighter mb-4">BLOG LIDERMAQ</h2>
-            <p className="text-primary/60 max-w-2xl mx-auto">Dicas técnicas, manutenção preventiva e as últimas novidades do mercado de equipamentos industriais.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {postsLoading ? (
-              Array(2).fill(0).map((_, i) => (
-                <div key={i} className="h-48 bg-white rounded-3xl animate-pulse shadow-sm" />
-              ))
-            ) : (
-              posts.slice(0, 2).map((post) => (
-                <div key={post.id} className="bg-white rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-md transition-shadow">
-                  <div className="sm:w-1/3 h-48 sm:h-auto">
-                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="p-8 flex-1 flex flex-col justify-center">
-                    <span className="text-accent text-xs font-bold uppercase mb-2">{post.category}</span>
-                    <h3 className="text-xl font-bold mb-4">{post.title}</h3>
-                    <p className="text-sm text-primary/60 mb-6">{post.excerpt}</p>
-                    <Link to={`/blog/${post.id}`} className="text-primary font-bold text-sm flex items-center gap-2 hover:text-accent transition-colors">
-                      Leia mais <ArrowRight size={16} />
-                    </Link>
-                  </div>
-                </div>
-              ))
-            )}
           </div>
         </div>
       </section>

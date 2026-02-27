@@ -127,9 +127,6 @@ export default function App() {
                 />
 
                 <Route path="/assistencia" element={<Assistencia />} />
-                <Route path="/componentes" element={<Home />} />
-                <Route path="/blog" element={<Home />} />
-                <Route path="/blog/:id" element={<Home />} />
               </Routes>
             </main>
             <Footer />

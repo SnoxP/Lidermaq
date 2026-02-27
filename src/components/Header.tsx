@@ -22,7 +22,6 @@ export const Header = () => {
     { name: 'Catálogo', path: '/catalogo' },
     { name: 'Sobre', path: '/sobre' },
     { name: 'Assistência', path: '/assistencia' },
-    { name: 'Blog', path: '/blog' },
     { name: 'Contato', path: '/contato' },
   ];
 
