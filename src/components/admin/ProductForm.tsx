@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { GoogleGenAI } from "@google/genai";
 import { db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { generateOrImproveDescription, identifyProductSector } from '../../services/geminiService';
 
 interface ProductFormProps {
   productId?: string;
@@ -58,13 +58,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     if (!description) return;
     setIsIdentifying(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Com base nesta descrição de produto: "${description}", escolha a categoria mais adequada entre as seguintes: ${availableCategories.join(', ')}. Responda APENAS o nome da categoria.`,
-      });
-      
-      const identified = response.text?.trim();
+      const identified = await identifyProductSector(description);
       if (identified && availableCategories.includes(identified)) {
         setCategory(identified);
       }
@@ -75,25 +69,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     }
   };
 
-  const generateDescription = async () => {
+  const handleAIDescription = async () => {
     if (!name || !brand) {
       alert("Por favor, preencha o nome e a marca do produto primeiro.");
       return;
     }
     setIsGeneratingDesc(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Escreva uma descrição profissional e vendedora para o seguinte produto: "${name}" da marca "${brand}". Destaque a qualidade e durabilidade para uso comercial/industrial. Responda apenas o texto da descrição.`,
-      });
-      
-      const generated = response.text?.trim();
+      const generated = await generateOrImproveDescription(name, brand, description);
       if (generated) {
         setDescription(generated);
       }
     } catch (error) {
-      console.error("Erro ao gerar descrição:", error);
+      console.error("Erro ao processar descrição com IA:", error);
     } finally {
       setIsGeneratingDesc(false);
     }
@@ -129,7 +117,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           createdAt: new Date().toISOString()
         });
       }
-      navigate('/admin/produtos');
+      // Redireciona para o catálogo público para ver o resultado na hora
+      navigate('/catalogo');
     } catch (error) {
       console.error("Erro ao salvar produto:", error);
     } finally {
@@ -210,12 +199,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                 <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 ml-1">Descrição</label>
                 <button 
                   type="button"
-                  onClick={generateDescription}
+                  onClick={handleAIDescription}
                   disabled={isGeneratingDesc || !name || !brand}
                   className="text-accent text-xs font-bold flex items-center gap-1 hover:underline disabled:opacity-50"
                 >
                   <Wand2 size={14} className={isGeneratingDesc ? "animate-pulse" : ""} />
-                  {isGeneratingDesc ? 'Gerando...' : 'Gerar com IA'}
+                  {isGeneratingDesc ? 'Processando...' : (description.length > 10 ? 'Melhorar com IA' : 'Gerar com IA')}
                 </button>
               </div>
               <textarea 

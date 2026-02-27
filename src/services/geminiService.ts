@@ -8,17 +8,30 @@ const getAI = () => {
   return new GoogleGenAI({ apiKey });
 };
 
-export const generateProductDescription = async (productName: string) => {
+export const generateOrImproveDescription = async (name: string, brand: string, existingDescription?: string) => {
   try {
     const ai = getAI();
+    let prompt = "";
+    
+    if (existingDescription && existingDescription.trim().length > 10) {
+      prompt = `Melhore e profissionalize a seguinte descrição de produto para a loja Lidermaq: "${existingDescription}". 
+      O produto é "${name}" da marca "${brand}". 
+      Mantenha um tom persuasivo, técnico e focado em benefícios para o cliente industrial/comercial. 
+      Retorne APENAS o texto da nova descrição melhorada.`;
+    } else {
+      prompt = `Escreva uma descrição profissional, persuasiva e vendedora para o seguinte produto: "${name}" da marca "${brand}". 
+      Destaque a qualidade, durabilidade e eficiência para uso comercial/industrial na loja Lidermaq. 
+      Retorne APENAS o texto da descrição.`;
+    }
+
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `Escreva uma descrição curta e persuasiva para um equipamento chamado "${productName}" da loja Lidermaq. Foque em qualidade, durabilidade e eficiência para o negócio.`,
+      contents: prompt,
     });
     return response.text;
   } catch (error) {
-    console.error("Error generating description:", error);
-    return "Equipamento de alta qualidade com garantia Lidermaq.";
+    console.error("Error generating/improving description:", error);
+    return null;
   }
 };
 

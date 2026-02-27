@@ -57,8 +57,8 @@ export const Header = () => {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-4">
-          <button className="p-2 hover:bg-neutral-bg rounded-full transition-colors hidden sm:block">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button className="p-2 hover:bg-neutral-bg rounded-full transition-colors hidden md:block">
             <Search size={20} />
           </button>
           
@@ -68,9 +68,9 @@ export const Header = () => {
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center hover:bg-accent/20 transition-all"
+                  className="w-9 h-9 sm:w-10 sm:h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center hover:bg-accent/20 transition-all"
                 >
-                  <User size={20} />
+                  <User size={18} />
                 </button>
                 
                 <AnimatePresence>
@@ -115,7 +115,7 @@ export const Header = () => {
                 </AnimatePresence>
               </div>
             ) : (
-              <Link to="/login" className="btn-primary py-2 px-6 text-xs">
+              <Link to="/login" className="btn-primary py-2 px-4 sm:px-6 text-[10px] sm:text-xs">
                 Login
               </Link>
             )}
@@ -126,10 +126,10 @@ export const Header = () => {
             (89) 9999-9999
           </a>
           <button 
-            className="lg:hidden p-2"
+            className="lg:hidden p-2 bg-neutral-bg rounded-xl"
             onClick={() => setIsOpen(!isOpen)}
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
@@ -138,25 +138,46 @@ export const Header = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-t border-neutral-bg overflow-hidden"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 lg:hidden bg-white z-[100] flex flex-col"
           >
-            <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+            <div className="p-6 flex items-center justify-between border-b border-neutral-bg">
+              <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-white font-bold text-lg">L</div>
+                <span className="text-xl font-bold tracking-tighter text-primary">LIDERMAQ</span>
+              </Link>
+              <button onClick={() => setIsOpen(false)} className="p-2 bg-neutral-bg rounded-full">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
+              <p className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em] mb-4">Navegação</p>
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className="text-lg font-medium py-2 border-b border-neutral-bg last:border-0"
+                  className={`text-2xl font-black tracking-tighter py-3 flex items-center justify-between group ${
+                    location.pathname === link.path ? 'text-accent' : 'text-primary'
+                  }`}
                 >
-                  {link.name}
+                  {link.name.toUpperCase()}
+                  <div className={`w-2 h-2 rounded-full bg-accent transition-transform ${location.pathname === link.path ? 'scale-100' : 'scale-0'}`} />
                 </Link>
               ))}
-              <div className="flex flex-col gap-4 mt-4">
-                <a href="https://wa.me/558999999999" className="btn-primary w-full">
-                  WhatsApp
+              
+              <div className="mt-12 pt-12 border-t border-neutral-bg">
+                <p className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em] mb-6">Atendimento</p>
+                <a 
+                  href="https://wa.me/558999999999" 
+                  className="flex items-center justify-between p-6 bg-accent text-white rounded-3xl font-black tracking-tighter text-xl"
+                >
+                  FALAR NO WHATSAPP
+                  <Phone size={24} />
                 </a>
               </div>
             </div>

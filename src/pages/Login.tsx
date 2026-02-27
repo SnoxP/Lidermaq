@@ -8,9 +8,10 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { login, resetPassword } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,6 +20,7 @@ export const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setMessage('');
     setIsLoading(true);
 
     try {
@@ -26,6 +28,30 @@ export const Login = () => {
       navigate(from, { replace: true });
     } catch (err) {
       setError('Falha no login. Verifique suas credenciais.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!email) {
+      setError('Por favor, insira seu e-mail para recuperar a senha.');
+      return;
+    }
+    
+    setError('');
+    setMessage('');
+    setIsLoading(true);
+    
+    try {
+      await resetPassword(email);
+      setMessage('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+    } catch (err: any) {
+      if (err.code === 'auth/user-not-found') {
+        setError('E-mail não encontrado em nossa base.');
+      } else {
+        setError('Erro ao enviar e-mail de recuperação. Tente novamente.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -50,6 +76,13 @@ export const Login = () => {
           </div>
         )}
 
+        {message && (
+          <div className="mb-6 p-4 bg-green-50 text-green-600 rounded-xl flex items-center gap-3 text-sm font-medium">
+            <AlertCircle size={20} className="rotate-180" />
+            {message}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2 ml-1">E-mail</label>
@@ -67,7 +100,16 @@ export const Login = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2 ml-1">Senha</label>
+            <div className="flex items-center justify-between mb-2 ml-1">
+              <label className="block text-xs font-bold uppercase tracking-widest text-primary/40">Senha</label>
+              <button 
+                type="button"
+                onClick={handleResetPassword}
+                className="text-xs font-bold text-accent hover:underline"
+              >
+                Esqueceu a senha?
+              </button>
+            </div>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30" size={20} />
               <input 
@@ -86,7 +128,7 @@ export const Login = () => {
             disabled={isLoading}
             className="w-full btn-primary py-4 text-lg flex justify-center items-center gap-2"
           >
-            {isLoading ? 'Entrando...' : (
+            {isLoading ? 'Processando...' : (
               <>Entrar <LogIn size={20} /></>
             )}
           </button>
