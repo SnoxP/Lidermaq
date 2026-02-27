@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2, AlertCircle, Upload, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../../services/firebase';
+import { auth, db, storage } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { generateOrImproveDescription, identifyProductSector } from '../../services/geminiService';
 
 interface ProductFormProps {
@@ -21,11 +22,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState<number | null>(null);
   
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
+      if (!db) return;
       const querySnapshot = await getDocs(collection(db, 'categories'));
       const cats = querySnapshot.docs.map(doc => doc.data().name);
       if (cats.length === 0) {
@@ -36,7 +40,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     };
 
     const fetchProduct = async () => {
-      if (isEdit && productId) {
+      if (isEdit && productId && db) {
         const productDoc = await getDoc(doc(db, 'products', productId));
         if (productDoc.exists()) {
           const data = productDoc.data();
@@ -53,6 +57,27 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     fetchCategories();
     fetchProduct();
   }, [isEdit, productId]);
+
+  const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !storage) return;
+
+    setIsUploading(index);
+    try {
+      const storageRef = ref(storage, `products/${Date.now()}-${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      
+      const newImages = [...images];
+      newImages[index] = downloadURL;
+      setImages(newImages);
+    } catch (error) {
+      console.error("Erro no upload:", error);
+      alert("Falha ao carregar imagem. Verifique as permissões do Firebase Storage.");
+    } finally {
+      setIsUploading(null);
+    }
+  };
 
   const identifyCategory = async () => {
     if (!description) return;
@@ -261,12 +286,28 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             <div className="space-y-4">
               {images.map((url, index) => (
                 <div key={index} className="flex gap-4 items-center">
-                  <div className="flex-1">
+                  <div className="flex-1 relative">
                     <input 
                       type="url" value={url} onChange={(e) => handleImageChange(index, e.target.value)}
-                      className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                      className="w-full pl-4 pr-12 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                       placeholder="https://link-da-imagem.com/foto.jpg"
                     />
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                      <label className="p-2 hover:bg-white rounded-lg cursor-pointer transition-colors text-accent" title="Upload do dispositivo">
+                        {isUploading === index ? (
+                          <Loader2 size={20} className="animate-spin" />
+                        ) : (
+                          <Upload size={20} />
+                        )}
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={(e) => handleFileUpload(index, e)}
+                          disabled={isUploading !== null}
+                        />
+                      </label>
+                    </div>
                   </div>
                   {images.length > 1 && (
                     <button 

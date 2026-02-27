@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Mail, Eye, EyeOff, Shield, Search, X, Clock, Circle } from 'lucide-react';
+import { Users, Mail, Eye, EyeOff, Shield, Search, X, Clock, Circle, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { db } from '../../services/firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 export const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
+  const [admins, setAdmins] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [showPasswords, setShowPasswords] = useState<{ [key: string]: boolean }>({});
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!db) return;
+
     const q = query(collection(db, 'users'), orderBy('lastSeen', 'desc'));
     
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribeUsers = onSnapshot(q, (querySnapshot) => {
       const userList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsers(userList);
       setIsLoading(false);
@@ -24,8 +27,45 @@ export const UserList = () => {
       setIsLoading(false);
     });
 
-    return () => unsubscribe();
+    const unsubscribeAdmins = onSnapshot(collection(db, 'admins'), (snapshot) => {
+      const adminEmails = snapshot.docs.map(doc => doc.id.toLowerCase());
+      setAdmins(adminEmails);
+    });
+
+    return () => {
+      unsubscribeUsers();
+      unsubscribeAdmins();
+    };
   }, []);
+
+  const toggleAdmin = async (email: string) => {
+    if (!email) return;
+    if (email === "pedronobreneto27@gmail.com") {
+      alert("O administrador mestre não pode ser alterado.");
+      return;
+    }
+
+    const isAdmin = admins.includes(email.toLowerCase());
+    const confirmMsg = isAdmin 
+      ? `Remover privilégios de administrador de ${email}?` 
+      : `Tornar ${email} um administrador?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      if (isAdmin) {
+        await deleteDoc(doc(db, 'admins', email.toLowerCase()));
+      } else {
+        await setDoc(doc(db, 'admins', email.toLowerCase()), {
+          addedAt: new Date().toISOString(),
+          promotedFromList: true
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao alterar privilégios:", error);
+      alert("Erro ao alterar privilégios. Verifique as regras do Firestore.");
+    }
+  };
 
   const togglePassword = (userId: string) => {
     setShowPasswords(prev => ({ ...prev, [userId]: !prev[userId] }));
@@ -73,11 +113,10 @@ export const UserList = () => {
         <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl mb-8 flex items-start gap-4">
           <Shield className="text-amber-500 shrink-0" size={24} />
           <div>
-            <h4 className="font-bold text-amber-800 mb-1">Nota de Segurança sobre Senhas</h4>
+            <h4 className="font-bold text-amber-800 mb-1">Sincronização de Usuários</h4>
             <p className="text-sm text-amber-700 leading-relaxed">
-              Por questões de segurança e privacidade, o Firebase criptografa todas as senhas. 
-              <strong> Não é possível visualizar a senha real de nenhum usuário</strong>, nem mesmo como administrador. 
-              Abaixo, mostramos apenas um indicador simbólico.
+              Os usuários aparecem nesta lista automaticamente **após realizarem o primeiro login** no site. 
+              Se você tem usuários no console do Firebase que não aparecem aqui, peça para que eles façam login uma vez para sincronizar os dados.
             </p>
           </div>
         </div>
@@ -90,7 +129,7 @@ export const UserList = () => {
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4">Nome de Usuário</th>
                   <th className="px-6 py-4">E-mail (Gmail)</th>
-                  <th className="px-6 py-4">Senha</th>
+                  <th className="px-6 py-4">Acesso</th>
                   <th className="px-6 py-4">Último Acesso</th>
                 </tr>
               </thead>
@@ -124,17 +163,20 @@ export const UserList = () => {
                       </td>
                       <td className="px-6 py-4 text-sm text-primary/60">{u.email}</td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-sm tracking-widest">
-                            {showPasswords[u.id] ? '********' : '••••••••'}
-                          </span>
-                          <button 
-                            onClick={() => togglePassword(u.id)}
-                            className="p-2 hover:bg-neutral-bg rounded-lg transition-colors text-primary/40"
-                          >
-                            {showPasswords[u.id] ? <EyeOff size={16} /> : <Eye size={16} />}
-                          </button>
-                        </div>
+                        <button 
+                          onClick={() => toggleAdmin(u.email)}
+                          className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all ${
+                            admins.includes(u.email?.toLowerCase())
+                              ? 'bg-accent text-white'
+                              : 'bg-neutral-bg text-primary/40 hover:bg-accent/10 hover:text-accent'
+                          }`}
+                        >
+                          {admins.includes(u.email?.toLowerCase()) ? (
+                            <><ShieldCheck size={12} /> Admin</>
+                          ) : (
+                            <><ShieldAlert size={12} /> Tornar Admin</>
+                          )}
+                        </button>
                       </td>
                       <td className="px-6 py-4 text-sm text-primary/40">
                         <div className="flex items-center gap-2">

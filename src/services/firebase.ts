@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,6 +17,7 @@ const firebaseConfig = {
 let app: any;
 let auth: any;
 let db: any;
+let storage: any;
 
 try {
   if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined") {
@@ -23,6 +25,7 @@ try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
+    storage = getStorage(app);
 
     // Habilita persistência offline para velocidade e uso sem rede
     if (typeof window !== "undefined") {
@@ -41,4 +44,4 @@ try {
   console.error("Falha na inicialização do Firebase:", error);
 }
 
-export { auth, db };
+export { auth, db, storage };
