@@ -10,6 +10,7 @@ import { Catalog } from './pages/Catalog';
 import { ProductDetail } from './pages/ProductDetail';
 import { Contact } from './pages/Contact';
 import { About } from './pages/About';
+import { Assistencia } from './pages/Assistencia';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
@@ -125,7 +126,7 @@ export default function App() {
                   } 
                 />
 
-                <Route path="/assistencia" element={<Home />} />
+                <Route path="/assistencia" element={<Assistencia />} />
                 <Route path="/componentes" element={<Home />} />
                 <Route path="/blog" element={<Home />} />
                 <Route path="/blog/:id" element={<Home />} />

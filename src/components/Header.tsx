@@ -121,9 +121,9 @@ export const Header = () => {
             )}
           </div>
 
-          <a href="tel:+558999999999" className="hidden xl:flex items-center gap-2 text-sm font-semibold text-accent">
+          <a href="tel:+5589999170800" className="hidden xl:flex items-center gap-2 text-sm font-semibold text-accent">
             <Phone size={18} />
-            (89) 9999-9999
+            (89) 99917-0800
           </a>
           <button 
             className="lg:hidden p-2 bg-neutral-bg rounded-xl"
@@ -173,7 +173,7 @@ export const Header = () => {
               <div className="mt-12 pt-12 border-t border-neutral-bg">
                 <p className="text-[10px] font-black text-primary/30 uppercase tracking-[0.2em] mb-6">Atendimento</p>
                 <a 
-                  href="https://wa.me/558999999999" 
+                  href="https://wa.me/5589999170800" 
                   className="flex items-center justify-between p-6 bg-accent text-white rounded-3xl font-black tracking-tighter text-xl"
                 >
                   FALAR NO WHATSAPP

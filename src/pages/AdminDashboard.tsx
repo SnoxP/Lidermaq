@@ -1,21 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { LayoutDashboard, PackagePlus, Users, Settings, TrendingUp, Package, FileText, Database } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useProducts } from '../hooks/useProducts';
 import { SeedData } from '../components/admin/SeedData';
+import { db } from '../services/firebase';
+import { collection, getDocs, doc, getDoc, setDoc, increment } from 'firebase/firestore';
 
 export const AdminDashboard = () => {
   const { user } = useAuth();
   const { products, loading } = useProducts();
+  const [userCount, setUserCount] = useState<number | string>('...');
+  const [viewCount, setViewCount] = useState<number | string>('...');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!db) return;
+      try {
+        // Fetch User Count
+        const usersSnap = await getDocs(collection(db, 'users'));
+        setUserCount(usersSnap.size);
+
+        // Fetch View Count (from a dedicated stats document)
+        const statsRef = doc(db, 'settings', 'stats');
+        const statsSnap = await getDoc(statsRef);
+        if (statsSnap.exists()) {
+          setViewCount(statsSnap.data().totalViews || 0);
+        } else {
+          // Initialize stats if not exists
+          await setDoc(statsRef, { totalViews: 0 });
+          setViewCount(0);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar estatísticas:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   const stats = [
-    { label: 'Total de Produtos', value: loading ? '...' : products.length, icon: Package, color: 'text-blue-600', bg: 'bg-blue-100' },
-    { label: 'Categorias', value: 6, icon: LayoutDashboard, color: 'text-purple-600', bg: 'bg-purple-100' },
-    { label: 'Visualizações', value: '1.2k', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-    { label: 'Usuários', value: 1, icon: Users, color: 'text-orange-600', bg: 'bg-orange-100' },
+    { label: 'Total de Produtos', value: loading ? '...' : products.length, icon: Package, color: 'text-blue-600', bg: 'bg-blue-100', path: '/admin/produtos' },
+    { label: 'Categorias', value: 6, icon: LayoutDashboard, color: 'text-purple-600', bg: 'bg-purple-100', path: '/admin/categorias' },
+    { label: 'Visualizações', value: viewCount, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+    { label: 'Usuários', value: userCount, icon: Users, color: 'text-orange-600', bg: 'bg-orange-100', path: '/admin/usuarios-registrados' },
   ];
 
   return (
@@ -35,7 +65,8 @@ export const AdminDashboard = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white p-6 rounded-3xl shadow-sm flex items-center gap-6"
+              onClick={() => stat.path && navigate(stat.path)}
+              className={`bg-white p-6 rounded-3xl shadow-sm flex items-center gap-6 ${stat.path ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
             >
               <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
                 <stat.icon size={28} />

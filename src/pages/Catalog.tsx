@@ -1,14 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Filter, Search, ChevronDown } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Filter, Search, ChevronDown, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ProductCard } from '../components/ProductCard';
 import { CATEGORIES } from '../data/mockData';
 import { useProducts } from '../hooks/useProducts';
+import { useAuth } from '../contexts/AuthContext';
 import { SEO } from '../components/SEO';
 
 export const Catalog = () => {
   const { products, loading } = useProducts();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
@@ -74,6 +77,17 @@ export const Catalog = () => {
                   </button>
                 ))}
               </div>
+
+              {user?.isAdmin && (
+                <div className="mt-8 pt-6 border-t border-primary/5">
+                  <button 
+                    onClick={() => navigate('/admin/novo-produto')}
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-accent/10 text-accent rounded-xl font-bold text-sm hover:bg-accent hover:text-white transition-all"
+                  >
+                    <Plus size={18} /> Novo Produto
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

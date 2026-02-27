@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool } from 'lucide-react';
@@ -6,11 +6,34 @@ import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
 import { usePosts } from '../hooks/usePosts';
 import { SEO } from '../components/SEO';
+import { db } from '../services/firebase';
+import { doc, updateDoc, increment, setDoc, getDoc } from 'firebase/firestore';
 
 export const Home = () => {
   const { products, loading: productsLoading } = useProducts();
   const { posts, loading: postsLoading } = usePosts();
   const featuredProducts = products.slice(0, 4);
+
+  useEffect(() => {
+    const incrementViews = async () => {
+      if (!db) return;
+      try {
+        const statsRef = doc(db, 'settings', 'stats');
+        const statsSnap = await getDoc(statsRef);
+        if (statsSnap.exists()) {
+          await updateDoc(statsRef, {
+            totalViews: increment(1)
+          });
+        } else {
+          await setDoc(statsRef, { totalViews: 1 });
+        }
+      } catch (error) {
+        console.error("Erro ao incrementar visualizações:", error);
+      }
+    };
+
+    incrementViews();
+  }, []);
 
   return (
     <div className="pt-20">
@@ -48,7 +71,7 @@ export const Home = () => {
               <Link to="/catalogo" className="btn-primary text-lg px-10">
                 Ver Catálogo <ArrowRight size={20} />
               </Link>
-              <a href="https://wa.me/558999999999" className="btn-secondary border-white text-white hover:bg-white hover:text-primary text-lg px-10">
+              <a href="https://wa.me/5589999170800" className="btn-secondary border-white text-white hover:bg-white hover:text-primary text-lg px-10">
                 <MessageCircle size={20} /> Pedir Orçamento
               </a>
             </div>

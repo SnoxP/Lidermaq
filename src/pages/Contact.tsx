@@ -17,18 +17,22 @@ export const Contact = () => {
               <Phone size={32} />
             </div>
             <h3 className="text-xl font-bold mb-4">Telefone</h3>
-            <p className="text-primary/60 mb-2">(89) 3422-0000</p>
-            <p className="text-primary/60">(89) 3422-1111</p>
+            <p className="text-primary/60 mb-2">(89) 99917-0800 (Jonas)</p>
+            <p className="text-primary/60">(89) 99986-1264 (Lena)</p>
           </div>
           <div className="bg-accent p-10 rounded-3xl text-center text-white">
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-white mx-auto mb-6">
               <MessageCircle size={32} />
             </div>
             <h3 className="text-xl font-bold mb-4">WhatsApp</h3>
-            <p className="text-white/80 mb-6">(89) 99999-9999</p>
-            <a href="https://wa.me/558999999999" className="bg-white text-accent px-8 py-3 rounded-xl font-bold hover:bg-primary hover:text-white transition-all inline-block">
-              Iniciar Conversa
-            </a>
+            <div className="flex flex-col gap-2 mb-6">
+              <a href="https://wa.me/5589999170800" className="bg-white text-accent px-6 py-2 rounded-xl font-bold hover:bg-primary hover:text-white transition-all text-sm">
+                Falar com Jonas
+              </a>
+              <a href="https://wa.me/5589999861264" className="bg-white text-accent px-6 py-2 rounded-xl font-bold hover:bg-primary hover:text-white transition-all text-sm">
+                Falar com Lena
+              </a>
+            </div>
           </div>
           <div className="bg-neutral-bg p-10 rounded-3xl text-center">
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-accent mx-auto mb-6 shadow-sm">
@@ -52,7 +56,7 @@ export const Contact = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-primary/40">WhatsApp / Telefone</label>
-                  <input type="tel" className="w-full px-6 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="(89) 99999-9999" required />
+                  <input type="tel" className="w-full px-6 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="(89) 99917-0800" required />
                 </div>
               </div>
               <div className="space-y-2">

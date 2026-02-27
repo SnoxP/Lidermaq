@@ -50,7 +50,7 @@ export const ProductDetail = () => {
   }
 
   const productImage = product.images?.[0] || product.image || 'https://picsum.photos/seed/lidermaq/800/800';
-  const whatsappUrl = `https://wa.me/558999999999?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${product.name} - Lidermaq`)}`;
+  const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${product.name} - Lidermaq`)}`;
 
   return (
     <div className="pt-32 pb-20">
