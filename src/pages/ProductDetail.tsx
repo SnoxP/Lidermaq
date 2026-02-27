@@ -49,14 +49,14 @@ export const ProductDetail = () => {
     );
   }
 
-  const productImage = product.images?.[0] || 'https://picsum.photos/seed/lidermaq/800/800';
+  const productImage = product.images?.[0] || product.image || 'https://picsum.photos/seed/lidermaq/800/800';
   const whatsappUrl = `https://wa.me/558999999999?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${product.name} - Lidermaq`)}`;
 
   return (
     <div className="pt-32 pb-20">
       <SEO 
-        title={product.name}
-        description={product.description?.substring(0, 160)}
+        title={product.name || 'Produto Lidermaq'}
+        description={product.description?.substring(0, 160) || 'Confira este produto na Lidermaq.'}
         image={productImage}
       />
       <div className="container mx-auto px-4">
@@ -72,13 +72,13 @@ export const ProductDetail = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="aspect-square rounded-3xl overflow-hidden bg-neutral-bg border border-neutral-bg"
             >
-              <img src={productImage} alt={product.name} className="w-full h-full object-cover" />
+              <img src={productImage} alt={product.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </motion.div>
             {product.images?.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
                 {product.images.map((img: string, i: number) => (
                   <div key={i} className="aspect-square rounded-xl overflow-hidden bg-neutral-bg border border-neutral-bg cursor-pointer hover:border-accent transition-all">
-                    <img src={img} alt="Thumb" className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" />
+                    <img src={img} alt="Thumb" className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
                   </div>
                 ))}
               </div>
@@ -89,14 +89,14 @@ export const ProductDetail = () => {
           <div className="flex flex-col">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-accent font-bold uppercase tracking-widest text-sm">{product.category}</span>
+                <span className="text-accent font-bold uppercase tracking-widest text-sm">{product.category || 'Geral'}</span>
                 <span className="w-1 h-1 bg-primary/20 rounded-full" />
-                <span className="text-primary/40 font-bold uppercase tracking-widest text-sm">{product.brand}</span>
+                <span className="text-primary/40 font-bold uppercase tracking-widest text-sm">{product.brand || 'Lidermaq'}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">{product.name}</h1>
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">{product.name || 'Produto sem nome'}</h1>
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-primary">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price || 0)}
                 </span>
                 <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                   <Check size={14} /> Em estoque
@@ -109,7 +109,7 @@ export const ProductDetail = () => {
                   Descrição do Produto
                 </h3>
                 <p className="text-primary/70 leading-relaxed whitespace-pre-line">
-                  {product.description}
+                  {product.description || 'Sem descrição disponível para este produto.'}
                 </p>
               </div>
 

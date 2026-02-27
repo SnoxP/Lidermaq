@@ -25,9 +25,22 @@ export const Login = () => {
 
     try {
       await login(email, password);
-      navigate(from, { replace: true });
-    } catch (err) {
-      setError('Falha no login. Verifique suas credenciais.');
+      // Se houver um redirecionamento pendente (ex: tentou acessar admin sem login)
+      if (location.state?.from) {
+        navigate(from, { replace: true });
+      } else {
+        // Caso contrário, volta para a página anterior ou home
+        navigate(-1);
+      }
+    } catch (err: any) {
+      console.error("Erro no login:", err);
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+        setError('E-mail ou senha incorretos.');
+      } else if (err.code === 'auth/network-request-failed') {
+        setError('Erro de conexão. Verifique sua internet.');
+      } else {
+        setError('Falha no login. Verifique suas credenciais.');
+      }
     } finally {
       setIsLoading(false);
     }

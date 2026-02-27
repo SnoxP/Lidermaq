@@ -97,7 +97,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!auth) throw new Error("Sistema de autenticação não disponível.");
     const result = await signInWithEmailAndPassword(auth, email, password);
     if (result.user) {
-      await syncUserToFirestore(result.user);
+      // Não aguarda a sincronização para não travar o login
+      syncUserToFirestore(result.user).catch(console.error);
     }
   };
 
@@ -106,7 +107,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const result = await createUserWithEmailAndPassword(auth, email, password);
     if (result.user) {
       await updateProfile(result.user, { displayName: name });
-      await syncUserToFirestore(result.user, name);
+      // Não aguarda a sincronização para não travar o cadastro
+      syncUserToFirestore(result.user, name).catch(console.error);
     }
   };
 

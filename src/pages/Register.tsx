@@ -21,9 +21,16 @@ export const Register = () => {
 
     try {
       await register(email, password, name);
-      navigate('/');
-    } catch (err) {
-      setError('Falha no cadastro. Verifique se o e-mail é válido e a senha tem 6+ caracteres.');
+      navigate(-1); // Volta para onde estava
+    } catch (err: any) {
+      console.error("Erro no cadastro:", err);
+      if (err.code === 'auth/email-already-in-use') {
+        setError('Este e-mail já está em uso.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('A senha deve ter pelo menos 6 caracteres.');
+      } else {
+        setError('Falha no cadastro. Verifique os dados e tente novamente.');
+      }
     } finally {
       setIsLoading(false);
     }

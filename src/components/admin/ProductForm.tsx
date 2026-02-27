@@ -98,6 +98,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    // Timeout de segurança para não ficar travado no "Salvando..."
+    const timeoutId = setTimeout(() => {
+      if (isLoading) {
+        setIsLoading(false);
+        alert("A operação está demorando mais que o esperado. Verifique sua conexão ou as regras do Firebase.");
+      }
+    }, 10000);
+
     try {
       const productData = {
         name,
@@ -105,7 +114,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         brand,
         description,
         category,
+        image: images.filter(img => img !== '')[0] || '',
         images: images.filter(img => img !== ''),
+        installments: `10x de R$ ${(parseFloat(price) / 10).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+        available: true,
         updatedAt: new Date().toISOString()
       };
 
@@ -117,10 +129,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           createdAt: new Date().toISOString()
         });
       }
+      
+      clearTimeout(timeoutId);
       // Redireciona para o catálogo público para ver o resultado na hora
       navigate('/catalogo');
-    } catch (error) {
+    } catch (error: any) {
+      clearTimeout(timeoutId);
       console.error("Erro ao salvar produto:", error);
+      alert(`Erro ao salvar: ${error.message || "Verifique as permissões do banco de dados."}`);
     } finally {
       setIsLoading(false);
     }

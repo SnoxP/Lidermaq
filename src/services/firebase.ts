@@ -19,6 +19,7 @@ let db: any;
 
 try {
   if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined") {
+    console.log("Iniciando Firebase com o projeto:", firebaseConfig.projectId);
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
@@ -34,10 +35,10 @@ try {
       });
     }
   } else {
-    console.warn("Firebase API Key is missing. App will run in limited mode.");
+    console.error("ERRO CRÍTICO: Chave de API do Firebase não encontrada no .env");
   }
 } catch (error) {
-  console.error("Firebase initialization failed:", error);
+  console.error("Falha na inicialização do Firebase:", error);
 }
 
 export { auth, db };
