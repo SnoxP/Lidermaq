@@ -34,11 +34,11 @@ export const Header = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 overflow-hidden rounded-lg">
+          <div className="w-12 h-12 overflow-hidden">
             <img 
-              src="https://picsum.photos/seed/lidermaq-logo/100/100" 
+              src="https://i.imgur.com/muVpHcv.png" 
               alt="Lidermaq Logo" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
               referrerPolicy="no-referrer"
             />
           </div>
@@ -152,11 +152,11 @@ export const Header = () => {
           >
             <div className="p-6 flex items-center justify-between border-b border-neutral-bg">
               <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                <div className="w-8 h-8 overflow-hidden rounded-lg">
+                <div className="w-10 h-10 overflow-hidden">
                   <img 
-                    src="https://picsum.photos/seed/lidermaq-logo/100/100" 
+                    src="https://i.imgur.com/muVpHcv.png" 
                     alt="Lidermaq Logo" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     referrerPolicy="no-referrer"
                   />
                 </div>

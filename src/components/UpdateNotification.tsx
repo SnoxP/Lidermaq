@@ -4,18 +4,35 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export const UpdateNotification = () => {
   const [show, setShow] = useState(false);
+  const CURRENT_VERSION = "1.0.0"; // Versão atual desta instância do código
 
   useEffect(() => {
-    // Simula a detecção de uma atualização após 5 segundos
-    // Em um cenário real, isso seria disparado por um Service Worker ou WebSocket
-    const timer = setTimeout(() => {
-      const hasSeenUpdate = sessionStorage.getItem('update_notified');
-      if (!hasSeenUpdate) {
-        setShow(true);
+    const checkUpdate = async () => {
+      try {
+        // Busca o arquivo de versão no servidor
+        const response = await fetch('/version.json?t=' + Date.now());
+        if (response.ok) {
+          const data = await response.json();
+          // Se a versão no servidor for diferente da versão atual no código
+          if (data.version !== CURRENT_VERSION) {
+            setShow(true);
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao verificar atualizações:", error);
       }
-    }, 5000);
+    };
 
-    return () => clearTimeout(timer);
+    // Verifica a cada 30 segundos
+    const interval = setInterval(checkUpdate, 30000);
+    
+    // Verifica também na montagem (com um pequeno delay)
+    const initialTimer = setTimeout(checkUpdate, 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(initialTimer);
+    };
   }, []);
 
   const handleReload = () => {
