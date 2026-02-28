@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Package, MessageSquare, User, LayoutDashboard } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
 export const MobileHUD = () => {
@@ -21,7 +20,7 @@ export const MobileHUD = () => {
   }
 
   return (
-    <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-sm">
+    <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-xs">
       <div className="bg-white/95 backdrop-blur-3xl border border-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.2)] rounded-[2rem] p-1 flex items-center justify-around">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -29,21 +28,17 @@ export const MobileHUD = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl transition-all duration-500 ease-out ${
+              className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl transition-all duration-300 ${
                 isActive 
-                  ? 'bg-accent text-white shadow-lg shadow-accent/30 flex-[1.5]' 
-                  : 'text-primary/40 hover:text-primary/70'
+                  ? 'bg-accent text-white shadow-lg shadow-accent/30 flex-[1.4]' 
+                  : 'text-primary/40 hover:text-primary/70 flex-1'
               }`}
             >
-              <item.icon size={isActive ? 20 : 18} strokeWidth={isActive ? 2.5 : 2} />
+              <item.icon size={isActive ? 18 : 16} strokeWidth={isActive ? 2.5 : 2} />
               {isActive && (
-                <motion.span 
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-[8px] font-black uppercase tracking-widest mt-1"
-                >
+                <span className="text-[7px] font-black uppercase tracking-widest mt-1">
                   {item.label}
-                </motion.span>
+                </span>
               )}
             </Link>
           );

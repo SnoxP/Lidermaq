@@ -57,10 +57,12 @@ export const Home = () => {
             <span className="inline-block bg-accent text-white text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6">
               Qualidade & Tradição
             </span>
-            <h1 className="text-4xl md:text-6xl font-black text-white leading-[0.9] mb-6 tracking-tighter">
-              <span className="block mb-2">MÁQUINAS E</span>
+            <h1 className="text-[2.6rem] sm:text-5xl md:text-7xl font-black text-white leading-[0.85] mb-6 tracking-tighter">
+              <span className="block">MÁQUINAS E</span>
               <span className="block mb-4">EQUIPAMENTOS DE</span>
-              <span className="text-accent text-2xl md:text-4xl block leading-tight">PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.</span>
+              <span className="text-accent text-[1.4rem] sm:text-3xl md:text-5xl block leading-[1] mt-2">
+                PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.
+              </span>
             </h1>
             <p className="text-xl text-white/70 mb-10 max-w-xl leading-relaxed">
               A Lidermaq é uma empresa sediada em Picos, especializada na comercialização de máquinas, equipamentos e soluções voltadas para os setores de alimentação, panificação, supermercados e empreendimentos comerciais em geral.

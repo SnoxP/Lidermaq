@@ -42,7 +42,7 @@ export const Header = () => {
               referrerPolicy="no-referrer"
             />
           </div>
-          <span className={`text-2xl font-bold tracking-tighter ${scrolled ? 'text-primary' : 'text-primary'}`}>
+          <span className={`text-xl sm:text-2xl font-bold tracking-tighter ${scrolled ? 'text-primary' : 'text-primary'}`}>
             LIDERMAQ
           </span>
         </Link>
