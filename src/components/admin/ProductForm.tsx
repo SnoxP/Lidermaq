@@ -19,7 +19,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [variants, setVariants] = useState<{ name: string; price: string; image?: string; description?: string }[]>([]);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState<number | null>(null);
+  const [isUploading, setIsUploading] = useState<string | null>(null);
   
   const navigate = useNavigate();
   const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
@@ -60,13 +60,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     fetchProduct();
   }, [isEdit, productId]);
 
-  const uploadFile = async (index: number, file: File) => {
+  const uploadFile = async (uploadId: string, file: File, onSuccess: (url: string) => void) => {
     if (!IMGBB_API_KEY || IMGBB_API_KEY === "sua_chave_aqui") {
       alert("Chave de API do ImgBB não configurada. Por favor, adicione VITE_IMGBB_API_KEY ao seu .env");
       return;
     }
 
-    setIsUploading(index);
+    setIsUploading(uploadId);
     try {
       const formData = new FormData();
       formData.append('image', file);
@@ -79,9 +79,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
       const data = await response.json();
 
       if (data.success) {
-        const newImages = [...images];
-        newImages[index] = data.data.url;
-        setImages(newImages);
+        onSuccess(data.data.url);
       } else {
         throw new Error(data.error?.message || "Erro no upload");
       }
@@ -96,7 +94,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    await uploadFile(index, file);
+    await uploadFile(`main-${index}`, file, (url) => {
+      const newImages = [...images];
+      newImages[index] = url;
+      setImages(newImages);
+    });
   };
 
   const handlePaste = async (index: number, e: React.ClipboardEvent) => {
@@ -108,7 +110,37 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         const file = items[i].getAsFile();
         if (file) {
           e.preventDefault();
-          await uploadFile(index, file);
+          await uploadFile(`main-${index}`, file, (url) => {
+            const newImages = [...images];
+            newImages[index] = url;
+            setImages(newImages);
+          });
+          break;
+        }
+      }
+    }
+  };
+
+  const handleVariantFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await uploadFile(`variant-${index}`, file, (url) => {
+      handleVariantChange(index, 'image', url);
+    });
+  };
+
+  const handleVariantPaste = async (index: number, e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          e.preventDefault();
+          await uploadFile(`variant-${index}`, file, (url) => {
+            handleVariantChange(index, 'image', url);
+          });
           break;
         }
       }
@@ -306,11 +338,33 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Link da Imagem (Opcional)</label>
-                    <input 
-                      type="url" value={variant.image || ''} onChange={(e) => handleVariantChange(index, 'image', e.target.value)}
-                      className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
-                      placeholder="https://..."
-                    />
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30">
+                        <LinkIcon size={16} />
+                      </div>
+                      <input 
+                        type="url" value={variant.image || ''} onChange={(e) => handleVariantChange(index, 'image', e.target.value)}
+                        onPaste={(e) => handleVariantPaste(index, e)}
+                        className="w-full pl-10 pr-12 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        placeholder="Cole o link ou pressione Ctrl+V"
+                      />
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                        <label className="p-2 hover:bg-neutral-bg rounded-lg cursor-pointer transition-colors text-accent flex items-center justify-center" title="Upload">
+                          {isUploading === `variant-${index}` ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : (
+                            <Upload size={16} />
+                          )}
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            className="hidden" 
+                            onChange={(e) => handleVariantFileUpload(index, e)}
+                            disabled={isUploading !== null}
+                          />
+                        </label>
+                      </div>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Descrição da Variação (Opcional)</label>
@@ -359,7 +413,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                       <label className="p-2 hover:bg-white rounded-lg cursor-pointer transition-colors text-accent group" title="Upload do dispositivo (Grátis via ImgBB)">
-                        {isUploading === index ? (
+                        {isUploading === `main-${index}` ? (
                           <Loader2 size={20} className="animate-spin" />
                         ) : (
                           <div className="flex items-center gap-1">
