@@ -1,14 +1,18 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Edit2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../data/mockData';
+import { useAuth } from '../contexts/AuthContext';
 
 export interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = memo(({ product }) => {
+  const { user } = useAuth();
+  const isAdmin = user?.isAdmin;
+
   return (
     <motion.div 
       whileHover={{ y: -10 }}
@@ -53,12 +57,23 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product }) => {
             </span>
           </div>
           
-          <Link 
-            to={`/produto/${product.id}`}
-            className="w-10 h-10 bg-neutral-bg rounded-full flex items-center justify-center text-primary hover:bg-accent hover:text-white transition-all"
-          >
-            <ArrowRight size={20} />
-          </Link>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <Link 
+                to={`/admin/editar-produto/${product.id}`}
+                className="w-10 h-10 bg-neutral-bg rounded-full flex items-center justify-center text-primary hover:bg-accent hover:text-white transition-all"
+                title="Editar Produto"
+              >
+                <Edit2 size={18} />
+              </Link>
+            )}
+            <Link 
+              to={`/produto/${product.id}`}
+              className="w-10 h-10 bg-neutral-bg rounded-full flex items-center justify-center text-primary hover:bg-accent hover:text-white transition-all"
+            >
+              <ArrowRight size={20} />
+            </Link>
+          </div>
         </div>
       </div>
     </motion.div>

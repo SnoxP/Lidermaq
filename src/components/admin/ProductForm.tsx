@@ -343,8 +343,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                         <LinkIcon size={16} />
                       </div>
                       <input 
-                        type="url" value={variant.image || ''} onChange={(e) => handleVariantChange(index, 'image', e.target.value)}
-                        onPaste={(e) => handleVariantPaste(index, e)}
+                        type="text" value={variant.image || ''} onChange={(e) => handleVariantChange(index, 'image', e.target.value)}
+                        onPaste={(e) => {
+                          console.log("Paste detected on variant", index);
+                          handleVariantPaste(index, e);
+                        }}
                         className="w-full pl-10 pr-12 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         placeholder="Cole o link ou pressione Ctrl+V"
                       />
@@ -406,8 +409,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                       <LinkIcon size={18} />
                     </div>
                     <input 
-                      type="url" value={url} onChange={(e) => handleImageChange(index, e.target.value)}
-                      onPaste={(e) => handlePaste(index, e)}
+                      type="text" value={url} onChange={(e) => handleImageChange(index, e.target.value)}
+                      onPaste={(e) => {
+                        console.log("Paste detected on main", index);
+                        handlePaste(index, e);
+                      }}
                       className="w-full pl-12 pr-12 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                       placeholder="Cole o link ou pressione Ctrl+V para colar uma imagem"
                     />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Mail, Eye, EyeOff, Shield, Search, X, Clock, Circle, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Users, Mail, Eye, EyeOff, Shield, Search, X, Clock, Circle, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
 import { db } from '../../services/firebase';
 import { collection, onSnapshot, query, orderBy, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -40,12 +40,13 @@ export const UserList = () => {
 
   const toggleAdmin = async (email: string) => {
     if (!email) return;
-    if (email === "pedronobreneto27@gmail.com") {
+    const lowerEmail = email.toLowerCase();
+    if (lowerEmail === "pedronobreneto27@gmail.com") {
       alert("O administrador mestre não pode ser alterado.");
       return;
     }
 
-    const isAdmin = admins.includes(email.toLowerCase());
+    const isAdmin = admins.includes(lowerEmail);
     const confirmMsg = isAdmin 
       ? `Remover privilégios de administrador de ${email}?` 
       : `Tornar ${email} um administrador?`;
@@ -54,9 +55,9 @@ export const UserList = () => {
 
     try {
       if (isAdmin) {
-        await deleteDoc(doc(db, 'admins', email.toLowerCase()));
+        await deleteDoc(doc(db, 'admins', lowerEmail));
       } else {
-        await setDoc(doc(db, 'admins', email.toLowerCase()), {
+        await setDoc(doc(db, 'admins', lowerEmail), {
           addedAt: new Date().toISOString(),
           promotedFromList: true
         });
@@ -64,6 +65,30 @@ export const UserList = () => {
     } catch (error) {
       console.error("Erro ao alterar privilégios:", error);
       alert("Erro ao alterar privilégios. Verifique as regras do Firestore.");
+    }
+  };
+
+  const deleteUser = async (userId: string, email: string) => {
+    if (email?.toLowerCase() === "pedronobreneto27@gmail.com") {
+      alert("O administrador mestre não pode ser removido.");
+      return;
+    }
+
+    if (!confirm(`Tem certeza que deseja remover o usuário ${email} do banco de dados? Esta ação não pode ser desfeita.`)) return;
+
+    try {
+      // Remove do cadastro de usuários
+      await deleteDoc(doc(db, 'users', userId));
+      
+      // Se for admin, remove também da lista de admins
+      if (admins.includes(email.toLowerCase())) {
+        await deleteDoc(doc(db, 'admins', email.toLowerCase()));
+      }
+      
+      alert("Usuário removido com sucesso.");
+    } catch (error) {
+      console.error("Erro ao remover usuário:", error);
+      alert("Erro ao remover usuário. Verifique as permissões.");
     }
   };
 
@@ -131,6 +156,7 @@ export const UserList = () => {
                   <th className="px-6 py-4">E-mail (Gmail)</th>
                   <th className="px-6 py-4">Acesso</th>
                   <th className="px-6 py-4">Último Acesso</th>
+                  <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-bg">
@@ -183,6 +209,16 @@ export const UserList = () => {
                           <Clock size={14} />
                           {formatLastSeen(u.lastSeen)}
                         </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button 
+                          onClick={() => deleteUser(u.id, u.email)}
+                          disabled={u.email?.toLowerCase() === "pedronobreneto27@gmail.com"}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-20 disabled:hover:bg-transparent"
+                          title="Remover Usuário"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </td>
                     </tr>
                   ))
