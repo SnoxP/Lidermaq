@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PackagePlus, Image as ImageIcon, Sparkles, Save, X, Plus, Wand2, AlertCircle, Upload, Loader2, Link as LinkIcon } from 'lucide-react';
+import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { generateOrImproveDescription, identifyProductSector } from '../../services/geminiService';
 
 interface ProductFormProps {
   productId?: string;
@@ -18,8 +17,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [category, setCategory] = useState('');
   const [images, setImages] = useState<string[]>(['']);
   const [variants, setVariants] = useState<{ name: string; price: string; image?: string; description?: string }[]>([]);
-  const [isIdentifying, setIsIdentifying] = useState(false);
-  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState<number | null>(null);
@@ -63,10 +60,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     fetchProduct();
   }, [isEdit, productId]);
 
-  const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const uploadFile = async (index: number, file: File) => {
     if (!IMGBB_API_KEY || IMGBB_API_KEY === "sua_chave_aqui") {
       alert("Chave de API do ImgBB não configurada. Por favor, adicione VITE_IMGBB_API_KEY ao seu .env");
       return;
@@ -99,36 +93,25 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     }
   };
 
-  const identifyCategory = async () => {
-    if (!description) return;
-    setIsIdentifying(true);
-    try {
-      const identified = await identifyProductSector(description);
-      if (identified && availableCategories.includes(identified)) {
-        setCategory(identified);
-      }
-    } catch (error) {
-      console.error("Erro ao identificar categoria:", error);
-    } finally {
-      setIsIdentifying(false);
-    }
+  const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await uploadFile(index, file);
   };
 
-  const handleAIDescription = async () => {
-    if (!name || !brand) {
-      alert("Por favor, preencha o nome e a marca do produto primeiro.");
-      return;
-    }
-    setIsGeneratingDesc(true);
-    try {
-      const generated = await generateOrImproveDescription(name, brand, description);
-      if (generated) {
-        setDescription(generated);
+  const handlePaste = async (index: number, e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          e.preventDefault();
+          await uploadFile(index, file);
+          break;
+        }
       }
-    } catch (error) {
-      console.error("Erro ao processar descrição com IA:", error);
-    } finally {
-      setIsGeneratingDesc(false);
     }
   };
 
@@ -254,47 +237,27 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2">Categoria</label>
-                <div className="flex gap-2">
-                  <select 
-                    required value={category} onChange={(e) => setCategory(e.target.value)}
-                    className="flex-1 px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 appearance-none"
-                  >
-                    <option value="">Selecione...</option>
-                    {availableCategories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                  <button 
-                    type="button"
-                    onClick={identifyCategory}
-                    disabled={isIdentifying || !description}
-                    className="px-4 bg-accent/10 text-accent rounded-xl hover:bg-accent/20 transition-all flex items-center gap-2 disabled:opacity-50"
-                    title="Identificar categoria com IA"
-                  >
-                    <Sparkles size={20} className={isIdentifying ? "animate-pulse" : ""} />
-                  </button>
-                </div>
+                <select 
+                  required value={category} onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 appearance-none"
+                >
+                  <option value="">Selecione...</option>
+                  {availableCategories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 ml-1">Descrição</label>
-                <button 
-                  type="button"
-                  onClick={handleAIDescription}
-                  disabled={isGeneratingDesc || !name || !brand}
-                  className="text-accent text-xs font-bold flex items-center gap-1 hover:underline disabled:opacity-50"
-                >
-                  <Wand2 size={14} className={isGeneratingDesc ? "animate-pulse" : ""} />
-                  {isGeneratingDesc ? 'Processando...' : (description.length > 10 ? 'Melhorar com IA' : 'Gerar com IA')}
-                </button>
               </div>
               <textarea 
                 required value={description} onChange={(e) => setDescription(e.target.value)}
                 rows={6}
                 className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
-                placeholder="Descreva o produto detalhadamente ou use a IA para gerar uma descrição..."
+                placeholder="Descreva o produto detalhadamente..."
               />
             </div>
           </div>
@@ -390,8 +353,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                     </div>
                     <input 
                       type="url" value={url} onChange={(e) => handleImageChange(index, e.target.value)}
+                      onPaste={(e) => handlePaste(index, e)}
                       className="w-full pl-12 pr-12 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
-                      placeholder="https://link-da-imagem.com/foto.jpg"
+                      placeholder="Cole o link ou pressione Ctrl+V para colar uma imagem"
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                       <label className="p-2 hover:bg-white rounded-lg cursor-pointer transition-colors text-accent group" title="Upload do dispositivo (Grátis via ImgBB)">

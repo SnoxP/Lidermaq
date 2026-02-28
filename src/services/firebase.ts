@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { 
+  getFirestore, 
+  initializeFirestore, 
+  persistentLocalCache, 
+  persistentMultipleTabManager 
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -24,19 +29,15 @@ try {
     console.log("Iniciando Firebase com o projeto:", firebaseConfig.projectId);
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
-    db = getFirestore(app);
-    storage = getStorage(app);
+    
+    // Inicializa Firestore com o novo sistema de cache persistente (substitui enableIndexedDbPersistence)
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+      })
+    });
 
-    // Habilita persistência offline para velocidade e uso sem rede
-    if (typeof window !== "undefined") {
-      enableIndexedDbPersistence(db).catch((err) => {
-        if (err.code === 'failed-precondition') {
-          console.warn("Persistência falhou: múltiplas abas abertas.");
-        } else if (err.code === 'unimplemented') {
-          console.warn("Persistência não suportada pelo navegador.");
-        }
-      });
-    }
+    storage = getStorage(app);
   } else {
     console.error("ERRO CRÍTICO: Chave de API do Firebase não encontrada no .env");
   }

@@ -161,7 +161,7 @@ export const Home = () => {
           <div className="max-w-4xl mx-auto">
             <div className="relative h-[450px] rounded-3xl overflow-hidden group">
               <div className="absolute inset-0 flex">
-                <div className="w-1/2 h-full overflow-hidden">
+                <div className="w-full md:w-1/2 h-full overflow-hidden">
                   <img 
                     src="https://instagram.fpcs1-1.fna.fbcdn.net/v/t51.82787-15/620411273_18146125075456641_4993748442091467742_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&ig_cache_key=MzgxNDMwOTY2NjUwODMzNjU3OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEyMDB4MTYwMC5zZHIuQzMifQ%3D%3D&_nc_ohc=675IQzFTHbsQ7kNvwFhu6l9&_nc_oc=Adl-wzX8K8w18AfmjAhw8rYAy_wc9dz_eYzBJ011UOOKa8xaW1uULZ6n5dnPzHCwi3f0U2ep2Q0G42D0BfJY8ksL&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fpcs1-1.fna&_nc_gid=iUlULu96D3mN5gx8kZntcg&_nc_ss=8&oh=00_AfuXXnC6ek3SeufqkW8nVLxL0_03Ssc9e_QW2TIEaszRlA&oe=69A8C392" 
                     alt="Prateleiras" 
@@ -169,7 +169,7 @@ export const Home = () => {
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <div className="w-1/2 h-full overflow-hidden">
+                <div className="hidden md:block md:w-1/2 h-full overflow-hidden">
                   <img 
                     src="https://instagram.fpcs1-1.fna.fbcdn.net/v/t51.82787-15/619239102_18146114566456641_4781227247150010144_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=109&ig_cache_key=MzgxNDIzNzA1NjQ0NTUzMTg2Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEyMDB4MTYwMC5zZHIuQzMifQ%3D%3D&_nc_ohc=A8d1Ln1vcBgQ7kNvwGzPw7j&_nc_oc=AdmJf0duO_l_ze5x1vI5g7HCLHGm7wEGEOs8NQWO12XLWJfJHMn4xTK430zjiq83jXbakPHfN9ZaZqsFwj_I2MJY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fpcs1-1.fna&_nc_gid=iUlULu96D3mN5gx8kZntcg&_nc_ss=8&oh=00_Afs4e_tZwMgIiJxjTCzfmYwPjGUrVpeMZCmyvj0jkQDZAA&oe=69A8C470" 
                     alt="Freezers" 
