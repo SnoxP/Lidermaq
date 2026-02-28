@@ -17,7 +17,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [images, setImages] = useState<string[]>(['']);
-  const [variants, setVariants] = useState<{ name: string; price: string; image?: string }[]>([]);
+  const [variants, setVariants] = useState<{ name: string; price: string; image?: string; description?: string }[]>([]);
   const [isIdentifying, setIsIdentifying] = useState(false);
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
@@ -140,9 +140,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     setImages(newImages);
   };
 
-  const handleAddVariant = () => setVariants([...variants, { name: '', price: '' }]);
+  const handleAddVariant = () => setVariants([...variants, { name: '', price: '', description: '' }]);
   const handleRemoveVariant = (index: number) => setVariants(variants.filter((_, i) => i !== index));
-  const handleVariantChange = (index: number, field: 'name' | 'price' | 'image', value: string) => {
+  const handleVariantChange = (index: number, field: 'name' | 'price' | 'image' | 'description', value: string) => {
     const newVariants = [...variants];
     newVariants[index] = { ...newVariants[index], [field]: value };
     setVariants(newVariants);
@@ -347,6 +347,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                       type="url" value={variant.image || ''} onChange={(e) => handleVariantChange(index, 'image', e.target.value)}
                       className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                       placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Descrição da Variação (Opcional)</label>
+                    <textarea 
+                      value={variant.description || ''} onChange={(e) => handleVariantChange(index, 'description', e.target.value)}
+                      rows={3}
+                      className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                      placeholder="Se vazio, usará a descrição principal..."
                     />
                   </div>
                 </div>

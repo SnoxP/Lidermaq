@@ -53,6 +53,7 @@ export const ProductDetail = () => {
   const productImage = selectedVariant?.image || product.images?.[0] || product.image || 'https://picsum.photos/seed/lidermaq/800/800';
   const productPrice = selectedVariant?.price || product.price || 0;
   const productName = selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name;
+  const productDescription = selectedVariant?.description || product.description || 'Sem descrição disponível para este produto.';
   const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${productName} - Lidermaq`)}`;
 
   return (
@@ -143,7 +144,7 @@ export const ProductDetail = () => {
                   Descrição do Produto
                 </h3>
                 <p className="text-primary/70 leading-relaxed whitespace-pre-line">
-                  {product.description || 'Sem descrição disponível para este produto.'}
+                  {productDescription}
                 </p>
               </div>
 

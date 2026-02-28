@@ -5,6 +5,7 @@
   --color-primary: #1a1a1a;
   --color-accent: #f27d26; /* Laranja Lidermaq */
   --color-neutral-bg: #f5f5f5;
+  --animate-spin-slow: spin 3s linear infinite;
 }
 
 @layer base {
