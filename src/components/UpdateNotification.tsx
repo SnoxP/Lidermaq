@@ -8,19 +8,18 @@ export const UpdateNotification = () => {
 
   useEffect(() => {
     const checkUpdate = async () => {
-      // Se o usuário já fechou o aviso nesta sessão, não mostra de novo
-      if (sessionStorage.getItem('update_dismissed')) return;
-
       try {
-        // Busca o arquivo de versão no servidor
         const response = await fetch('/version.json?t=' + Date.now(), {
-          cache: 'no-store' // Garante que não pegue do cache do navegador
+          cache: 'no-store'
         });
         
         if (response.ok) {
           const data = await response.json();
-          // Se a versão no servidor for diferente da versão atual no código
-          if (data.version && data.version !== CURRENT_VERSION) {
+          // Verifica se a versão do servidor é diferente da atual
+          // E se o usuário já não descartou ESTA versão específica
+          const lastDismissed = localStorage.getItem('last_dismissed_version');
+          
+          if (data.version && data.version !== CURRENT_VERSION && lastDismissed !== data.version) {
             setShow(true);
           }
         }
@@ -42,8 +41,16 @@ export const UpdateNotification = () => {
   }, []);
 
   const handleDismiss = () => {
-    sessionStorage.setItem('update_dismissed', 'true');
-    setShow(false);
+    // Busca a versão atual do servidor para marcar como descartada
+    fetch('/version.json?t=' + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        if (data.version) {
+          localStorage.setItem('last_dismissed_version', data.version);
+        }
+        setShow(false);
+      })
+      .catch(() => setShow(false));
   };
 
   const handleReload = () => {

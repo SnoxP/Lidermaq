@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Package, MessageSquare, User, LayoutDashboard } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
 export const MobileHUD = () => {
@@ -20,24 +21,30 @@ export const MobileHUD = () => {
   }
 
   return (
-    <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md">
-      <div className="bg-white/90 backdrop-blur-2xl border border-white/40 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2.5rem] p-1.5 flex items-center justify-between">
+    <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-sm">
+      <div className="bg-white/95 backdrop-blur-3xl border border-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.2)] rounded-[2rem] p-1 flex items-center justify-around">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex flex-col items-center justify-center flex-1 py-3 px-1 rounded-[2rem] transition-all duration-300 ${
+              className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl transition-all duration-500 ease-out ${
                 isActive 
-                  ? 'bg-accent text-white shadow-lg shadow-accent/30 scale-105' 
-                  : 'text-primary/30 hover:text-primary/60'
+                  ? 'bg-accent text-white shadow-lg shadow-accent/30 flex-[1.5]' 
+                  : 'text-primary/40 hover:text-primary/70'
               }`}
             >
-              <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-              <span className={`text-[9px] font-bold uppercase tracking-tighter mt-1 transition-opacity ${isActive ? 'opacity-100' : 'opacity-60'}`}>
-                {item.label}
-              </span>
+              <item.icon size={isActive ? 20 : 18} strokeWidth={isActive ? 2.5 : 2} />
+              {isActive && (
+                <motion.span 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-[8px] font-black uppercase tracking-widest mt-1"
+                >
+                  {item.label}
+                </motion.span>
+              )}
             </Link>
           );
         })}
