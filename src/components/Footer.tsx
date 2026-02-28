@@ -80,7 +80,7 @@ export const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
-          <p>© 2026 Lidermaq Móveis. CNPJ: 00.000.000/0001-00. Todos os direitos reservados.</p>
+          <p>© 2026 Lidermaq Móveis. CNPJ: 19.743.850/0001-08. Todos os direitos reservados.</p>
           <p>Desenvolvido por <a href="#" className="hover:text-white transition-colors underline">Sua Agência</a></p>
         </div>
       </div>
