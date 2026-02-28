@@ -4,17 +4,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export const UpdateNotification = () => {
   const [show, setShow] = useState(false);
-  const CURRENT_VERSION = "1.0.0"; // Versão atual desta instância do código
+  const CURRENT_VERSION = "1.0.2"; // Versão atual desta instância do código
 
   useEffect(() => {
     const checkUpdate = async () => {
+      // Se o usuário já fechou o aviso nesta sessão, não mostra de novo
+      if (sessionStorage.getItem('update_dismissed')) return;
+
       try {
         // Busca o arquivo de versão no servidor
-        const response = await fetch('/version.json?t=' + Date.now());
+        const response = await fetch('/version.json?t=' + Date.now(), {
+          cache: 'no-store' // Garante que não pegue do cache do navegador
+        });
+        
         if (response.ok) {
           const data = await response.json();
           // Se a versão no servidor for diferente da versão atual no código
-          if (data.version !== CURRENT_VERSION) {
+          if (data.version && data.version !== CURRENT_VERSION) {
             setShow(true);
           }
         }
@@ -35,8 +41,12 @@ export const UpdateNotification = () => {
     };
   }, []);
 
+  const handleDismiss = () => {
+    sessionStorage.setItem('update_dismissed', 'true');
+    setShow(false);
+  };
+
   const handleReload = () => {
-    sessionStorage.setItem('update_notified', 'true');
     window.location.reload();
   };
 
@@ -60,7 +70,7 @@ export const UpdateNotification = () => {
                   <p className="text-white/60 text-sm">Nova versão disponível.</p>
                 </div>
               </div>
-              <button onClick={() => setShow(false)} className="text-white/40 hover:text-white">
+              <button onClick={handleDismiss} className="text-white/40 hover:text-white">
                 <X size={20} />
               </button>
             </div>
