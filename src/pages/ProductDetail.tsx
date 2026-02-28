@@ -106,17 +106,24 @@ export const ProductDetail = () => {
                       onClick={() => setSelectedVariant(null)}
                       className={`px-4 py-2 rounded-xl border-2 transition-all font-bold text-sm ${!selectedVariant ? 'border-accent bg-accent/5 text-accent' : 'border-neutral-bg hover:border-accent/30'}`}
                     >
-                      Padrão
+                      {!selectedVariant || product.name.length <= 20 
+                        ? product.name 
+                        : `${product.name.substring(0, 20)}...`}
                     </button>
-                    {product.variants.map((v: any, i: number) => (
-                      <button 
-                        key={i}
-                        onClick={() => setSelectedVariant(v)}
-                        className={`px-4 py-2 rounded-xl border-2 transition-all font-bold text-sm ${selectedVariant === v ? 'border-accent bg-accent/5 text-accent' : 'border-neutral-bg hover:border-accent/30'}`}
-                      >
-                        {v.name}
-                      </button>
-                    ))}
+                    {product.variants.map((v: any, i: number) => {
+                      const isActive = selectedVariant === v;
+                      return (
+                        <button 
+                          key={i}
+                          onClick={() => setSelectedVariant(v)}
+                          className={`px-4 py-2 rounded-xl border-2 transition-all font-bold text-sm ${isActive ? 'border-accent bg-accent/5 text-accent' : 'border-neutral-bg hover:border-accent/30'}`}
+                        >
+                          {isActive || v.name.length <= 20 
+                            ? v.name 
+                            : `${v.name.substring(0, 20)}...`}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
