@@ -63,7 +63,7 @@ export const Home = () => {
               <span className="text-accent text-2xl md:text-4xl block leading-tight">PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.</span>
             </h1>
             <p className="text-xl text-white/70 mb-10 max-w-xl leading-relaxed">
-              Equipamentos de alta performance, durabilidade e a garantia de quem entende do seu negócio há mais de 30 anos. Potencialize sua empresa com a Lidermaq.
+              A Lidermaq é uma empresa sediada em Picos, especializada na comercialização de máquinas, equipamentos e soluções voltadas para os setores de alimentação, panificação, supermercados e empreendimentos comerciais em geral.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">

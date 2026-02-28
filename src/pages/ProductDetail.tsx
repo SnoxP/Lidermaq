@@ -10,6 +10,7 @@ export const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -49,8 +50,10 @@ export const ProductDetail = () => {
     );
   }
 
-  const productImage = product.images?.[0] || product.image || 'https://picsum.photos/seed/lidermaq/800/800';
-  const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${product.name} - Lidermaq`)}`;
+  const productImage = selectedVariant?.image || product.images?.[0] || product.image || 'https://picsum.photos/seed/lidermaq/800/800';
+  const productPrice = selectedVariant?.price || product.price || 0;
+  const productName = selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name;
+  const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${productName} - Lidermaq`)}`;
 
   return (
     <div className="pt-32 pb-20">
@@ -94,9 +97,33 @@ export const ProductDetail = () => {
                 <span className="text-primary/40 font-bold uppercase tracking-widest text-sm">{product.brand || 'Lidermaq'}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">{product.name || 'Produto sem nome'}</h1>
+              
+              {product.variants && product.variants.length > 0 && (
+                <div className="mb-6">
+                  <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2">Selecione o Modelo</label>
+                  <div className="flex flex-wrap gap-2">
+                    <button 
+                      onClick={() => setSelectedVariant(null)}
+                      className={`px-4 py-2 rounded-xl border-2 transition-all font-bold text-sm ${!selectedVariant ? 'border-accent bg-accent/5 text-accent' : 'border-neutral-bg hover:border-accent/30'}`}
+                    >
+                      Padrão
+                    </button>
+                    {product.variants.map((v: any, i: number) => (
+                      <button 
+                        key={i}
+                        onClick={() => setSelectedVariant(v)}
+                        className={`px-4 py-2 rounded-xl border-2 transition-all font-bold text-sm ${selectedVariant === v ? 'border-accent bg-accent/5 text-accent' : 'border-neutral-bg hover:border-accent/30'}`}
+                      >
+                        {v.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-primary">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price || 0)}
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(productPrice)}
                 </span>
                 <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                   <Check size={14} /> Em estoque

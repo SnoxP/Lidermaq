@@ -17,6 +17,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [images, setImages] = useState<string[]>(['']);
+  const [variants, setVariants] = useState<{ name: string; price: string; image?: string }[]>([]);
   const [isIdentifying, setIsIdentifying] = useState(false);
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
@@ -53,6 +54,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           setDescription(data.description || '');
           setCategory(data.category || '');
           setImages(data.images || ['']);
+          setVariants(data.variants || []);
         }
       }
     };
@@ -138,6 +140,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     setImages(newImages);
   };
 
+  const handleAddVariant = () => setVariants([...variants, { name: '', price: '' }]);
+  const handleRemoveVariant = (index: number) => setVariants(variants.filter((_, i) => i !== index));
+  const handleVariantChange = (index: number, field: 'name' | 'price' | 'image', value: string) => {
+    const newVariants = [...variants];
+    newVariants[index] = { ...newVariants[index], [field]: value };
+    setVariants(newVariants);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -159,6 +169,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         category,
         image: images.filter(img => img !== '')[0] || '',
         images: images.filter(img => img !== ''),
+        variants: variants.filter(v => v.name !== ''),
         installments: `10x de R$ ${(parseFloat(price) / 10).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
         available: true,
         updatedAt: new Date().toISOString()
@@ -285,6 +296,66 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                 className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                 placeholder="Descreva o produto detalhadamente ou use a IA para gerar uma descrição..."
               />
+            </div>
+          </div>
+
+          {/* Variantes do Produto */}
+          <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                <PackagePlus className="text-accent" /> Modelos / Variações
+              </h3>
+              <button 
+                type="button" onClick={handleAddVariant}
+                className="text-accent font-bold text-sm flex items-center gap-1 hover:underline"
+              >
+                <Plus size={18} /> Adicionar Variação
+              </button>
+            </div>
+            <p className="text-sm text-primary/60 mb-4">Use esta opção para cadastrar diferentes tamanhos, capacidades ou modelos do mesmo produto (ex: 50L, 100L).</p>
+
+            <div className="space-y-4">
+              {variants.map((variant, index) => (
+                <div key={index} className="p-6 bg-neutral-bg rounded-2xl space-y-4 relative">
+                  <button 
+                    type="button" onClick={() => handleRemoveVariant(index)}
+                    className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Nome da Variação</label>
+                      <input 
+                        type="text" value={variant.name} onChange={(e) => handleVariantChange(index, 'name', e.target.value)}
+                        className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        placeholder="Ex: Modelo 50 Litros"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Preço da Variação (R$)</label>
+                      <input 
+                        type="number" step="0.01" value={variant.price} onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                        className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        placeholder="0,00"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Link da Imagem (Opcional)</label>
+                    <input 
+                      type="url" value={variant.image || ''} onChange={(e) => handleVariantChange(index, 'image', e.target.value)}
+                      className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
+              ))}
+              {variants.length === 0 && (
+                <div className="text-center py-8 border-2 border-dashed border-neutral-bg rounded-3xl text-primary/30">
+                  Nenhuma variação adicionada.
+                </div>
+              )}
             </div>
           </div>
 

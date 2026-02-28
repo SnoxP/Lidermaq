@@ -14,7 +14,7 @@ export const About = () => {
         <div className="max-w-4xl mx-auto text-center mb-20">
           <h1 className="text-5xl font-black tracking-tighter mb-6">NOSSA HISTÓRIA</h1>
           <p className="text-xl text-primary/60 leading-relaxed">
-            Desde 1995, a Lidermaq impulsiona negócios com equipamentos que unem tecnologia de ponta, durabilidade excepcional e a eficiência que seu empreendimento merece.
+            Com uma década de atuação, a Lidermaq se posiciona como uma empresa sólida no mercado piauiense, sendo reconhecida pela variedade de produtos e pelo atendimento próximo ao cliente.
           </p>
         </div>
 
@@ -25,10 +25,10 @@ export const About = () => {
           <div className="space-y-6">
             <h2 className="text-3xl font-black tracking-tighter">QUALIDADE QUE VEM DE BERÇO</h2>
             <p className="text-primary/70 leading-relaxed">
-              A Lidermaq Equipamentos, sediada em Picos-PI, é uma empresa com mais de 10 anos de atuação no mercado de máquinas e equipamentos comerciais e industriais. Fundada com um forte DNA familiar, a empresa se destaca pelo atendimento personalizado e pela oferta de soluções completas para diversos setores, como padarias, restaurantes, açougues e supermercados.
+              Segundo a matéria publicada no portal Cidades na Net, a empresa atua há cerca de 10 anos no mercado, consolidando-se como referência regional no fornecimento de equipamentos profissionais. Ao longo desse período, a Lidermaq construiu uma reputação baseada na confiança, no atendimento personalizado e na oferta de produtos de qualidade.
             </p>
             <p className="text-primary/70 leading-relaxed">
-              Sob a liderança da família, a Lidermaq consolidou-se como referência na região, prezando pela qualidade dos produtos e pelo suporte técnico especializado aos seus clientes. Nossa missão é fornecer equipamentos que sejam partes fundamentais do sucesso de cada empreendedor que confia em nosso trabalho.
+              A empresa trabalha com uma ampla variedade de máquinas e equipamentos, incluindo itens para padarias, açougues, supermercados e cozinhas industriais. O diferencial da Lidermaq está no suporte oferecido aos clientes, ajudando empreendedores a montar, ampliar ou modernizar seus estabelecimentos com segurança no investimento.
             </p>
             <div className="pt-4">
               <a 
@@ -60,7 +60,7 @@ export const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-neutral-bg p-10 rounded-3xl text-center">
             <History className="text-accent mx-auto mb-6" size={40} />
-            <h3 className="text-4xl font-black mb-2">30+</h3>
+            <h3 className="text-4xl font-black mb-2">10+</h3>
             <p className="text-primary/60 font-bold uppercase text-xs tracking-widest">Anos de Mercado</p>
           </div>
           <div className="bg-neutral-bg p-10 rounded-3xl text-center">

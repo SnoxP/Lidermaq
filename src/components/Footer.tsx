@@ -14,7 +14,7 @@ export const Footer = () => {
               <span className="text-xl font-bold tracking-tighter">LIDERMAQ</span>
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-6">
-              Móveis que duram. Qualidade, durabilidade e design para transformar seus ambientes. Desde 1995 servindo com excelência.
+              Especialista em máquinas e equipamentos comerciais em Picos-PI. Qualidade, durabilidade e suporte técnico para o seu negócio há mais de 10 anos.
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors">

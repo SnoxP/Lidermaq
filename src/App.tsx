@@ -11,6 +11,7 @@ import { ProductDetail } from './pages/ProductDetail';
 import { Contact } from './pages/Contact';
 import { About } from './pages/About';
 import { Assistencia } from './pages/Assistencia';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
@@ -127,6 +128,7 @@ export default function App() {
                 />
 
                 <Route path="/assistencia" element={<Assistencia />} />
+                <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
               </Routes>
             </main>
             <Footer />
