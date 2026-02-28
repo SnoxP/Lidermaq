@@ -10,21 +10,25 @@ export const Footer = () => {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-accent rounded flex items-center justify-center text-white font-bold">L</div>
+              <div className="w-10 h-10 overflow-hidden rounded-lg">
+                <img 
+                  src="https://picsum.photos/seed/lidermaq-logo/100/100" 
+                  alt="Lidermaq Logo" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
               <span className="text-xl font-bold tracking-tighter">LIDERMAQ</span>
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-6">
               Especialista em máquinas e equipamentos comerciais em Picos-PI. Qualidade, durabilidade e suporte técnico para o seu negócio há mais de 10 anos.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors">
+              <a href="https://www.instagram.com/lidermaqequipamentos/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors">
                 <Instagram size={18} />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors">
+              <a href="https://www.facebook.com/lider.maq.33?mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors">
                 <Facebook size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors">
-                <Youtube size={18} />
               </a>
             </div>
           </div>

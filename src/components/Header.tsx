@@ -34,7 +34,14 @@ export const Header = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center text-white font-bold text-xl">L</div>
+          <div className="w-10 h-10 overflow-hidden rounded-lg">
+            <img 
+              src="https://picsum.photos/seed/lidermaq-logo/100/100" 
+              alt="Lidermaq Logo" 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
           <span className={`text-2xl font-bold tracking-tighter ${scrolled ? 'text-primary' : 'text-primary'}`}>
             LIDERMAQ
           </span>
@@ -145,7 +152,14 @@ export const Header = () => {
           >
             <div className="p-6 flex items-center justify-between border-b border-neutral-bg">
               <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-white font-bold text-lg">L</div>
+                <div className="w-8 h-8 overflow-hidden rounded-lg">
+                  <img 
+                    src="https://picsum.photos/seed/lidermaq-logo/100/100" 
+                    alt="Lidermaq Logo" 
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
                 <span className="text-xl font-bold tracking-tighter text-primary">LIDERMAQ</span>
               </Link>
               <button onClick={() => setIsOpen(false)} className="p-2 bg-neutral-bg rounded-full">
