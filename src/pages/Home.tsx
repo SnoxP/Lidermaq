@@ -57,9 +57,9 @@ export const Home = () => {
             <span className="inline-block bg-accent text-white text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6">
               Qualidade & Tradição
             </span>
-            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tighter">
-              MÁQUINAS E EQUIPAMENTOS DE<br />
-              <span className="text-accent text-3xl md:text-5xl">PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.</span>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tighter">
+              <span className="block mb-2">MÁQUINAS E EQUIPAMENTOS DE</span>
+              <span className="text-accent text-2xl sm:text-3xl md:text-5xl block">PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.</span>
             </h1>
             <p className="text-xl text-white/70 mb-10 max-w-xl leading-relaxed">
               Equipamentos de alta performance, durabilidade e a garantia de quem entende do seu negócio há mais de 30 anos. Potencialize sua empresa com a Lidermaq.
@@ -156,11 +156,28 @@ export const Home = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="relative h-[400px] rounded-3xl overflow-hidden group">
-              <img src="https://picsum.photos/seed/assist/800/600" alt="Assistência" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-black/50 p-10 flex flex-col justify-end">
-                <h3 className="text-3xl font-black text-white mb-4">ASSISTÊNCIA TÉCNICA</h3>
-                <p className="text-white/70 mb-6 max-w-sm">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
+            <div className="relative h-[450px] rounded-3xl overflow-hidden group">
+              <div className="absolute inset-0 flex">
+                <div className="w-1/2 h-full overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800" 
+                    alt="Prateleiras" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="w-1/2 h-full overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1558444479-c84829091c22?auto=format&fit=crop&q=80&w=800" 
+                    alt="Freezers" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-10 flex flex-col justify-end">
+                <h3 className="text-3xl font-black text-white mb-4 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
+                <p className="text-white/80 mb-6 max-w-sm leading-relaxed">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
                 <Link to="/assistencia" className="btn-primary w-fit">Acessar Suporte</Link>
               </div>
             </div>

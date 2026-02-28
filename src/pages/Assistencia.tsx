@@ -30,32 +30,54 @@ export const Assistencia = () => {
       />
       
       <div className="container mx-auto px-4">
-        {/* Hero Section */}
-        <div className="max-w-4xl mx-auto text-center mb-20">
-          <motion.span 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-block bg-accent/10 text-accent text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6"
-          >
-            Suporte Pós-Venda
-          </motion.span>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-6xl font-black tracking-tighter mb-6"
-          >
-            ASSISTÊNCIA TÉCNICA <br />
-            <span className="text-accent">ESPECIALIZADA</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-primary/60 leading-relaxed"
-          >
-            Garantimos o pleno funcionamento do seu negócio com uma equipe técnica pronta para atender você com agilidade e peças originais de fábrica.
-          </motion.p>
+        {/* Hero Section with Images */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
+          <div className="space-y-8 flex flex-col justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <span className="inline-block bg-accent/10 text-accent text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6">
+                Suporte Pós-Venda
+              </span>
+              <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-6">
+                ASSISTÊNCIA TÉCNICA <br />
+                <span className="text-accent">ESPECIALIZADA</span>
+              </h1>
+              <p className="text-xl text-primary/60 leading-relaxed">
+                Garantimos o pleno funcionamento do seu negócio com uma equipe técnica pronta para atender você com agilidade e peças originais de fábrica.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 h-[400px] md:h-[500px]">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800" 
+                alt="Prateleiras Lidermaq" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white mt-8"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1558444479-c84829091c22?auto=format&fit=crop&q=80&w=800" 
+                alt="Freezers Lidermaq" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </motion.div>
+          </div>
         </div>
 
         {/* Services Grid */}
