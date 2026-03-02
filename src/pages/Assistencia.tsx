@@ -176,7 +176,7 @@ export const Assistencia = () => {
                 Enviar Solicitação
               </button>
               
-              <p className="text-center text-xs text-zinc-500 mt-4">
+              <p className="text-center text-xs text-zinc-500 dark:text-zinc-400 mt-4">
                 Retornaremos seu contato em até 2 horas úteis.
               </p>
             </form>

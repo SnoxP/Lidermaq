@@ -29,55 +29,55 @@ export const Profile = () => {
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg min-h-screen">
+    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="mb-12 text-center">
           <div className="w-24 h-24 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-6">
             <User size={48} />
           </div>
-          <h1 className="text-3xl font-black tracking-tighter">MEU PERFIL</h1>
-          <p className="text-primary/60">Gerencie suas informações pessoais.</p>
+          <h1 className="text-3xl font-black tracking-tighter dark:text-white">MEU PERFIL</h1>
+          <p className="text-primary/60 dark:text-zinc-400">Gerencie suas informações pessoais.</p>
         </div>
 
         {message.text && (
           <div className={`mb-6 p-4 rounded-xl text-sm font-bold flex items-center gap-3 ${
-            message.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
+            message.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
           }`}>
             {message.text}
           </div>
         )}
 
-        <div className="bg-white p-8 rounded-3xl shadow-sm space-y-8">
+        <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm space-y-8 border border-transparent dark:border-white/5">
           <form onSubmit={handleUpdate} className="space-y-6">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2 ml-1">Nome Completo</label>
+              <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2 ml-1">Nome Completo</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30" size={20} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600" size={20} />
                 <input 
                   type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full pl-12 pr-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2 ml-1">E-mail (Não alterável)</label>
+              <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2 ml-1">E-mail (Não alterável)</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30" size={20} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600" size={20} />
                 <input 
                   type="email" disabled value={user?.email || ''}
-                  className="w-full pl-12 pr-4 py-4 bg-neutral-bg rounded-xl opacity-50 cursor-not-allowed"
+                  className="w-full pl-12 pr-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl opacity-50 cursor-not-allowed"
                 />
               </div>
             </div>
 
-            <div className="p-4 bg-accent/5 rounded-2xl flex items-center gap-4">
+            <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-2xl flex items-center gap-4">
               <div className="w-10 h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center shrink-0">
                 <Shield size={20} />
               </div>
               <div>
-                <p className="text-sm font-bold">Nível de Acesso</p>
-                <p className="text-xs text-primary/60">{user?.isAdmin ? 'Administrador do Sistema' : 'Usuário Comum'}</p>
+                <p className="text-sm font-bold dark:text-white">Nível de Acesso</p>
+                <p className="text-xs text-primary/60 dark:text-zinc-400">{user?.isAdmin ? 'Administrador do Sistema' : 'Usuário Comum'}</p>
               </div>
             </div>
 
@@ -89,10 +89,10 @@ export const Profile = () => {
             </button>
           </form>
 
-          <div className="pt-6 border-t border-neutral-bg">
+          <div className="pt-6 border-t border-neutral-bg dark:border-white/5">
             <button 
               onClick={logout}
-              className="w-full py-4 text-red-600 font-bold hover:bg-red-50 rounded-xl transition-colors flex justify-center items-center gap-2"
+              className="w-full py-4 text-red-600 font-bold hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors flex justify-center items-center gap-2"
             >
               <LogOut size={20} /> Sair da Conta
             </button>

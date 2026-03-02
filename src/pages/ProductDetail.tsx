@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ShoppingCart } from 'lucide-react';
+import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2 } from 'lucide-react';
 import { db } from '../services/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
-import { useAuth } from '../contexts/AuthContext';
-import { useCart } from '../contexts/CartContext';
 
 export const ProductDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { addToCart } = useCart();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
@@ -72,30 +67,6 @@ export const ProductDetail = () => {
   const productDescription = selectedVariant?.description || product.description || 'Sem descrição disponível para este produto.';
   const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${productName} - Lidermaq`)}`;
 
-  const handleAddToCart = () => {
-    if (!user) {
-      navigate(`/login?redirect=/produto/${id}`);
-      return;
-    }
-
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: productPrice,
-      image: productImage,
-      quantity: 1,
-      variant: selectedVariant?.name
-    });
-    navigate('/carrinho');
-  };
-
-  const handleWhatsAppClick = (e: React.MouseEvent) => {
-    if (!user) {
-      e.preventDefault();
-      navigate(`/login?redirect=/produto/${id}`);
-    }
-  };
-
   return (
     <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <SEO 
@@ -104,7 +75,7 @@ export const ProductDetail = () => {
         image={productImage}
       />
       <div className="container mx-auto px-4">
-        <Link to="/catalogo" className="inline-flex items-center gap-2 text-zinc-500 hover:text-accent font-bold mb-8 transition-colors group">
+        <Link to="/catalogo" className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-accent font-bold mb-8 transition-colors group">
           <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" /> Voltar ao catálogo
         </Link>
 
@@ -198,17 +169,7 @@ export const ProductDetail = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <button 
-                  onClick={handleAddToCart}
-                  className="btn-primary flex-1 text-lg py-4 shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
-                >
-                  <ShoppingCart size={24} /> Adicionar ao Carrinho
-                </button>
-                <a 
-                  href={whatsappUrl} 
-                  onClick={handleWhatsAppClick}
-                  className="btn-secondary flex-1 text-lg py-4 flex items-center justify-center gap-2"
-                >
+                <a href={whatsappUrl} className="btn-primary flex-1 text-lg py-4 shadow-lg shadow-accent/20 flex items-center justify-center gap-2">
                   <MessageCircle size={24} /> Pedir pelo WhatsApp
                 </a>
                 <button 

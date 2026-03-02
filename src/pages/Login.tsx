@@ -15,8 +15,7 @@ export const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const searchParams = new URLSearchParams(location.search);
-  const redirectPath = searchParams.get('redirect') || location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +25,13 @@ export const Login = () => {
 
     try {
       await login(email, password);
-      navigate(redirectPath, { replace: true });
+      // Se houver um redirecionamento pendente (ex: tentou acessar admin sem login)
+      if (location.state?.from) {
+        navigate(from, { replace: true });
+      } else {
+        // Caso contrário, volta para a página anterior ou home
+        navigate(-1);
+      }
     } catch (err: any) {
       console.error("Erro no login:", err);
       if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
@@ -66,26 +71,26 @@ export const Login = () => {
   };
 
   return (
-    <div className="pt-40 pb-20 min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center px-4 transition-colors duration-500">
+    <div className="pt-40 pb-20 min-h-screen bg-neutral-bg dark:bg-zinc-950 flex items-center justify-center px-4 transition-colors duration-500">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-xl p-8 md:p-12 border border-zinc-200 dark:border-white/5"
+        className="max-w-md w-full bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 md:p-12 border border-transparent dark:border-white/5"
       >
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black tracking-tighter mb-2 dark:text-white font-display">BEM-VINDO DE VOLTA</h1>
-          <p className="text-zinc-500 dark:text-zinc-400">Acesse sua conta Lidermaq</p>
+          <h1 className="text-3xl font-black tracking-tighter mb-2 dark:text-white">BEM-VINDO DE VOLTA</h1>
+          <p className="text-primary/60 dark:text-zinc-400">Acesse sua conta Lidermaq</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl flex items-center gap-3 text-sm font-medium border border-red-100 dark:border-red-500/20">
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl flex items-center gap-3 text-sm font-medium">
             <AlertCircle size={20} />
             {error}
           </div>
         )}
 
         {message && (
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-xl flex items-center gap-3 text-sm font-medium border border-green-100 dark:border-green-500/20">
+          <div className="mb-6 p-4 bg-green-50 dark:bg-emerald-500/10 text-green-600 dark:text-emerald-400 rounded-xl flex items-center gap-3 text-sm font-medium">
             <AlertCircle size={20} className="rotate-180" />
             {message}
           </div>
@@ -93,15 +98,15 @@ export const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2 ml-1">E-mail</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2 ml-1">E-mail</label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600" size={20} />
               <input 
                 type="email" 
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full pl-12 pr-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                 placeholder="seu@email.com"
               />
             </div>
@@ -109,7 +114,7 @@ export const Login = () => {
 
           <div>
             <div className="flex items-center justify-between mb-2 ml-1">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-400">Senha</label>
+              <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500">Senha</label>
               <button 
                 type="button"
                 onClick={handleResetPassword}
@@ -119,13 +124,13 @@ export const Login = () => {
               </button>
             </div>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600" size={20} />
               <input 
                 type="password" 
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full pl-12 pr-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -134,7 +139,7 @@ export const Login = () => {
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full btn-primary py-4 text-lg flex justify-center items-center gap-2 shadow-lg shadow-accent/20"
+            className="w-full btn-primary py-4 text-lg flex justify-center items-center gap-2"
           >
             {isLoading ? 'Processando...' : (
               <>Entrar <LogIn size={20} /></>
@@ -143,7 +148,7 @@ export const Login = () => {
         </form>
 
         <div className="mt-8 text-center">
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+          <p className="text-primary/60 dark:text-zinc-400 text-sm">
             Não tem uma conta? <Link to="/cadastro" className="text-accent font-bold hover:underline">Cadastre-se</Link>
           </p>
         </div>

@@ -21,7 +21,7 @@ export const WhatsAppButton = () => {
               href={`https://wa.me/${contact.number}?text=${message}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white text-primary px-4 py-2 rounded-xl shadow-xl font-bold text-sm flex items-center gap-2 hover:bg-accent hover:text-white transition-all border border-neutral-bg"
+              className="bg-white dark:bg-zinc-900 text-primary dark:text-white px-4 py-2 rounded-xl shadow-xl font-bold text-sm flex items-center gap-2 hover:bg-accent dark:hover:bg-accent hover:text-white transition-all border border-neutral-bg dark:border-white/5"
             >
               <User size={16} />
               Falar com {contact.name}
@@ -37,7 +37,7 @@ export const WhatsAppButton = () => {
       >
         <MessageCircle size={28} />
         {!isOpen && (
-          <span className="absolute right-full mr-3 bg-white text-primary px-3 py-1 rounded-lg text-sm font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-neutral-bg">
+          <span className="absolute right-full mr-3 bg-white dark:bg-zinc-900 text-primary dark:text-white px-3 py-1 rounded-lg text-sm font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-neutral-bg dark:border-white/5">
             Fale Conosco
           </span>
         )}
