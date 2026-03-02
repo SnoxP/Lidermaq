@@ -72,7 +72,7 @@ export const Footer = () => {
                   <MapPin size={20} />
                 </div>
                 <p className="text-zinc-400 text-sm leading-relaxed">
-                  Av. Principal, 1234<br />Centro, Picos - PI
+                  Próximo á concessionaria FIAT - Av. Senador Helvídio Nunes, N°4731 - Junco, Picos - PI, 64607-755
                 </p>
               </li>
               <li className="flex gap-4">

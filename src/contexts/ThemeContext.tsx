@@ -19,15 +19,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     const root = window.document.documentElement;
     const body = window.document.body;
-    console.log('Applying theme:', theme);
+    console.log('ThemeContext: Applying theme:', theme);
     
-    root.classList.remove('light', 'dark');
-    root.classList.add(theme);
-    
-    body.classList.remove('light', 'dark');
-    body.classList.add(theme);
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      body.classList.add('dark');
+      body.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      body.classList.add('light');
+      body.classList.remove('dark');
+    }
     
     localStorage.setItem('theme', theme);
+    console.log('ThemeContext: Classes applied. Root:', root.className, 'Body:', body.className);
   }, [theme]);
 
   const toggleTheme = () => {

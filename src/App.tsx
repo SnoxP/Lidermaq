@@ -5,6 +5,8 @@ import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { CookieBanner } from './components/CookieBanner';
 import { MobileHUD } from './components/MobileHUD';
+import { FloatingMenu } from './components/FloatingMenu';
+import { CartDrawer } from './components/CartDrawer';
 import { Home } from './pages/Home';
 import { Catalog } from './pages/Catalog';
 import { ProductDetail } from './pages/ProductDetail';
@@ -27,6 +29,7 @@ import { AdminManagement } from './pages/admin/AdminManagement';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProductProvider } from './contexts/ProductContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { CartProvider } from './contexts/CartContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export default function App() {
@@ -34,113 +37,116 @@ export default function App() {
     <ThemeProvider>
       <AuthProvider>
         <ProductProvider>
-          <Router>
-            <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-500">
-              <Header />
-            <main className="flex-grow">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/catalogo" element={<Catalog />} />
-                <Route path="/produto/:id" element={<ProductDetail />} />
-                <Route path="/contato" element={<Contact />} />
-                <Route path="/sobre" element={<About />} /> 
-                <Route path="/login" element={<Login />} />
-                <Route path="/cadastro" element={<Register />} />
-                <Route 
-                  path="/perfil" 
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  } 
-                />
-                
-                {/* Rotas Protegidas para Admin */}
-                <Route 
-                  path="/admin" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/novo-produto" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <NewProduct />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/editar-produto/:id" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <EditProduct />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/produtos" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <ProductList />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/categorias" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <Categories />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/novo-post" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <NewPost />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/configuracoes" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <Settings />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/usuarios-registrados" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <UserList />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/usuarios" 
-                  element={
-                    <ProtectedRoute adminOnly>
-                      <AdminManagement />
-                    </ProtectedRoute>
-                  } 
-                />
+          <CartProvider>
+            <Router>
+              <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-500 pb-20 lg:pb-0">
+                <Header />
+                <CartDrawer />
+                <main className="flex-grow">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/catalogo" element={<Catalog />} />
+                    <Route path="/produto/:id" element={<ProductDetail />} />
+                    <Route path="/contato" element={<Contact />} />
+                    <Route path="/sobre" element={<About />} /> 
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/cadastro" element={<Register />} />
+                    <Route 
+                      path="/perfil" 
+                      element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* Rotas Protegidas para Admin */}
+                    <Route 
+                      path="/admin" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <AdminDashboard />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/novo-produto" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <NewProduct />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/editar-produto/:id" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <EditProduct />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/produtos" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <ProductList />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/categorias" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <Categories />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/novo-post" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <NewPost />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/configuracoes" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <Settings />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/usuarios-registrados" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <UserList />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/usuarios" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <AdminManagement />
+                        </ProtectedRoute>
+                      } 
+                    />
 
-                <Route path="/assistencia" element={<Assistencia />} />
-                <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
-              </Routes>
-            </main>
-            <Footer />
-            <WhatsAppButton />
-            <MobileHUD />
-            <CookieBanner />
-          </div>
-        </Router>
-      </ProductProvider>
-    </AuthProvider>
-  </ThemeProvider>
+                    <Route path="/assistencia" element={<Assistencia />} />
+                    <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
+                  </Routes>
+                </main>
+                <Footer />
+                <WhatsAppButton />
+                <FloatingMenu />
+                <CookieBanner />
+              </div>
+            </Router>
+          </CartProvider>
+        </ProductProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

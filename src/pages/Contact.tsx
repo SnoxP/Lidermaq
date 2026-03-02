@@ -108,7 +108,11 @@ export const Contact = () => {
                   </div>
                   <div>
                     <p className="font-bold dark:text-white mb-1">Endereço</p>
-                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">Av. Principal, 1234 - Centro<br/>Picos - PI, 64600-000</p>
+                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                      Próximo á concessionaria FIAT<br />
+                      Av. Senador Helvídio Nunes, N°4731<br />
+                      Junco, Picos - PI, 64607-755
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">

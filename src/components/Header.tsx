@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard, Sun, Moon, LogIn } from 'lucide-react';
+import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard, Sun, Moon, LogIn, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useCart } from '../contexts/CartContext';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ export const Header = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { cart, setIsCartOpen } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -38,8 +40,10 @@ export const Header = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/20 group-hover:rotate-12 transition-transform duration-500">
-            <span className="font-black text-xl font-display">L</span>
+          <div className="relative w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white shadow-lg shadow-accent/20 group-hover:rotate-12 transition-transform duration-500 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-1/2 bg-white/20 pointer-events-none" />
+            <span className="font-black text-xl font-display relative z-10">L</span>
           </div>
           <span className="text-2xl font-black tracking-tighter dark:text-white font-display">
             LIDERMAQ
@@ -84,6 +88,18 @@ export const Header = () => {
           <div className="flex items-center gap-2">
             <button className="p-2.5 text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors hidden sm:block">
               <Search size={20} />
+            </button>
+
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2.5 text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors"
+            >
+              <ShoppingBag size={20} />
+              {cart.length > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                  {cart.length}
+                </span>
+              )}
             </button>
             
             {/* User Auth Menu */}

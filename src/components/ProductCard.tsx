@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Edit2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, Edit2, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 
 export interface ProductCardProps {
   product: Product;
@@ -11,7 +12,18 @@ export interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = memo(({ product }) => {
   const { user } = useAuth();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
   const isAdmin = user?.isAdmin;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation to product detail
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    addToCart(product);
+  };
 
   return (
     <motion.div 
@@ -57,23 +69,30 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product }) => {
             </span>
           </div>
           
-          <div className="flex items-center gap-2">
-            {isAdmin && (
-              <Link 
-                to={`/admin/editar-produto/${product.id}`}
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={handleAddToCart}
                 className="w-10 h-10 bg-zinc-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all"
-                title="Editar Produto"
+                title="Adicionar ao Carrinho"
               >
-                <Edit2 size={18} />
+                <ShoppingBag size={18} />
+              </button>
+              {isAdmin && (
+                <Link 
+                  to={`/admin/editar-produto/${product.id}`}
+                  className="w-10 h-10 bg-zinc-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all"
+                  title="Editar Produto"
+                >
+                  <Edit2 size={18} />
+                </Link>
+              )}
+              <Link 
+                to={`/produto/${product.id}`}
+                className="w-10 h-10 bg-zinc-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all"
+              >
+                <ArrowRight size={20} />
               </Link>
-            )}
-            <Link 
-              to={`/produto/${product.id}`}
-              className="w-10 h-10 bg-zinc-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all"
-            >
-              <ArrowRight size={20} />
-            </Link>
-          </div>
+            </div>
         </div>
       </div>
     </motion.div>
