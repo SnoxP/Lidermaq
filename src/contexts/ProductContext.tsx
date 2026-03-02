@@ -25,10 +25,14 @@ export const ProductProvider: React.FC<{ children: ReactNode }> = ({ children })
     const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const productList = querySnapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data() 
-      }));
+      const productList = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return { 
+          id: doc.id, 
+          ...data,
+          installments: data.installments?.replace('10x', 'até 12x') || 'Consulte condições'
+        };
+      });
       setProducts(productList);
       setLoading(false);
     }, (err) => {

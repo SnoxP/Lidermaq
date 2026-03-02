@@ -161,42 +161,59 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Nav Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Nav Drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 lg:hidden bg-white dark:bg-neutral-900 z-[100] flex flex-col"
+            className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white dark:bg-zinc-900 z-[100] lg:hidden flex flex-col shadow-2xl"
           >
-            <div className="p-6 flex items-center justify-between border-b border-neutral-bg dark:border-white/10">
+            <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/10">
               <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                <div className="w-10 h-10 overflow-hidden">
-                  <img 
-                    src="https://i.imgur.com/muVpHcv.png" 
-                    alt="Lidermaq Logo" 
-                    className="w-full h-full object-contain"
-                    referrerPolicy="no-referrer"
-                  />
+                <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white">
+                  <span className="font-black text-xl">L</span>
                 </div>
-                <span className="text-xl font-bold tracking-tighter text-primary dark:text-white">LIDERMAQ</span>
+                <span className="text-xl font-black tracking-tighter text-zinc-900 dark:text-white">LIDERMAQ</span>
               </Link>
-              <button onClick={() => setIsOpen(false)} className="p-2 bg-neutral-bg dark:bg-white/5 dark:text-white rounded-full">
-                <X size={24} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={toggleTheme}
+                  className="p-2 bg-zinc-100 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 rounded-xl"
+                  title={theme === 'light' ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'}
+                >
+                  {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                </button>
+                <button onClick={() => setIsOpen(false)} className="p-2 bg-zinc-100 dark:bg-white/5 dark:text-white rounded-xl">
+                  <X size={24} />
+                </button>
+              </div>
             </div>
             
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
-              <p className="text-[10px] font-black text-primary/30 dark:text-white/30 uppercase tracking-[0.2em] mb-4">Navegação</p>
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-4">Navegação</p>
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
                   className={`text-2xl font-black tracking-tighter py-3 flex items-center justify-between group ${
-                    location.pathname === link.path ? 'text-accent' : 'text-primary dark:text-white'
+                    location.pathname === link.path ? 'text-accent' : 'text-zinc-900 dark:text-white'
                   }`}
                 >
                   {link.name.toUpperCase()}
@@ -204,11 +221,11 @@ export const Header = () => {
                 </Link>
               ))}
               
-              <div className="mt-12 pt-12 border-t border-neutral-bg dark:border-white/10">
-                <p className="text-[10px] font-black text-primary/30 dark:text-white/30 uppercase tracking-[0.2em] mb-6">Atendimento</p>
+              <div className="mt-12 pt-12 border-t border-zinc-100 dark:border-white/10">
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Atendimento</p>
                 <a 
                   href="https://wa.me/5589999170800" 
-                  className="flex items-center justify-between p-6 bg-accent text-white rounded-3xl font-black tracking-tighter text-xl"
+                  className="flex items-center justify-between p-6 bg-accent text-white rounded-3xl font-black tracking-tighter text-xl shadow-lg shadow-accent/20"
                 >
                   FALAR NO WHATSAPP
                   <Phone size={24} />

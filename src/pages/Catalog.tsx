@@ -18,6 +18,10 @@ export const Catalog = () => {
 
   const activeCategory = searchParams.get('cat') || 'Todos';
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeCategory]);
+
   const filteredProducts = useMemo(() => {
     let result = products;
 
@@ -42,7 +46,7 @@ export const Catalog = () => {
   }, [activeCategory, searchTerm, sortBy]);
 
   return (
-    <div className="pt-32 pb-20">
+    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <SEO 
         title={`Catálogo de Equipamentos ${activeCategory !== 'Todos' ? `- ${activeCategory}` : ''}`}
         description={`Confira nossa linha completa de equipamentos para ${activeCategory !== 'Todos' ? activeCategory : 'padarias, restaurantes e muito mais'}. Qualidade Lidermaq.`}
@@ -50,27 +54,27 @@ export const Catalog = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-5xl font-black tracking-tighter mb-4 dark:text-white">CATÁLOGO COMPLETO</h1>
-          <p className="text-primary/60 dark:text-white/60 max-w-2xl">Explore nossa linha completa de equipamentos para padarias, restaurantes, açougues, supermercados, lanchonetes e móveis para escritório.</p>
+          <h1 className="text-5xl font-black tracking-tighter mb-4 dark:text-white font-display">CATÁLOGO COMPLETO</h1>
+          <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">Explore nossa linha completa de equipamentos para padarias, restaurantes, açougues, supermercados, lanchonetes e móveis para escritório.</p>
         </div>
 
         {/* Filters & Search */}
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           {/* Categories Sidebar/Bar */}
           <div className="lg:w-64 shrink-0">
-            <div className="bg-neutral-bg dark:bg-neutral-800 p-6 rounded-2xl transition-colors duration-300">
-              <h3 className="font-bold mb-6 flex items-center gap-2 dark:text-white">
-                <Filter size={18} /> Categorias
+            <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
+              <h3 className="font-bold mb-6 flex items-center gap-2 dark:text-white font-display">
+                <Filter size={18} className="text-accent" /> Categorias
               </h3>
               <div className="flex flex-wrap lg:flex-col gap-2">
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSearchParams({ cat })}
-                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all text-left ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
                       activeCategory === cat 
                         ? 'bg-accent text-white shadow-lg shadow-accent/20' 
-                        : 'bg-white dark:bg-neutral-700 text-primary/60 dark:text-white/60 hover:bg-white/80 dark:hover:bg-neutral-600'
+                        : 'bg-zinc-50 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/10'
                     }`}
                   >
                     {cat}
@@ -79,7 +83,7 @@ export const Catalog = () => {
               </div>
 
               {user?.isAdmin && (
-                <div className="mt-8 pt-6 border-t border-primary/5">
+                <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5">
                   <button 
                     onClick={() => navigate('/admin/novo-produto')}
                     className="w-full flex items-center justify-center gap-2 py-3 bg-accent/10 text-accent rounded-xl font-bold text-sm hover:bg-accent hover:text-white transition-all"
@@ -95,26 +99,26 @@ export const Catalog = () => {
           <div className="flex-1">
             <div className="flex flex-col md:flex-row gap-4 mb-8">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40 dark:text-white/40" size={20} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
                 <input 
                   type="text" 
                   placeholder="Buscar equipamentos..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-neutral-bg dark:bg-neutral-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
                 />
               </div>
               <div className="relative min-w-[200px]">
                 <select 
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full appearance-none px-6 py-4 bg-neutral-bg dark:bg-neutral-800 dark:text-white rounded-xl focus:outline-none font-semibold cursor-pointer"
+                  className="w-full appearance-none px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none font-bold cursor-pointer shadow-sm"
                 >
                   <option value="featured">Destaques</option>
                   <option value="price-asc">Menor Preço</option>
                   <option value="price-desc">Maior Preço</option>
                 </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/40 dark:text-white/40" size={20} />
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
               </div>
             </div>
 
@@ -122,7 +126,7 @@ export const Catalog = () => {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
                 {Array(6).fill(0).map((_, i) => (
-                  <div key={i} className="h-80 bg-neutral-bg rounded-3xl animate-pulse" />
+                  <div key={i} className="h-80 bg-zinc-200 dark:bg-zinc-800 rounded-3xl animate-pulse" />
                 ))}
               </div>
             ) : filteredProducts.length > 0 ? (
@@ -133,10 +137,10 @@ export const Catalog = () => {
               </div>
             ) : (
               <div className="py-20 text-center">
-                <p className="text-xl text-primary/40 font-bold">Nenhum produto encontrado para sua busca.</p>
+                <p className="text-xl text-zinc-500 font-bold">Nenhum produto encontrado para sua busca.</p>
                 <button 
                   onClick={() => {setSearchTerm(''); setSearchParams({});}}
-                  className="mt-4 text-accent font-bold underline"
+                  className="mt-4 text-accent font-bold hover:underline"
                 >
                   Limpar todos os filtros
                 </button>

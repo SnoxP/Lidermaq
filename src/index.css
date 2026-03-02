@@ -15,6 +15,10 @@
     @apply font-sans bg-white text-zinc-900 transition-colors duration-500 antialiased;
   }
 
+  body.dark {
+    @apply bg-zinc-950 text-zinc-50;
+  }
+
   .dark body {
     @apply bg-zinc-950 text-zinc-50;
   }
