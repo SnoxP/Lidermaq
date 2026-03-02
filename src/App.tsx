@@ -26,15 +26,17 @@ import { Settings } from './pages/admin/Settings';
 import { AdminManagement } from './pages/admin/AdminManagement';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProductProvider } from './contexts/ProductContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ProductProvider>
-        <Router>
-          <div className="min-h-screen flex flex-col">
-            <Header />
+    <ThemeProvider>
+      <AuthProvider>
+        <ProductProvider>
+          <Router>
+            <div className="min-h-screen flex flex-col dark:bg-neutral-900 transition-colors duration-300">
+              <Header />
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -139,5 +141,6 @@ export default function App() {
         </Router>
       </ProductProvider>
     </AuthProvider>
+  </ThemeProvider>
   );
 }

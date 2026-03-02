@@ -12,10 +12,12 @@ export const ProductList = () => {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'createdAt'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [brandFilter, setBrandFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
 
   const brands = Array.from(new Set(products.map(p => p.brand).filter(Boolean)));
+  const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -60,8 +62,9 @@ export const ProductList = () => {
         p.category?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesBrand = brandFilter === '' || p.brand === brandFilter;
+      const matchesCategory = categoryFilter === '' || p.category === categoryFilter;
       
-      return matchesSearch && matchesBrand;
+      return matchesSearch && matchesBrand && matchesCategory;
     })
     .sort((a, b) => {
       let valA = a[sortBy];
@@ -148,6 +151,21 @@ export const ProductList = () => {
 
               <div className="space-y-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 flex items-center gap-1">
+                  <Tag size={12} /> Categoria
+                </label>
+                <select 
+                  value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full px-4 py-3 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm"
+                >
+                  <option value="">Todas as Categorias</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 flex items-center gap-1">
                   <ArrowUpDown size={12} /> Ordenar por
                 </label>
                 <div className="flex gap-2">
@@ -197,6 +215,7 @@ export const ProductList = () => {
                   onClick={() => {
                     setSearchTerm('');
                     setBrandFilter('');
+                    setCategoryFilter('');
                     setSortBy('createdAt');
                     setSortOrder('desc');
                   }}

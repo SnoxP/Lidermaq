@@ -7,18 +7,18 @@ export const Contact = () => {
     <div className="pt-32 pb-20">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h1 className="text-5xl font-black tracking-tighter mb-6">FALE CONOSCO</h1>
-          <p className="text-xl text-primary/60">Estamos prontos para tirar suas dúvidas e ajudar você a escolher o móvel perfeito.</p>
+          <h1 className="text-5xl font-black tracking-tighter mb-6 dark:text-white">FALE CONOSCO</h1>
+          <p className="text-xl text-primary/60 dark:text-white/60">Estamos prontos para tirar suas dúvidas e ajudar você a escolher o móvel perfeito.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
-          <div className="bg-neutral-bg p-10 rounded-3xl text-center">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-accent mx-auto mb-6 shadow-sm">
+          <div className="bg-neutral-bg dark:bg-neutral-800 p-10 rounded-3xl text-center transition-colors duration-300">
+            <div className="w-16 h-16 bg-white dark:bg-neutral-700 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6 shadow-sm">
               <Phone size={32} />
             </div>
-            <h3 className="text-xl font-bold mb-4">Telefone</h3>
-            <p className="text-primary/60 mb-2">(89) 99917-0800 (Jonas)</p>
-            <p className="text-primary/60">(89) 99986-1264 (Lena)</p>
+            <h3 className="text-xl font-bold mb-4 dark:text-white">Telefone</h3>
+            <p className="text-primary/60 dark:text-white/60 mb-2">(89) 99917-0800 (Jonas)</p>
+            <p className="text-primary/60 dark:text-white/60">(89) 99986-1264 (Lena)</p>
           </div>
           <div className="bg-accent p-10 rounded-3xl text-center text-white">
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-white mx-auto mb-6">
@@ -34,34 +34,34 @@ export const Contact = () => {
               </a>
             </div>
           </div>
-          <div className="bg-neutral-bg p-10 rounded-3xl text-center">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-accent mx-auto mb-6 shadow-sm">
+          <div className="bg-neutral-bg dark:bg-neutral-800 p-10 rounded-3xl text-center transition-colors duration-300">
+            <div className="w-16 h-16 bg-white dark:bg-neutral-700 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6 shadow-sm">
               <Mail size={32} />
             </div>
-            <h3 className="text-xl font-bold mb-4">E-mail</h3>
-            <p className="text-primary/60 mb-2">vendas@lidermaq.com.br</p>
-            <p className="text-primary/60">sac@lidermaq.com.br</p>
+            <h3 className="text-xl font-bold mb-4 dark:text-white">E-mail</h3>
+            <p className="text-primary/60 dark:text-white/60 mb-2">vendas@lidermaq.com.br</p>
+            <p className="text-primary/60 dark:text-white/60">sac@lidermaq.com.br</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Form */}
-          <div className="bg-white p-10 rounded-3xl border border-neutral-bg shadow-sm">
-            <h2 className="text-3xl font-black tracking-tighter mb-8">ENVIE UMA MENSAGEM</h2>
+          <div className="bg-white dark:bg-neutral-800 p-10 rounded-3xl border border-neutral-bg dark:border-white/5 shadow-sm transition-colors duration-300">
+            <h2 className="text-3xl font-black tracking-tighter mb-8 dark:text-white">ENVIE UMA MENSAGEM</h2>
             <form className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-primary/40">Nome Completo</label>
-                  <input type="text" className="w-full px-6 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="Ex: João Silva" required />
+                  <label className="text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-white/40">Nome Completo</label>
+                  <input type="text" className="w-full px-6 py-4 bg-neutral-bg dark:bg-neutral-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="Ex: João Silva" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-primary/40">WhatsApp / Telefone</label>
-                  <input type="tel" className="w-full px-6 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="(89) 99917-0800" required />
+                  <label className="text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-white/40">WhatsApp / Telefone</label>
+                  <input type="tel" className="w-full px-6 py-4 bg-neutral-bg dark:bg-neutral-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="(89) 99917-0800" required />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-primary/40">Assunto</label>
-                <select className="w-full px-6 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 font-semibold">
+                <label className="text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-white/40">Assunto</label>
+                <select className="w-full px-6 py-4 bg-neutral-bg dark:bg-neutral-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 font-semibold">
                   <option>Orçamento de Móveis</option>
                   <option>Assistência Técnica</option>
                   <option>Dúvidas Gerais</option>
@@ -69,8 +69,8 @@ export const Contact = () => {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-primary/40">Mensagem</label>
-                <textarea rows={5} className="w-full px-6 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="Como podemos ajudar?" required></textarea>
+                <label className="text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-white/40">Mensagem</label>
+                <textarea rows={5} className="w-full px-6 py-4 bg-neutral-bg dark:bg-neutral-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="Como podemos ajudar?" required></textarea>
               </div>
               <button type="submit" className="btn-primary w-full py-4 text-lg">Enviar Mensagem</button>
             </form>
@@ -78,19 +78,19 @@ export const Contact = () => {
 
           {/* Map & Info */}
           <div className="space-y-8">
-            <div className="bg-neutral-bg p-10 rounded-3xl">
-              <h3 className="text-2xl font-black tracking-tighter mb-6">ONDE ESTAMOS</h3>
+            <div className="bg-neutral-bg dark:bg-neutral-800 p-10 rounded-3xl transition-colors duration-300">
+              <h3 className="text-2xl font-black tracking-tighter mb-6 dark:text-white">ONDE ESTAMOS</h3>
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-4">
                   <MapPin className="text-accent shrink-0" size={24} />
-                  <p className="text-primary/60">Av. Principal, 1234 - Centro, Picos - PI, 64600-000</p>
+                  <p className="text-primary/60 dark:text-white/60">Av. Principal, 1234 - Centro, Picos - PI, 64600-000</p>
                 </div>
                 <div className="flex items-start gap-4">
                   <Clock className="text-accent shrink-0" size={24} />
                   <div>
-                    <p className="text-primary font-bold">Horário de Atendimento:</p>
-                    <p className="text-primary/60">Segunda a Sexta: 08:00 às 18:00</p>
-                    <p className="text-primary/60">Sábado: 08:00 às 12:00</p>
+                    <p className="text-primary dark:text-white font-bold">Horário de Atendimento:</p>
+                    <p className="text-primary/60 dark:text-white/60">Segunda a Sexta: 08:00 às 18:00</p>
+                    <p className="text-primary/60 dark:text-white/60">Sábado: 08:00 às 12:00</p>
                   </div>
                 </div>
               </div>

@@ -10,7 +10,11 @@
 
 @layer base {
   body {
-    @apply font-sans bg-white text-primary;
+    @apply font-sans bg-white text-primary transition-colors duration-300;
+  }
+
+  .dark body {
+    @apply bg-neutral-900 text-white;
   }
 }
 

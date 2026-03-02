@@ -37,91 +37,108 @@ export const Home = () => {
     <div className="pt-20">
       <SEO />
       {/* Hero Section */}
-      <section className="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden bg-primary">
-        <div className="absolute inset-0 opacity-40">
-          <img 
-            src="https://picsum.photos/seed/lidermaq-hero/1280/720" 
-            alt="Hero Background" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent" />
-        </div>
+      <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-black pt-20 lg:pt-0">
+        {/* Background Gradient for the whole section */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-transparent z-0" />
 
         <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <span className="inline-block bg-accent text-white text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6">
-              Qualidade & Tradição
-            </span>
-            <h1 className="text-[2.6rem] sm:text-5xl md:text-7xl font-black text-white leading-[0.85] mb-6 tracking-tighter">
-              <span className="block">MÁQUINAS E</span>
-              <span className="block mb-4">EQUIPAMENTOS DE</span>
-              <span className="text-accent text-[1.4rem] sm:text-3xl md:text-5xl block leading-[1] mt-2">
-                PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="py-12 lg:py-20"
+            >
+              <span className="inline-block bg-accent text-white text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6">
+                Qualidade & Tradição
               </span>
-            </h1>
-            <p className="text-xl text-white/70 mb-10 max-w-xl leading-relaxed">
-              A Lidermaq é uma empresa sediada em Picos, especializada na comercialização de máquinas, equipamentos e soluções voltadas para os setores de alimentação, panificação, supermercados e empreendimentos comerciais em geral.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/catalogo" className="btn-primary text-lg px-10">
-                Ver Catálogo <ArrowRight size={20} />
-              </Link>
-              <a href="https://wa.me/5589999170800" className="btn-secondary border-white text-white hover:bg-white hover:text-primary text-lg px-10">
-                <MessageCircle size={20} /> Pedir Orçamento
-              </a>
-            </div>
-
-            <div className="mt-16 flex flex-wrap gap-8">
-              {['Padarias', 'Restaurantes', 'Açougues', 'Supermercados', 'Lanchonetes', 'Móveis Para Escritório'].map((cat) => (
-                <Link 
-                  key={cat} 
-                  to={`/catalogo?cat=${cat}`}
-                  className="text-white/50 hover:text-accent transition-colors font-bold text-sm uppercase tracking-widest flex items-center gap-2"
-                >
-                  <span className="w-1.5 h-1.5 bg-accent rounded-full" />
-                  {cat}
+              
+              <div className="relative">
+                {/* Fade out background effect for the title area */}
+                <div className="absolute -inset-6 bg-gradient-to-b from-black/80 to-transparent blur-2xl -z-10 rounded-3xl" />
+                
+                <h1 className="text-[2.6rem] sm:text-5xl md:text-7xl font-black text-white leading-[0.85] mb-6 tracking-tighter">
+                  <span className="block">MÁQUINAS E</span>
+                  <span className="block mb-4">EQUIPAMENTOS DE</span>
+                  <span className="text-accent text-[1.4rem] sm:text-3xl md:text-5xl block leading-[1] mt-2">
+                    PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.
+                  </span>
+                </h1>
+                <p className="text-xl text-white/90 max-w-xl leading-relaxed mb-10">
+                  A Lidermaq é uma empresa sediada em Picos, especializada na comercialização de máquinas, equipamentos e soluções voltadas para os setores de alimentação, panificação, supermercados e empreendimentos comerciais em geral.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/catalogo" className="btn-primary text-lg px-10">
+                  Ver Catálogo <ArrowRight size={20} />
                 </Link>
-              ))}
-            </div>
-          </motion.div>
+                <a href="https://wa.me/5589999170800" className="btn-secondary border-white text-white hover:bg-white hover:text-primary text-lg px-10">
+                  <MessageCircle size={20} /> Pedir Orçamento
+                </a>
+              </div>
+
+              <div className="mt-16 flex flex-wrap gap-8">
+                {['Padarias', 'Restaurantes', 'Açougues', 'Supermercados', 'Lanchonetes', 'Móveis Para Escritório'].map((cat) => (
+                  <Link 
+                    key={cat} 
+                    to={`/catalogo?cat=${cat}`}
+                    className="text-white/50 hover:text-accent transition-colors font-bold text-sm uppercase tracking-widest flex items-center gap-2"
+                  >
+                    <span className="w-1.5 h-1.5 bg-accent rounded-full" />
+                    {cat}
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1 }}
+              className="relative aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+            >
+              <img 
+                src="https://cidadesnanet.com/news/wp-content/uploads/2020/12/IMG_8267.jpg" 
+                alt="Fachada Lidermaq" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-neutral-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="flex gap-6">
-              <div className="w-16 h-16 bg-neutral-bg rounded-2xl flex items-center justify-center text-accent shrink-0">
+              <div className="w-16 h-16 bg-neutral-bg dark:bg-white/5 rounded-2xl flex items-center justify-center text-accent shrink-0">
                 <Shield size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2">Garantia Estendida</h3>
-                <p className="text-primary/60">Todos os nossos equipamentos possuem garantia de fábrica e suporte especializado.</p>
+                <h3 className="text-xl font-bold mb-2 dark:text-white">Garantia Estendida</h3>
+                <p className="text-primary/60 dark:text-white/60">Todos os nossos equipamentos possuem garantia de fábrica e suporte especializado.</p>
               </div>
             </div>
             <div className="flex gap-6">
-              <div className="w-16 h-16 bg-neutral-bg rounded-2xl flex items-center justify-center text-accent shrink-0">
+              <div className="w-16 h-16 bg-neutral-bg dark:bg-white/5 rounded-2xl flex items-center justify-center text-accent shrink-0">
                 <Truck size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2">Entrega Rápida</h3>
-                <p className="text-primary/60">Logística própria para garantir que seu equipamento chegue impecável e no prazo.</p>
+                <h3 className="text-xl font-bold mb-2 dark:text-white">Entrega Rápida</h3>
+                <p className="text-primary/60 dark:text-white/60">Logística própria para garantir que seu equipamento chegue impecável e no prazo.</p>
               </div>
             </div>
             <div className="flex gap-6">
-              <div className="w-16 h-16 bg-neutral-bg rounded-2xl flex items-center justify-center text-accent shrink-0">
+              <div className="w-16 h-16 bg-neutral-bg dark:bg-white/5 rounded-2xl flex items-center justify-center text-accent shrink-0">
                 <Tool size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2">Montagem Grátis</h3>
-                <p className="text-primary/60">Equipe técnica qualificada para realizar a instalação completa em seu estabelecimento.</p>
+                <h3 className="text-xl font-bold mb-2 dark:text-white">Montagem Grátis</h3>
+                <p className="text-primary/60 dark:text-white/60">Equipe técnica qualificada para realizar a instalação completa em seu estabelecimento.</p>
               </div>
             </div>
           </div>
@@ -129,14 +146,14 @@ export const Home = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="py-20 bg-neutral-bg">
+      <section className="py-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
               <span className="text-accent font-bold uppercase tracking-widest text-sm mb-2 block">Destaques</span>
-              <h2 className="text-4xl font-black tracking-tighter">LINHAS EM EVIDÊNCIA</h2>
+              <h2 className="text-4xl font-black tracking-tighter dark:text-white">LINHAS EM EVIDÊNCIA</h2>
             </div>
-            <Link to="/catalogo" className="text-primary font-bold flex items-center gap-2 hover:text-accent transition-colors group">
+            <Link to="/catalogo" className="text-primary dark:text-white font-bold flex items-center gap-2 hover:text-accent transition-colors group">
               Ver catálogo completo <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
@@ -156,7 +173,7 @@ export const Home = () => {
       </section>
 
       {/* Institutional Block */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-neutral-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="relative h-[450px] rounded-3xl overflow-hidden group">
@@ -178,10 +195,12 @@ export const Home = () => {
                   />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-10 flex flex-col justify-end">
-                <h3 className="text-3xl font-black text-white mb-4 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
-                <p className="text-white/80 mb-6 max-w-sm leading-relaxed">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
-                <Link to="/assistencia" className="btn-primary w-fit">Acessar Suporte</Link>
+              <div className="absolute inset-0 bg-gradient-to-tr from-black via-black/40 to-transparent p-6 md:p-12 flex flex-col justify-end">
+                <div className="max-w-lg">
+                  <h3 className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
+                  <p className="text-white/90 text-lg mb-8 leading-relaxed">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
+                  <Link to="/assistencia" className="btn-primary w-fit px-10 py-4 text-lg">Acessar Suporte</Link>
+                </div>
               </div>
             </div>
           </div>
