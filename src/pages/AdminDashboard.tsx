@@ -49,12 +49,12 @@ export const AdminDashboard = () => {
   ];
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg min-h-screen">
+    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <div className="container mx-auto px-4">
         <div className="mb-12">
           <span className="text-accent font-bold uppercase tracking-widest text-sm mb-2 block">Painel Administrativo</span>
-          <h1 className="text-4xl font-black tracking-tighter">OLÁ, {user?.name?.toUpperCase()}</h1>
-          <p className="text-primary/60">Gerencie seus produtos e visualize o desempenho do site.</p>
+          <h1 className="text-4xl font-black tracking-tighter dark:text-white">OLÁ, {user?.name?.toUpperCase()}</h1>
+          <p className="text-primary/60 dark:text-zinc-400">Gerencie seus produtos e visualize o desempenho do site.</p>
         </div>
 
         {/* Stats Grid */}
@@ -66,14 +66,14 @@ export const AdminDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               onClick={() => stat.path && navigate(stat.path)}
-              className={`bg-white p-6 rounded-3xl shadow-sm flex items-center gap-6 ${stat.path ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+              className={`bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-sm flex items-center gap-6 ${stat.path ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
             >
-              <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
+              <div className={`w-14 h-14 ${stat.bg} dark:bg-accent/10 ${stat.color} rounded-2xl flex items-center justify-center`}>
                 <stat.icon size={28} />
               </div>
               <div>
-                <p className="text-xs font-bold text-primary/40 uppercase tracking-widest">{stat.label}</p>
-                <p className="text-2xl font-black text-primary">{stat.value}</p>
+                <p className="text-xs font-bold text-primary/40 dark:text-zinc-500 uppercase tracking-widest">{stat.label}</p>
+                <p className="text-2xl font-black text-primary dark:text-white">{stat.value}</p>
               </div>
             </motion.div>
           ))}
@@ -83,77 +83,77 @@ export const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <SeedData />
           
-          <div className="bg-white p-8 rounded-3xl shadow-sm">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 dark:text-white">
               <PackagePlus className="text-accent" /> Ações Rápidas
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button 
                 onClick={() => navigate('/admin/produtos')}
-                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+                className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >
-                <p className="font-bold mb-1">Listar Produtos</p>
-                <p className="text-xs opacity-60">Ver e editar todos os itens</p>
+                <p className="font-bold mb-1 dark:text-white group-hover:text-white">Listar Produtos</p>
+                <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Ver e editar todos os itens</p>
               </button>
               <button 
                 onClick={() => navigate('/admin/usuarios-registrados')}
-                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+                className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >
-                <p className="font-bold mb-1">Usuários Registrados</p>
-                <p className="text-xs opacity-60">Ver quem está logado no site</p>
+                <p className="font-bold mb-1 dark:text-white group-hover:text-white">Usuários Registrados</p>
+                <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Ver quem está logado no site</p>
               </button>
               <button 
                 onClick={() => navigate('/admin/usuarios')}
-                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+                className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >
-                <p className="font-bold mb-1">Gerenciar Admins</p>
-                <p className="text-xs opacity-60">Adicione novos administradores</p>
+                <p className="font-bold mb-1 dark:text-white group-hover:text-white">Gerenciar Admins</p>
+                <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Adicione novos administradores</p>
               </button>
               <button 
                 onClick={() => navigate('/admin/novo-produto')}
-                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+                className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >
-                <p className="font-bold mb-1">Novo Produto</p>
-                <p className="text-xs opacity-60">Adicione um item ao catálogo</p>
+                <p className="font-bold mb-1 dark:text-white group-hover:text-white">Novo Produto</p>
+                <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Adicione um item ao catálogo</p>
               </button>
               <button 
                 onClick={() => navigate('/admin/categorias')}
-                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+                className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >
-                <p className="font-bold mb-1">Editar Categorias</p>
-                <p className="text-xs opacity-60">Gerencie os setores do site</p>
+                <p className="font-bold mb-1 dark:text-white group-hover:text-white">Editar Categorias</p>
+                <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Gerencie os setores do site</p>
               </button>
               <button 
                 onClick={() => navigate('/admin/configuracoes')}
-                className="p-4 bg-neutral-bg rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
+                className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >
-                <p className="font-bold mb-1">Configurações</p>
-                <p className="text-xs opacity-60">Ajustes gerais do sistema</p>
+                <p className="font-bold mb-1 dark:text-white group-hover:text-white">Configurações</p>
+                <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Ajustes gerais do sistema</p>
               </button>
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl shadow-sm">
-            <h3 className="text-xl font-bold mb-6">Últimos Produtos Adicionados</h3>
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm">
+            <h3 className="text-xl font-bold mb-6 dark:text-white">Últimos Produtos Adicionados</h3>
             <div className="space-y-4">
               {loading ? (
                 Array(4).fill(0).map((_, i) => (
-                  <div key={i} className="h-16 bg-neutral-bg rounded-2xl animate-pulse" />
+                  <div key={i} className="h-16 bg-neutral-bg dark:bg-zinc-800 rounded-2xl animate-pulse" />
                 ))
               ) : products.length === 0 ? (
-                <p className="text-primary/40 italic text-center py-8">Nenhum produto cadastrado.</p>
+                <p className="text-primary/40 dark:text-zinc-500 italic text-center py-8">Nenhum produto cadastrado.</p>
               ) : (
                 products.slice(0, 4).map((product) => (
-                  <div key={product.id} className="flex items-center gap-4 p-3 hover:bg-neutral-bg rounded-2xl transition-colors">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-neutral-bg">
+                  <div key={product.id} className="flex items-center gap-4 p-3 hover:bg-neutral-bg dark:hover:bg-zinc-800 rounded-2xl transition-colors">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-neutral-bg dark:bg-zinc-700">
                       <img src={product.image || product.images?.[0]} alt={product.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm truncate">{product.name}</p>
-                      <p className="text-xs text-primary/40">{product.category}</p>
+                      <p className="font-bold text-sm truncate dark:text-white">{product.name}</p>
+                      <p className="text-xs text-primary/40 dark:text-zinc-500">{product.category}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-sm">R$ {product.price.toLocaleString('pt-BR')}</p>
+                      <p className="font-bold text-sm dark:text-white">R$ {product.price.toLocaleString('pt-BR')}</p>
                     </div>
                   </div>
                 ))

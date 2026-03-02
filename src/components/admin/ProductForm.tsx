@@ -212,14 +212,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg min-h-screen">
+    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-black tracking-tighter">{isEdit ? 'EDITAR PRODUTO' : 'NOVO PRODUTO'}</h1>
-            <p className="text-primary/60">{isEdit ? 'Atualize as informações do item selecionado.' : 'Adicione um novo item ao catálogo da Lidermaq.'}</p>
+            <h1 className="text-3xl font-black tracking-tighter dark:text-white">{isEdit ? 'EDITAR PRODUTO' : 'NOVO PRODUTO'}</h1>
+            <p className="text-primary/60 dark:text-zinc-400">{isEdit ? 'Atualize as informações do item selecionado.' : 'Adicione um novo item ao catálogo da Lidermaq.'}</p>
           </div>
-          <button onClick={() => navigate('/admin/produtos')} className="p-3 hover:bg-white rounded-full transition-colors">
+          <button onClick={() => navigate('/admin/produtos')} className="p-3 hover:bg-white dark:hover:bg-zinc-800 rounded-full transition-colors dark:text-white">
             <X size={24} />
           </button>
         </div>
@@ -238,21 +238,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2">Nome do Produto</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2">Nome do Produto</label>
                 <input 
                   type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                   placeholder="Ex: Forno Industrial G.Paniz"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2">Marca</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2">Marca</label>
                 <input 
                   type="text" required value={brand} onChange={(e) => setBrand(e.target.value)}
-                  className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                   placeholder="Ex: G.Paniz"
                 />
               </div>
@@ -260,18 +260,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2">Preço (R$)</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2">Preço (R$)</label>
                 <input 
                   type="number" step="0.01" required value={price} onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                   placeholder="0,00"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 mb-2">Categoria</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2">Categoria</label>
                 <select 
                   required value={category} onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 appearance-none"
+                  className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 appearance-none"
                 >
                   <option value="">Selecione...</option>
                   {availableCategories.map(cat => (
@@ -283,21 +283,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 ml-1">Descrição</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1">Descrição</label>
               </div>
               <textarea 
                 required value={description} onChange={(e) => setDescription(e.target.value)}
                 rows={6}
-                className="w-full px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                 placeholder="Descreva o produto detalhadamente..."
               />
             </div>
           </div>
 
           {/* Variantes do Produto */}
-          <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm space-y-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold flex items-center gap-2">
+              <h3 className="text-xl font-bold flex items-center gap-2 dark:text-white">
                 <PackagePlus className="text-accent" /> Modelos / Variações
               </h3>
               <button 
@@ -307,39 +307,39 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                 <Plus size={18} /> Adicionar Variação
               </button>
             </div>
-            <p className="text-sm text-primary/60 mb-4">Use esta opção para cadastrar diferentes tamanhos, capacidades ou modelos do mesmo produto (ex: 50L, 100L).</p>
+            <p className="text-sm text-primary/60 dark:text-zinc-400 mb-4">Use esta opção para cadastrar diferentes tamanhos, capacidades ou modelos do mesmo produto (ex: 50L, 100L).</p>
 
             <div className="space-y-4">
               {variants.map((variant, index) => (
-                <div key={index} className="p-6 bg-neutral-bg rounded-2xl space-y-4 relative">
+                <div key={index} className="p-6 bg-neutral-bg dark:bg-zinc-800 rounded-2xl space-y-4 relative">
                   <button 
                     type="button" onClick={() => handleRemoveVariant(index)}
-                    className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                    className="absolute top-4 right-4 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-2 rounded-lg transition-colors"
                   >
                     <X size={20} />
                   </button>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Nome da Variação</label>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-1">Nome da Variação</label>
                       <input 
                         type="text" value={variant.name} onChange={(e) => handleVariantChange(index, 'name', e.target.value)}
-                        className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="w-full px-4 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         placeholder="Ex: Modelo 50 Litros"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Preço da Variação (R$)</label>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-1">Preço da Variação (R$)</label>
                       <input 
                         type="number" step="0.01" value={variant.price} onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
-                        className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="w-full px-4 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         placeholder="0,00"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Link da Imagem (Opcional)</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-1">Link da Imagem (Opcional)</label>
                     <div className="relative">
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600">
                         <LinkIcon size={16} />
                       </div>
                       <input 
@@ -348,11 +348,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                           console.log("Paste detected on variant", index);
                           handleVariantPaste(index, e);
                         }}
-                        className="w-full pl-10 pr-12 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="w-full pl-10 pr-12 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         placeholder="Cole o link ou pressione Ctrl+V"
                       />
                       <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                        <label className="p-2 hover:bg-neutral-bg rounded-lg cursor-pointer transition-colors text-accent flex items-center justify-center" title="Upload">
+                        <label className="p-2 hover:bg-neutral-bg dark:hover:bg-zinc-800 rounded-lg cursor-pointer transition-colors text-accent flex items-center justify-center" title="Upload">
                           {isUploading === `variant-${index}` ? (
                             <Loader2 size={16} className="animate-spin" />
                           ) : (
@@ -370,27 +370,27 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Descrição da Variação (Opcional)</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-1">Descrição da Variação (Opcional)</label>
                     <textarea 
                       value={variant.description || ''} onChange={(e) => handleVariantChange(index, 'description', e.target.value)}
                       rows={3}
-                      className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                      className="w-full px-4 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                       placeholder="Se vazio, usará a descrição principal..."
                     />
                   </div>
                 </div>
               ))}
               {variants.length === 0 && (
-                <div className="text-center py-8 border-2 border-dashed border-neutral-bg rounded-3xl text-primary/30">
+                <div className="text-center py-8 border-2 border-dashed border-neutral-bg dark:border-white/5 rounded-3xl text-primary/30 dark:text-zinc-700">
                   Nenhuma variação adicionada.
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm space-y-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold flex items-center gap-2">
+              <h3 className="text-xl font-bold flex items-center gap-2 dark:text-white">
                 <ImageIcon className="text-accent" /> Imagens do Produto
               </h3>
               <button 
@@ -405,7 +405,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
               {images.map((url, index) => (
                 <div key={index} className="flex gap-4 items-center">
                   <div className="flex-1 relative">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600">
                       <LinkIcon size={18} />
                     </div>
                     <input 
@@ -414,11 +414,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                         console.log("Paste detected on main", index);
                         handlePaste(index, e);
                       }}
-                      className="w-full pl-12 pr-12 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                      className="w-full pl-12 pr-12 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                       placeholder="Cole o link ou pressione Ctrl+V para colar uma imagem"
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                      <label className="p-2 hover:bg-white rounded-lg cursor-pointer transition-colors text-accent group" title="Upload do dispositivo (Grátis via ImgBB)">
+                      <label className="p-2 hover:bg-white dark:hover:bg-zinc-900 rounded-lg cursor-pointer transition-colors text-accent group" title="Upload do dispositivo (Grátis via ImgBB)">
                         {isUploading === `main-${index}` ? (
                           <Loader2 size={20} className="animate-spin" />
                         ) : (
@@ -440,7 +440,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                   {images.length > 1 && (
                     <button 
                       type="button" onClick={() => handleRemoveImage(index)}
-                      className="p-4 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                      className="p-4 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
                     >
                       <X size={20} />
                     </button>
@@ -459,7 +459,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             </button>
             <button 
               type="button" onClick={() => navigate('/admin/produtos')}
-              className="px-8 py-4 bg-white text-primary font-bold rounded-xl border border-neutral-bg hover:bg-neutral-bg transition-all"
+              className="px-8 py-4 bg-white dark:bg-zinc-900 text-primary dark:text-white font-bold rounded-xl border border-neutral-bg dark:border-white/5 hover:bg-neutral-bg dark:hover:bg-zinc-800 transition-all"
             >
               Cancelar
             </button>

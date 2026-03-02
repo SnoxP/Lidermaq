@@ -113,44 +113,44 @@ export const UserList = () => {
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg min-h-screen">
+    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <div className="container mx-auto px-4">
         <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-black tracking-tighter">USUÁRIOS REGISTRADOS</h1>
-            <p className="text-primary/60">Visualize quem está cadastrado e ativo no site.</p>
+            <h1 className="text-3xl font-black tracking-tighter dark:text-white">USUÁRIOS REGISTRADOS</h1>
+            <p className="text-primary/60 dark:text-zinc-400">Visualize quem está cadastrado e ativo no site.</p>
           </div>
           <div className="flex gap-4">
             <div className="relative flex-1 md:w-80">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30" size={20} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600" size={20} />
               <input 
                 type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 shadow-sm"
+                className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 shadow-sm"
                 placeholder="Buscar por nome ou e-mail..."
               />
             </div>
-            <button onClick={() => navigate('/admin')} className="p-4 bg-white rounded-xl hover:bg-neutral-bg transition-colors shadow-sm">
+            <button onClick={() => navigate('/admin')} className="p-4 bg-white dark:bg-zinc-900 dark:text-white rounded-xl hover:bg-neutral-bg dark:hover:bg-zinc-800 transition-colors shadow-sm">
               <X size={20} />
             </button>
           </div>
         </div>
 
-        <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl mb-8 flex items-start gap-4">
+        <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/20 p-6 rounded-3xl mb-8 flex items-start gap-4">
           <Shield className="text-amber-500 shrink-0" size={24} />
           <div>
-            <h4 className="font-bold text-amber-800 mb-1">Sincronização de Usuários</h4>
-            <p className="text-sm text-amber-700 leading-relaxed">
+            <h4 className="font-bold text-amber-800 dark:text-amber-500 mb-1">Sincronização de Usuários</h4>
+            <p className="text-sm text-amber-700 dark:text-amber-600/80 leading-relaxed">
               Os usuários aparecem nesta lista automaticamente **após realizarem o primeiro login** no site. 
               Se você tem usuários no console do Firebase que não aparecem aqui, peça para que eles façam login uma vez para sincronizar os dados.
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-neutral-bg/50 text-xs font-bold uppercase tracking-widest text-primary/40">
+                <tr className="bg-neutral-bg/50 dark:bg-zinc-800/50 text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500">
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4">Nome de Usuário</th>
                   <th className="px-6 py-4">E-mail (Gmail)</th>
@@ -159,22 +159,22 @@ export const UserList = () => {
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-bg">
+              <tbody className="divide-y divide-neutral-bg dark:divide-white/5">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 animate-pulse">Carregando usuários...</td>
+                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 dark:text-zinc-500 animate-pulse">Carregando usuários...</td>
                   </tr>
                 ) : filteredUsers.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 italic">Nenhum usuário encontrado.</td>
+                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 dark:text-zinc-500 italic">Nenhum usuário encontrado.</td>
                   </tr>
                 ) : (
                   filteredUsers.map((u) => (
-                    <tr key={u.id} className="hover:bg-neutral-bg/30 transition-colors">
+                    <tr key={u.id} className="hover:bg-neutral-bg/30 dark:hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <Circle size={10} className={u.isOnline ? "fill-emerald-500 text-emerald-500" : "fill-neutral-300 text-neutral-300"} />
-                          <span className="text-[10px] font-bold uppercase tracking-tighter">
+                          <Circle size={10} className={u.isOnline ? "fill-emerald-500 text-emerald-500" : "fill-neutral-300 dark:fill-zinc-700 text-neutral-300 dark:text-zinc-700"} />
+                          <span className="text-[10px] font-bold uppercase tracking-tighter dark:text-zinc-400">
                             {u.isOnline ? 'Online' : 'Offline'}
                           </span>
                         </div>
@@ -184,17 +184,17 @@ export const UserList = () => {
                           <div className="w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center font-bold text-xs">
                             {u.name?.charAt(0).toUpperCase()}
                           </div>
-                          <span className="font-bold text-sm">{u.name}</span>
+                          <span className="font-bold text-sm dark:text-white">{u.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-primary/60">{u.email}</td>
+                      <td className="px-6 py-4 text-sm text-primary/60 dark:text-zinc-400">{u.email}</td>
                       <td className="px-6 py-4">
                         <button 
                           onClick={() => toggleAdmin(u.email)}
                           className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all ${
                             admins.includes(u.email?.toLowerCase())
                               ? 'bg-accent text-white'
-                              : 'bg-neutral-bg text-primary/40 hover:bg-accent/10 hover:text-accent'
+                              : 'bg-neutral-bg dark:bg-zinc-800 text-primary/40 dark:text-zinc-500 hover:bg-accent/10 hover:text-accent'
                           }`}
                         >
                           {admins.includes(u.email?.toLowerCase()) ? (
@@ -204,7 +204,7 @@ export const UserList = () => {
                           )}
                         </button>
                       </td>
-                      <td className="px-6 py-4 text-sm text-primary/40">
+                      <td className="px-6 py-4 text-sm text-primary/40 dark:text-zinc-500">
                         <div className="flex items-center gap-2">
                           <Clock size={14} />
                           {formatLastSeen(u.lastSeen)}
@@ -214,7 +214,7 @@ export const UserList = () => {
                         <button 
                           onClick={() => deleteUser(u.id, u.email)}
                           disabled={u.email?.toLowerCase() === "pedronobreneto27@gmail.com"}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-20 disabled:hover:bg-transparent"
+                          className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-20 disabled:hover:bg-transparent"
                           title="Remover Usuário"
                         >
                           <Trash2 size={16} />

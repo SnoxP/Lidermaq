@@ -45,18 +45,18 @@ export const Categories = () => {
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg min-h-screen">
+    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="mb-12">
-          <h1 className="text-3xl font-black tracking-tighter">GERENCIAR CATEGORIAS</h1>
-          <p className="text-primary/60">Adicione ou remova os setores de produtos do site.</p>
+          <h1 className="text-3xl font-black tracking-tighter dark:text-white">GERENCIAR CATEGORIAS</h1>
+          <p className="text-primary/60 dark:text-zinc-400">Adicione ou remova os setores de produtos do site.</p>
         </div>
 
-        <div className="bg-white p-8 rounded-3xl shadow-sm mb-8">
+        <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm mb-8">
           <form onSubmit={handleAdd} className="flex gap-4">
             <input 
               type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)}
-              className="flex-1 px-4 py-4 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+              className="flex-1 px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
               placeholder="Nome da nova categoria..."
             />
             <button 
@@ -68,20 +68,20 @@ export const Categories = () => {
           </form>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-neutral-bg">
-            <h3 className="font-bold">Categorias Atuais</h3>
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-neutral-bg dark:border-white/5">
+            <h3 className="font-bold dark:text-white">Categorias Atuais</h3>
           </div>
-          <div className="divide-y divide-neutral-bg">
+          <div className="divide-y divide-neutral-bg dark:divide-white/5">
             {categories.length === 0 ? (
-              <div className="p-8 text-center text-primary/40 italic">Nenhuma categoria cadastrada.</div>
+              <div className="p-8 text-center text-primary/40 dark:text-zinc-500 italic">Nenhuma categoria cadastrada.</div>
             ) : (
               categories.map((cat) => (
-                <div key={cat.id} className="p-6 flex items-center justify-between hover:bg-neutral-bg/50 transition-colors">
-                  <span className="font-bold">{cat.name}</span>
+                <div key={cat.id} className="p-6 flex items-center justify-between hover:bg-neutral-bg/50 dark:hover:bg-white/5 transition-colors">
+                  <span className="font-bold dark:text-white">{cat.name}</span>
                   <button 
                     onClick={() => handleDelete(cat.id)}
-                    className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                    className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
                   >
                     <Trash2 size={20} />
                   </button>

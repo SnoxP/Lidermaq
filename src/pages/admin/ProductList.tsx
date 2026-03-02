@@ -93,18 +93,18 @@ export const ProductList = () => {
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg min-h-screen">
+    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <div className="container mx-auto px-4">
         <div className="mb-8 flex flex-col gap-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-3xl font-black tracking-tighter">TODOS OS PRODUTOS</h1>
-              <p className="text-primary/60">Gerencie o catálogo completo da Lidermaq.</p>
+              <h1 className="text-3xl font-black tracking-tighter dark:text-white">TODOS OS PRODUTOS</h1>
+              <p className="text-primary/60 dark:text-zinc-400">Gerencie o catálogo completo da Lidermaq.</p>
             </div>
             <div className="flex gap-4">
               <button 
                 onClick={() => setShowFilters(!showFilters)}
-                className={`p-4 rounded-xl border transition-all flex items-center gap-2 font-bold ${showFilters ? 'bg-accent text-white border-accent' : 'bg-white text-primary border-neutral-bg hover:bg-neutral-bg'}`}
+                className={`p-4 rounded-xl border transition-all flex items-center gap-2 font-bold ${showFilters ? 'bg-accent text-white border-accent' : 'bg-white dark:bg-zinc-900 text-primary dark:text-white border-neutral-bg dark:border-white/5 hover:bg-neutral-bg dark:hover:bg-zinc-800'}`}
               >
                 <Filter size={20} /> Filtros
               </button>
@@ -119,10 +119,10 @@ export const ProductList = () => {
 
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30" size={20} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600" size={20} />
               <input 
                 type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 shadow-sm"
+                className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 shadow-sm"
                 placeholder="Buscar por nome, marca ou categoria..."
               />
             </div>
@@ -135,12 +135,12 @@ export const ProductList = () => {
               className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 bg-white rounded-2xl shadow-sm border border-neutral-bg"
             >
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 flex items-center gap-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 flex items-center gap-1">
                   <Tag size={12} /> Marca
                 </label>
                 <select 
                   value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm"
+                  className="w-full px-4 py-3 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm"
                 >
                   <option value="">Todas as Marcas</option>
                   {brands.map(brand => (
@@ -150,12 +150,12 @@ export const ProductList = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 flex items-center gap-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 flex items-center gap-1">
                   <Tag size={12} /> Categoria
                 </label>
                 <select 
                   value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-bg rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm"
+                  className="w-full px-4 py-3 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm"
                 >
                   <option value="">Todas as Categorias</option>
                   {categories.map(cat => (
@@ -165,25 +165,25 @@ export const ProductList = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 flex items-center gap-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 flex items-center gap-1">
                   <ArrowUpDown size={12} /> Ordenar por
                 </label>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => toggleSort('name')}
-                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'name' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg border-transparent text-primary/60'}`}
+                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'name' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg dark:bg-zinc-800 border-transparent text-primary/60 dark:text-zinc-400'}`}
                   >
                     Nome
                   </button>
                   <button 
                     onClick={() => toggleSort('price')}
-                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'price' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg border-transparent text-primary/60'}`}
+                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'price' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg dark:bg-zinc-800 border-transparent text-primary/60 dark:text-zinc-400'}`}
                   >
                     Preço
                   </button>
                   <button 
                     onClick={() => toggleSort('createdAt')}
-                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'createdAt' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg border-transparent text-primary/60'}`}
+                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'createdAt' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg dark:bg-zinc-800 border-transparent text-primary/60 dark:text-zinc-400'}`}
                   >
                     Data
                   </button>
@@ -191,19 +191,19 @@ export const ProductList = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 flex items-center gap-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 flex items-center gap-1">
                   <ArrowUpDown size={12} /> Ordem
                 </label>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => setSortOrder('asc')}
-                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortOrder === 'asc' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg border-transparent text-primary/60'}`}
+                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortOrder === 'asc' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg dark:bg-zinc-800 border-transparent text-primary/60 dark:text-zinc-400'}`}
                   >
                     Crescente
                   </button>
                   <button 
                     onClick={() => setSortOrder('desc')}
-                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortOrder === 'desc' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg border-transparent text-primary/60'}`}
+                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortOrder === 'desc' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg dark:bg-zinc-800 border-transparent text-primary/60 dark:text-zinc-400'}`}
                   >
                     Decrescente
                   </button>
@@ -219,7 +219,7 @@ export const ProductList = () => {
                     setSortBy('createdAt');
                     setSortOrder('desc');
                   }}
-                  className="w-full py-3 px-4 bg-neutral-bg text-primary/60 font-bold rounded-xl text-xs hover:bg-neutral-bg/80 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-neutral-bg dark:bg-zinc-800 text-primary/60 dark:text-zinc-400 font-bold rounded-xl text-xs hover:bg-neutral-bg/80 dark:hover:bg-zinc-700 transition-all flex items-center justify-center gap-2"
                 >
                   <X size={14} /> Limpar Filtros
                 </button>
@@ -228,11 +228,11 @@ export const ProductList = () => {
           )}
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-neutral-bg/50 text-xs font-bold uppercase tracking-widest text-primary/40">
+                <tr className="bg-neutral-bg/50 dark:bg-zinc-800/50 text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500">
                   <th className="px-6 py-4">Produto</th>
                   <th className="px-6 py-4">Categoria</th>
                   <th className="px-6 py-4">Marca</th>
@@ -240,15 +240,15 @@ export const ProductList = () => {
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-bg">
+              <tbody className="divide-y divide-neutral-bg dark:divide-white/5">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 animate-pulse">Carregando produtos...</td>
+                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 dark:text-zinc-500 animate-pulse">Carregando produtos...</td>
                   </tr>
                 ) : filteredProducts.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center">
-                      <p className="text-primary/40 italic mb-4">Nenhum produto encontrado no banco de dados.</p>
+                      <p className="text-primary/40 dark:text-zinc-500 italic mb-4">Nenhum produto encontrado no banco de dados.</p>
                       <button 
                         onClick={() => navigate('/admin')}
                         className="text-accent font-bold hover:underline flex items-center gap-2 mx-auto"
@@ -259,21 +259,21 @@ export const ProductList = () => {
                   </tr>
                 ) : (
                   filteredProducts.map((product) => (
-                    <tr key={product.id} className="hover:bg-neutral-bg/30 transition-colors group">
+                    <tr key={product.id} className="hover:bg-neutral-bg/30 dark:hover:bg-white/5 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-neutral-bg rounded-lg overflow-hidden shrink-0">
+                          <div className="w-12 h-12 bg-neutral-bg dark:bg-zinc-800 rounded-lg overflow-hidden shrink-0">
                             {product.images?.[0] ? (
                               <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-primary/20"><Package size={20} /></div>
+                              <div className="w-full h-full flex items-center justify-center text-primary/20 dark:text-zinc-700"><Package size={20} /></div>
                             )}
                           </div>
-                          <span className="font-bold text-sm">{product.name}</span>
+                          <span className="font-bold text-sm dark:text-white">{product.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm">{product.category}</td>
-                      <td className="px-6 py-4 text-sm">{product.brand}</td>
+                      <td className="px-6 py-4 text-sm dark:text-zinc-400">{product.category}</td>
+                      <td className="px-6 py-4 text-sm dark:text-zinc-400">{product.brand}</td>
                       <td className="px-6 py-4 text-sm font-bold text-accent">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
                       </td>
@@ -281,14 +281,14 @@ export const ProductList = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button 
                             onClick={() => navigate(`/admin/editar-produto/${product.id}`)}
-                            className="p-3 text-primary hover:bg-neutral-bg rounded-xl transition-colors"
+                            className="p-3 text-primary dark:text-zinc-400 hover:bg-neutral-bg dark:hover:bg-zinc-800 rounded-xl transition-colors"
                             title="Editar"
                           >
                             <Edit2 size={18} />
                           </button>
                           <button 
                             onClick={() => handleDelete(product.id)}
-                            className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                            className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
                             title="Excluir"
                           >
                             <Trash2 size={18} />
