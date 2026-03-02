@@ -37,110 +37,154 @@ export const Home = () => {
     <div className="pt-20">
       <SEO />
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-black pt-20 lg:pt-0">
-        {/* Background Gradient for the whole section */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-transparent z-0" />
+      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-50/50 to-white dark:via-zinc-950/50 dark:to-zinc-950 z-10" />
+          <motion.img 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            src="https://cidadesnanet.com/news/wp-content/uploads/2020/12/IMG_8267.jpg" 
+            alt="Lidermaq Empresa" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 relative z-20">
+          <div className="max-w-4xl">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="py-12 lg:py-20"
             >
-              <span className="inline-block bg-accent text-white text-xs font-bold uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-6">
-                Qualidade & Tradição
+              <span className="inline-block px-4 py-1.5 bg-accent/10 text-accent text-xs font-bold uppercase tracking-[0.3em] rounded-full mb-6 border border-accent/20">
+                Líder em Equipamentos Comerciais
               </span>
-              
-              <div className="relative">
-                {/* Fade out background effect for the title area */}
-                <div className="absolute -inset-6 bg-gradient-to-b from-black/80 to-transparent blur-2xl -z-10 rounded-3xl" />
-                
-                <h1 className="text-[2.6rem] sm:text-5xl md:text-7xl font-black text-white leading-[0.85] mb-6 tracking-tighter">
-                  <span className="block">MÁQUINAS E</span>
-                  <span className="block mb-4">EQUIPAMENTOS DE</span>
-                  <span className="text-accent text-[1.4rem] sm:text-3xl md:text-5xl block leading-[1] mt-2">
-                    PADARIAS, RESTAURANTES, AÇOUGUES, SUPERMERCADOS, LANCHONETES E MÓVEIS PARA ESCRITÓRIO.
-                  </span>
-                </h1>
-                <p className="text-xl text-white/90 max-w-xl leading-relaxed mb-10">
-                  A Lidermaq é uma empresa sediada em Picos, especializada na comercialização de máquinas, equipamentos e soluções voltadas para os setores de alimentação, panificação, supermercados e empreendimentos comerciais em geral.
-                </p>
-              </div>
-              
+              <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[0.9] text-gradient font-display">
+                EQUIPANDO O SEU <br />
+                <span className="text-accent">SUCESSO.</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 mb-10 max-w-2xl leading-relaxed">
+                As melhores soluções em máquinas e equipamentos para padarias, açougues, supermercados e cozinhas industriais.
+              </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/catalogo" className="btn-primary text-lg px-10">
-                  Ver Catálogo <ArrowRight size={20} />
+                <Link to="/catalogo" className="btn-primary group">
+                  Ver Catálogo Completo
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <a href="https://wa.me/5589999170800" className="btn-secondary border-white text-white hover:bg-white hover:text-primary text-lg px-10">
-                  <MessageCircle size={20} /> Pedir Orçamento
+                <a href="https://wa.me/5589999170800" className="btn-secondary">
+                  <MessageCircle size={20} /> Solicitar Orçamento
                 </a>
               </div>
-
-              <div className="mt-16 flex flex-wrap gap-8">
-                {['Padarias', 'Restaurantes', 'Açougues', 'Supermercados', 'Lanchonetes', 'Móveis Para Escritório'].map((cat) => (
-                  <Link 
-                    key={cat} 
-                    to={`/catalogo?cat=${cat}`}
-                    className="text-white/50 hover:text-accent transition-colors font-bold text-sm uppercase tracking-widest flex items-center gap-2"
-                  >
-                    <span className="w-1.5 h-1.5 bg-accent rounded-full" />
-                    {cat}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1 }}
-              className="relative aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden shadow-2xl border border-white/10"
-            >
-              <img 
-                src="https://cidadesnanet.com/news/wp-content/uploads/2020/12/IMG_8267.jpg" 
-                alt="Fachada Lidermaq" 
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </motion.div>
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 hidden md:block"
+        >
+          <div className="w-6 h-10 border-2 border-zinc-400 rounded-full flex justify-center p-1">
+            <div className="w-1 h-2 bg-accent rounded-full" />
+          </div>
+        </motion.div>
       </section>
 
-      {/* Features */}
-      <section className="py-20 bg-white dark:bg-neutral-900 transition-colors duration-300">
+      {/* Features Section - Bento Grid Style */}
+      <section className="section-padding bg-zinc-50 dark:bg-zinc-950 transition-colors duration-500">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="flex gap-6">
-              <div className="w-16 h-16 bg-neutral-bg dark:bg-white/5 rounded-2xl flex items-center justify-center text-accent shrink-0">
-                <Shield size={32} />
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div className="max-w-2xl">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 dark:text-white font-display">
+                POR QUE ESCOLHER A <br />
+                <span className="text-accent">LIDERMAQ?</span>
+              </h2>
+              <p className="text-lg text-zinc-600 dark:text-zinc-400">
+                Combinamos tecnologia de ponta com um atendimento humano e especializado para garantir o melhor para o seu negócio.
+              </p>
+            </div>
+            <Link to="/sobre" className="text-accent font-bold flex items-center gap-2 hover:underline group">
+              Conheça nossa história <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* Main Feature */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="md:col-span-2 md:row-span-2 card-premium p-10 flex flex-col justify-between bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-950"
+            >
+              <div>
+                <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mb-8">
+                  <Shield size={32} />
+                </div>
+                <h3 className="text-3xl font-black mb-4 dark:text-white font-display">QUALIDADE <br />GARANTIDA</h3>
+                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  Trabalhamos apenas com as melhores marcas do mercado, garantindo durabilidade e alta performance para seus equipamentos.
+                </p>
+              </div>
+              <div className="mt-8 pt-8 border-t border-zinc-100 dark:border-white/5">
+                <div className="flex -space-x-3">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-zinc-900 bg-zinc-200 dark:bg-zinc-800 overflow-hidden">
+                      <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
+                    </div>
+                  ))}
+                  <div className="w-10 h-10 rounded-full border-2 border-white dark:border-zinc-900 bg-accent text-white flex items-center justify-center text-[10px] font-bold">
+                    +15k
+                  </div>
+                </div>
+                <p className="text-xs font-bold text-zinc-400 mt-3 uppercase tracking-widest">Clientes satisfeitos em todo o Piauí</p>
+              </div>
+            </motion.div>
+
+            {/* Support */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="md:col-span-2 card-premium p-10 flex items-center gap-8 bg-zinc-900 text-white"
+            >
+              <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center text-accent shrink-0">
+                <Tool size={40} />
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2 dark:text-white">Garantia Estendida</h3>
-                <p className="text-primary/60 dark:text-white/60">Todos os nossos equipamentos possuem garantia de fábrica e suporte especializado.</p>
+                <h3 className="text-2xl font-black mb-2 font-display">SUPORTE TÉCNICO</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">
+                  Equipe especializada pronta para atender você com agilidade e peças originais.
+                </p>
               </div>
-            </div>
-            <div className="flex gap-6">
-              <div className="w-16 h-16 bg-neutral-bg dark:bg-white/5 rounded-2xl flex items-center justify-center text-accent shrink-0">
-                <Truck size={32} />
+            </motion.div>
+
+            {/* Delivery */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="card-premium p-8 bg-white dark:bg-zinc-900"
+            >
+              <div className="w-12 h-12 bg-emerald-500/10 text-emerald-500 rounded-xl flex items-center justify-center mb-6">
+                <Truck size={24} />
               </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2 dark:text-white">Entrega Rápida</h3>
-                <p className="text-primary/60 dark:text-white/60">Logística própria para garantir que seu equipamento chegue impecável e no prazo.</p>
+              <h3 className="text-xl font-black mb-2 dark:text-white font-display">ENTREGA RÁPIDA</h3>
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                Logística própria para garantir que seu equipamento chegue seguro.
+              </p>
+            </motion.div>
+
+            {/* Consulting */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="card-premium p-8 bg-white dark:bg-zinc-900"
+            >
+              <div className="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center mb-6">
+                <Shield size={24} />
               </div>
-            </div>
-            <div className="flex gap-6">
-              <div className="w-16 h-16 bg-neutral-bg dark:bg-white/5 rounded-2xl flex items-center justify-center text-accent shrink-0">
-                <Tool size={32} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2 dark:text-white">Montagem Grátis</h3>
-                <p className="text-primary/60 dark:text-white/60">Equipe técnica qualificada para realizar a instalação completa em seu estabelecimento.</p>
-              </div>
-            </div>
+              <h3 className="text-xl font-black mb-2 dark:text-white font-display">MONTAGEM</h3>
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                Instalação completa e profissional no seu estabelecimento.
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>

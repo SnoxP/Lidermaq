@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard, Sun, Moon } from 'lucide-react';
+import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard, Sun, Moon, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -29,127 +29,135 @@ export const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white dark:bg-neutral-900 shadow-md py-3 border-b dark:border-white/5' : 'bg-transparent py-5'
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        scrolled 
+          ? 'glass-effect shadow-xl shadow-black/5 py-3' 
+          : 'bg-transparent py-6'
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-12 h-12 overflow-hidden">
-            <img 
-              src="https://i.imgur.com/muVpHcv.png" 
-              alt="Lidermaq Logo" 
-              className="w-full h-full object-contain"
-              referrerPolicy="no-referrer"
-            />
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/20 group-hover:rotate-12 transition-transform duration-500">
+            <span className="font-black text-xl font-display">L</span>
           </div>
-          <span className={`text-xl sm:text-2xl font-bold tracking-tighter ${scrolled ? 'text-primary dark:text-white' : 'text-primary dark:text-white'}`}>
+          <span className="text-2xl font-black tracking-tighter dark:text-white font-display">
             LIDERMAQ
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`text-sm font-medium uppercase tracking-wider hover:text-accent transition-colors ${
-                location.pathname === link.path ? 'text-accent' : 'text-primary/70 dark:text-white/70'
+              className={`text-xs font-bold uppercase tracking-[0.2em] transition-all hover:text-accent relative group ${
+                location.pathname === link.path ? 'text-accent' : 'text-zinc-500 dark:text-zinc-400'
               }`}
             >
               {link.name}
+              <span className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
           ))}
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 sm:gap-4">
-          <button className="p-2 hover:bg-neutral-bg dark:hover:bg-white/5 rounded-full transition-colors hidden md:block dark:text-white">
-            <Search size={20} />
-          </button>
-          
-          {/* User Auth Menu */}
-          <div className="relative">
-            {user ? (
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="w-9 h-9 sm:w-10 sm:h-10 bg-accent/10 text-accent rounded-full flex items-center justify-center hover:bg-accent/20 transition-all"
-                >
-                  <User size={18} />
-                </button>
-                
-                <AnimatePresence>
-                  {isUserMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 top-12 w-48 bg-white dark:bg-neutral-800 rounded-2xl shadow-xl border border-neutral-bg dark:border-white/10 p-2 z-[60]"
-                    >
-                      <div className="px-4 py-3 border-b border-neutral-bg dark:border-white/10 mb-2">
-                        <p className="text-xs font-bold text-primary/40 dark:text-white/40 uppercase tracking-widest">Usuário</p>
-                        <p className="text-sm font-bold truncate dark:text-white">{user.email}</p>
-                      </div>
-                      
-                      {user.isAdmin && (
-                        <Link 
-                          to="/admin" 
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-sm font-bold text-primary dark:text-white hover:bg-neutral-bg dark:hover:bg-white/5 rounded-xl transition-colors"
-                        >
-                          <LayoutDashboard size={18} className="text-accent" /> Painel Admin
-                        </Link>
-                      )}
-
-                      <Link 
-                        to="/perfil" 
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2 text-sm font-bold text-primary dark:text-white hover:bg-neutral-bg dark:hover:bg-white/5 rounded-xl transition-colors"
-                      >
-                        <User size={18} className="text-accent" /> Meu Perfil
-                      </Link>
-                      
-                      <button 
-                        onClick={() => { logout(); setIsUserMenuOpen(false); }}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
-                      >
-                        <LogOut size={18} /> Sair
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <Link to="/login" className="btn-primary py-2 px-4 sm:px-6 text-[10px] sm:text-xs">
-                Login
-              </Link>
-            )}
-          </div>
-
-          <div className="flex items-center gap-4">
-            <a href="tel:+5589999170800" className="hidden xl:flex items-center gap-2 text-sm font-semibold text-accent">
-              <Phone size={18} />
-              (89) 99917-0800
-            </a>
-
+        <div className="flex items-center gap-3 sm:gap-6">
+          <div className="hidden md:flex items-center gap-4 px-5 py-2.5 bg-zinc-100 dark:bg-white/5 rounded-full border border-zinc-200 dark:border-white/5 transition-colors">
+            <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300">
+              <Phone size={14} className="text-accent" />
+              <span className="text-xs font-bold tracking-tight">(89) 99917-0800</span>
+            </div>
+            
+            <div className="w-px h-4 bg-zinc-300 dark:bg-white/10" />
+            
             <button 
               onClick={toggleTheme}
-              className="p-2 bg-neutral-bg dark:bg-white/5 text-primary dark:text-white rounded-full hover:bg-neutral-bg/80 dark:hover:bg-white/10 transition-all"
+              className="text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors"
               title={theme === 'light' ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'}
             >
-              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             </button>
           </div>
 
-          <button 
-            className="lg:hidden p-2 bg-neutral-bg dark:bg-white/5 dark:text-white rounded-xl"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          <div className="flex items-center gap-2">
+            <button className="p-2.5 text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors hidden sm:block">
+              <Search size={20} />
+            </button>
+            
+            {/* User Auth Menu */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:border-accent/50 transition-all"
+              >
+                <User size={20} />
+              </button>
+              
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 top-14 w-64 glass-effect rounded-[1.5rem] shadow-2xl border border-zinc-200 dark:border-white/10 p-2 z-[60] overflow-hidden"
+                  >
+                    <div className="px-5 py-4 border-b border-zinc-100 dark:border-white/5 mb-2">
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Conta Lidermaq</p>
+                      <p className="text-sm font-bold truncate dark:text-white">{user?.email || 'Visitante'}</p>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      {user ? (
+                        <>
+                          {user.isAdmin && (
+                            <Link 
+                              to="/admin" 
+                              onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+                            >
+                              <LayoutDashboard size={18} className="text-accent" /> Painel Admin
+                            </Link>
+                          )}
+
+                          <Link 
+                            to="/perfil" 
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+                          >
+                            <User size={18} className="text-accent" /> Meu Perfil
+                          </Link>
+                          
+                          <button 
+                            onClick={() => { logout(); setIsUserMenuOpen(false); }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
+                          >
+                            <LogOut size={18} /> Sair
+                          </button>
+                        </>
+                      ) : (
+                        <Link 
+                          to="/login" 
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-bold bg-accent text-white rounded-xl hover:brightness-110 transition-all"
+                        >
+                          <LogIn size={18} /> Entrar na Conta
+                        </Link>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <button 
+              className="lg:hidden p-2.5 bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white rounded-xl"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </div>
 
