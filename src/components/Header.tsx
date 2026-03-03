@@ -32,7 +32,7 @@ export const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 w-full z-[70] transition-all duration-500 ${
         scrolled 
           ? 'glass-effect shadow-xl shadow-black/5 py-3' 
           : 'bg-transparent py-6'
@@ -228,7 +228,7 @@ export const Header = () => {
             </div>
 
             <button 
-              className="lg:hidden p-2.5 bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white rounded-xl"
+              className="lg:hidden p-2.5 bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white rounded-xl relative z-[60]"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}

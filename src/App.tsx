@@ -31,6 +31,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProductProvider } from './contexts/ProductContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { CartProvider } from './contexts/CartContext';
+import { ScrollToTop } from './components/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
         <ProductProvider>
           <CartProvider>
             <Router>
+              <ScrollToTop />
               <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-500 pb-20 lg:pb-0">
                 <Header />
                 <CartDrawer />
