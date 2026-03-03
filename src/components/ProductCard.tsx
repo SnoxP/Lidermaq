@@ -65,7 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product }) => {
               R$ {(product.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
             <span className="block text-xs text-accent font-semibold mt-1">
-              {product.installments?.replace('10x', 'até 12x') || 'Consulte condições'}
+              {product.installments || 'Consulte condições'}
             </span>
           </div>
           

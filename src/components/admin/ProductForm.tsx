@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 
+import { calculateInstallments } from '../../utils/format';
+
 interface ProductFormProps {
   productId?: string;
   isEdit?: boolean;
@@ -188,7 +190,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         image: images.filter(img => img !== '')[0] || '',
         images: images.filter(img => img !== ''),
         variants: variants.filter(v => v.name !== ''),
-        installments: `10x de R$ ${(parseFloat(price) / 10).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+        installments: calculateInstallments(parseFloat(price)),
         available: true,
         updatedAt: new Date().toISOString()
       };

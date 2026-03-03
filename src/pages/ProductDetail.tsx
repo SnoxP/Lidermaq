@@ -8,6 +8,7 @@ import { SEO } from '../components/SEO';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { calculateInstallments } from '../utils/format';
 
 export const ProductDetail = () => {
   const { id } = useParams();
@@ -200,7 +201,7 @@ export const ProductDetail = () => {
                   </span>
                 </div>
                 <span className="text-accent font-bold text-sm">
-                  {product.installments || 'Consulte condições'}
+                  {calculateInstallments(productPrice)}
                 </span>
               </div>
               
