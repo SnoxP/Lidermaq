@@ -109,7 +109,7 @@ export const Contact = () => {
                   <div>
                     <p className="font-bold dark:text-white mb-1">Endereço</p>
                     <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                      Próximo á concessionaria FIAT<br />
+                      Próximo à concessionária FIAT<br />
                       Av. Senador Helvídio Nunes, N°4731<br />
                       Junco, Picos - PI, 64607-755
                     </p>
@@ -128,7 +128,7 @@ export const Contact = () => {
               </div>
               <div className="aspect-video rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-500 border border-zinc-200 dark:border-white/5">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15886.824244584485!2d-41.472758!3d-7.078234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMDQnNDEuNiJTIDQxwrAyOCcyMS45Ilc!5e0!3m2!1spt-BR!2sbr!4v1645789000000!5m2!1spt-BR!2sbr" 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3971.706061141118!2d-41.472758!3d-7.078234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xbac246e3a606b9b8!2sLiderMaq%20Equipamentos!5e0!3m2!1spt-BR!2sbr!4v1645789000000!5m2!1spt-BR!2sbr" 
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 

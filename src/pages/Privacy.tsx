@@ -3,26 +3,49 @@ import { motion } from 'framer-motion';
 import { Shield, Lock, Eye, FileText } from 'lucide-react';
 import { SEO } from '../components/SEO';
 
-export const PrivacyPolicy = () => {
+export const Privacy = () => {
   return (
-    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
+    <div className="pt-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <SEO 
         title="Política de Privacidade"
         description="Conheça como a Lidermaq protege seus dados e garante sua privacidade."
       />
-      <div className="container mx-auto px-4 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-5xl font-black tracking-tighter mb-6 dark:text-white">POLÍTICA DE PRIVACIDADE</h1>
-          <p className="text-xl text-primary/60 dark:text-zinc-400 leading-relaxed">
-            Na Lidermaq, a sua privacidade é uma prioridade. Conheça como tratamos seus dados.
-          </p>
-        </motion.div>
+      
+      {/* Hero Section */}
+      <section className="relative py-24 overflow-hidden bg-zinc-900">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/80 via-zinc-900/90 to-zinc-900 z-10" />
+          <img 
+            src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80" 
+            alt="Privacidade" 
+            className="w-full h-full object-cover opacity-30"
+            referrerPolicy="no-referrer"
+          />
+        </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-3xl shadow-sm space-y-12 border border-transparent dark:border-white/5">
+        <div className="container mx-auto px-4 relative z-20">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <span className="inline-block px-4 py-1.5 bg-accent/20 backdrop-blur-md text-accent text-xs font-bold uppercase tracking-[0.3em] rounded-full mb-6 border border-accent/30">
+                Transparência e Segurança
+              </span>
+              <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 text-white font-display">
+                POLÍTICA DE <span className="text-accent">PRIVACIDADE</span>
+              </h1>
+              <p className="text-xl text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+                Na Lidermaq, a sua privacidade é uma prioridade. Conheça como tratamos seus dados com total segurança e transparência.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4 max-w-4xl -mt-10 relative z-30 pb-20">
+        <div className="bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-3xl shadow-xl space-y-12 border border-zinc-100 dark:border-white/5">
           <section>
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 bg-accent/10 text-accent rounded-xl flex items-center justify-center">

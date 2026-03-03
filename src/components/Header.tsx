@@ -10,6 +10,7 @@ export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isPhoneMenuOpen, setIsPhoneMenuOpen] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -69,9 +70,68 @@ export const Header = () => {
         {/* Actions */}
         <div className="flex items-center gap-3 sm:gap-6">
           <div className="hidden md:flex items-center gap-4 px-5 py-2.5 bg-zinc-100 dark:bg-white/5 rounded-full border border-zinc-200 dark:border-white/5 transition-colors">
-            <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300">
-              <Phone size={14} className="text-accent" />
-              <span className="text-xs font-bold tracking-tight">(89) 99917-0800</span>
+            <div className="relative">
+              <button 
+                onClick={() => setIsPhoneMenuOpen(!isPhoneMenuOpen)}
+                className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300 hover:text-accent transition-colors"
+                title="Contatos"
+              >
+                <Phone size={16} className="text-accent" />
+              </button>
+              
+              <AnimatePresence>
+                {isPhoneMenuOpen && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setIsPhoneMenuOpen(false)}
+                      className="fixed inset-0 z-40"
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute top-full right-0 mt-4 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-100 dark:border-white/5 overflow-hidden z-50"
+                    >
+                      <div className="p-4 border-b border-zinc-100 dark:border-white/5">
+                        <p className="text-xs font-bold uppercase tracking-widest text-zinc-400">Fale Conosco</p>
+                      </div>
+                      <div className="p-2">
+                        <a 
+                          href="https://wa.me/5589999170800" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-3 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors group"
+                        >
+                          <div className="w-8 h-8 bg-accent/10 text-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
+                            <Phone size={14} />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold dark:text-white">(89) 99917-0800</p>
+                            <p className="text-xs text-zinc-500">Jonas</p>
+                          </div>
+                        </a>
+                        <a 
+                          href="https://wa.me/5589999861264" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-3 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors group"
+                        >
+                          <div className="w-8 h-8 bg-accent/10 text-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
+                            <Phone size={14} />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold dark:text-white">(89) 99986-1264</p>
+                            <p className="text-xs text-zinc-500">Lena</p>
+                          </div>
+                        </a>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
             
             <div className="w-px h-4 bg-zinc-300 dark:bg-white/10" />

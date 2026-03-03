@@ -13,7 +13,8 @@ import { ProductDetail } from './pages/ProductDetail';
 import { Contact } from './pages/Contact';
 import { About } from './pages/About';
 import { Assistencia } from './pages/Assistencia';
-import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { Privacy } from './pages/Privacy';
+import { Terms } from './pages/Terms';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
@@ -49,6 +50,8 @@ export default function App() {
                     <Route path="/produto/:id" element={<ProductDetail />} />
                     <Route path="/contato" element={<Contact />} />
                     <Route path="/sobre" element={<About />} /> 
+                    <Route path="/privacidade" element={<Privacy />} />
+                    <Route path="/termos" element={<Terms />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/cadastro" element={<Register />} />
                     <Route 
@@ -135,7 +138,6 @@ export default function App() {
                     />
 
                     <Route path="/assistencia" element={<Assistencia />} />
-                    <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
                   </Routes>
                 </main>
                 <Footer />

@@ -36,7 +36,7 @@ export const Footer = () => {
                 { name: 'Sobre a Lidermaq', path: '/sobre' },
                 { name: 'Nossos Produtos', path: '/catalogo' },
                 { name: 'Assistência Técnica', path: '/assistencia' },
-                { name: 'Política de Privacidade', path: '/politica-privacidade' }
+                { name: 'Política de Privacidade', path: '/privacidade' }
               ].map((item) => (
                 <li key={item.name}>
                   <Link to={item.path} className="text-zinc-400 hover:text-white transition-colors text-sm flex items-center gap-2 group">
@@ -72,7 +72,7 @@ export const Footer = () => {
                   <MapPin size={20} />
                 </div>
                 <p className="text-zinc-400 text-sm leading-relaxed">
-                  Próximo á concessionaria FIAT - Av. Senador Helvídio Nunes, N°4731 - Junco, Picos - PI, 64607-755
+                  Próximo à concessionária FIAT - Av. Senador Helvídio Nunes, N°4731 - Junco, Picos - PI, 64607-755
                 </p>
               </li>
               <li className="flex gap-4">
@@ -93,8 +93,8 @@ export const Footer = () => {
             © {new Date().getFullYear()} Lidermaq Equipamentos. CNPJ: 19.743.850/0001-08.
           </p>
           <div className="flex gap-8">
-            <a href="#" className="text-zinc-500 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">Privacidade</a>
-            <a href="#" className="text-zinc-500 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">Termos</a>
+            <Link to="/privacidade" className="text-zinc-500 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">Privacidade</Link>
+            <Link to="/termos" className="text-zinc-500 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">Termos</Link>
           </div>
         </div>
       </div>

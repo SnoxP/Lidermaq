@@ -14,6 +14,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [price, setPrice] = useState('');
   const [brand, setBrand] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionTitle, setDescriptionTitle] = useState('Descrição do Produto');
   const [category, setCategory] = useState('');
   const [images, setImages] = useState<string[]>(['']);
   const [variants, setVariants] = useState<{ name: string; price: string; image?: string; description?: string }[]>([]);
@@ -49,6 +50,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           setPrice(data.price?.toString() || '');
           setBrand(data.brand || '');
           setDescription(data.description || '');
+          setDescriptionTitle(data.descriptionTitle || 'Descrição do Produto');
           setCategory(data.category || '');
           setImages(data.images || ['']);
           setVariants(data.variants || []);
@@ -181,6 +183,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         price: parseFloat(price),
         brand,
         description,
+        descriptionTitle,
         category,
         image: images.filter(img => img !== '')[0] || '',
         images: images.filter(img => img !== ''),
@@ -282,6 +285,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             </div>
 
             <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1">Título da Descrição</label>
+              </div>
+              <input 
+                type="text" value={descriptionTitle} onChange={(e) => setDescriptionTitle(e.target.value)}
+                className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 mb-4"
+                placeholder="Ex: Especificações Técnicas"
+              />
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1">Descrição</label>
               </div>
@@ -404,6 +415,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             <div className="space-y-4">
               {images.map((url, index) => (
                 <div key={index} className="flex gap-4 items-center">
+                  {url && (
+                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-zinc-200 dark:border-white/5 bg-zinc-100 dark:bg-zinc-800">
+                      <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                  )}
                   <div className="flex-1 relative">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 dark:text-zinc-600">
                       <LinkIcon size={18} />

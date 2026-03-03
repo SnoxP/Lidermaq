@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Plus, Trash2, Save, X } from 'lucide-react';
+import { LayoutDashboard, Plus, Trash2, Save, X, Edit2 } from 'lucide-react';
 import { db } from '../../services/firebase';
-import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 
 export const Categories = () => {
   const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
   const [newCategory, setNewCategory] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
 
   const fetchCategories = async () => {
     const querySnapshot = await getDocs(collection(db, 'categories'));
@@ -38,6 +40,22 @@ export const Categories = () => {
     if (!confirm('Tem certeza que deseja excluir esta categoria?')) return;
     try {
       await deleteDoc(doc(db, 'categories', id));
+      fetchCategories();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const startEditing = (cat: {id: string, name: string}) => {
+    setEditingId(cat.id);
+    setEditName(cat.name);
+  };
+
+  const handleEdit = async (id: string) => {
+    if (!editName.trim()) return;
+    try {
+      await updateDoc(doc(db, 'categories', id), { name: editName });
+      setEditingId(null);
       fetchCategories();
     } catch (error) {
       console.error(error);
@@ -78,13 +96,47 @@ export const Categories = () => {
             ) : (
               categories.map((cat) => (
                 <div key={cat.id} className="p-6 flex items-center justify-between hover:bg-neutral-bg/50 dark:hover:bg-white/5 transition-colors">
-                  <span className="font-bold dark:text-white">{cat.name}</span>
-                  <button 
-                    onClick={() => handleDelete(cat.id)}
-                    className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
-                  >
-                    <Trash2 size={20} />
-                  </button>
+                  {editingId === cat.id ? (
+                    <div className="flex-1 flex items-center gap-4 mr-4">
+                      <input 
+                        type="text" 
+                        value={editName} 
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="flex-1 px-4 py-2 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        autoFocus
+                      />
+                      <button 
+                        onClick={() => handleEdit(cat.id)}
+                        className="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-xl transition-colors"
+                      >
+                        <Save size={20} />
+                      </button>
+                      <button 
+                        onClick={() => setEditingId(null)}
+                        className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="font-bold dark:text-white">{cat.name}</span>
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => startEditing(cat)}
+                          className="p-3 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+                        >
+                          <Edit2 size={20} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(cat.id)}
+                          className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))
             )}

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2 } from 'lucide-react';
+import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
 import { db } from '../services/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductDetail = () => {
   const { id } = useParams();
@@ -12,6 +15,32 @@ export const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [mainImage, setMainImage] = useState<string>('');
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    const productToAdd = selectedVariant ? { ...product, ...selectedVariant, id: `${product.id}-${selectedVariant.name}` } : product;
+    addToCart(productToAdd);
+  };
+
+  const handlePrevImage = () => {
+    if (!product.images || product.images.length <= 1) return;
+    const currentIndex = product.images.indexOf(mainImage);
+    const prevIndex = currentIndex <= 0 ? product.images.length - 1 : currentIndex - 1;
+    setMainImage(product.images[prevIndex]);
+  };
+
+  const handleNextImage = () => {
+    if (!product.images || product.images.length <= 1) return;
+    const currentIndex = product.images.indexOf(mainImage);
+    const nextIndex = currentIndex >= product.images.length - 1 ? 0 : currentIndex + 1;
+    setMainImage(product.images[nextIndex]);
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -85,9 +114,26 @@ export const ProductDetail = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="aspect-square rounded-[2rem] overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 shadow-sm"
+              className="aspect-square rounded-[2rem] overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 shadow-sm relative group"
             >
               <img src={productImage} alt={product.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              
+              {product.images?.length > 1 && (
+                <>
+                  <button 
+                    onClick={handlePrevImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button 
+                    onClick={handleNextImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
             </motion.div>
             {product.images?.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
@@ -161,7 +207,7 @@ export const ProductDetail = () => {
               <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
                 <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
                   <span className="w-2 h-2 bg-accent rounded-full" />
-                  Descrição do Produto
+                  {product.descriptionTitle || 'Descrição do Produto'}
                 </h3>
                 <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
                   {productDescription}
@@ -169,8 +215,14 @@ export const ProductDetail = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <a href={whatsappUrl} className="btn-primary flex-1 text-lg py-4 shadow-lg shadow-accent/20 flex items-center justify-center gap-2">
-                  <MessageCircle size={24} /> Pedir pelo WhatsApp
+                <button 
+                  onClick={handleAddToCart}
+                  className="btn-primary flex-1 text-lg py-4 shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag size={24} /> Adicionar ao Carrinho
+                </button>
+                <a href={whatsappUrl} className="btn-secondary flex-1 text-lg py-4 flex items-center justify-center gap-2">
+                  <MessageCircle size={24} /> WhatsApp
                 </a>
                 <button 
                   onClick={() => {
