@@ -103,13 +103,6 @@ export const AdminDashboard = () => {
                 <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Ver quem está logado no site</p>
               </button>
               <button 
-                onClick={() => navigate('/admin/usuarios')}
-                className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
-              >
-                <p className="font-bold mb-1 dark:text-white group-hover:text-white">Gerenciar Admins</p>
-                <p className="text-xs opacity-60 dark:text-zinc-400 group-hover:text-white/80">Adicione novos administradores</p>
-              </button>
-              <button 
                 onClick={() => navigate('/admin/novo-produto')}
                 className="p-4 bg-neutral-bg dark:bg-zinc-800 rounded-2xl text-left hover:bg-accent hover:text-white transition-all group"
               >

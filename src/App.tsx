@@ -130,14 +130,6 @@ export default function App() {
                         </ProtectedRoute>
                       } 
                     />
-                    <Route 
-                      path="/admin/usuarios" 
-                      element={
-                        <ProtectedRoute adminOnly>
-                          <AdminManagement />
-                        </ProtectedRoute>
-                      } 
-                    />
 
                     <Route path="/assistencia" element={<Assistencia />} />
                   </Routes>

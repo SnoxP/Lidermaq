@@ -16,14 +16,17 @@ export const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
-  const [selectedBrand, setSelectedBrand] = useState('Todas');
+  const [selectedBrand, setSelectedBrand] = useState('TODAS');
   const [categories, setCategories] = useState<string[]>(['Todos']);
 
   const activeCategory = searchParams.get('cat') || 'Todos';
 
   const brands = useMemo(() => {
-    const uniqueBrands = Array.from(new Set(products.map(p => p.brand)));
-    return ['Todas', ...uniqueBrands.sort()];
+    const uniqueBrands = Array.from(new Set(products.map(p => {
+      // Remove accents and convert to uppercase
+      return p.brand.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    })));
+    return ['TODAS', ...uniqueBrands.sort()];
   }, [products]);
 
   useEffect(() => {
@@ -51,8 +54,11 @@ export const Catalog = () => {
       result = result.filter(p => p.category === activeCategory);
     }
 
-    if (selectedBrand !== 'Todas') {
-      result = result.filter(p => p.brand === selectedBrand);
+    if (selectedBrand !== 'TODAS') {
+      result = result.filter(p => {
+        const pBrandFormatted = p.brand.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        return pBrandFormatted === selectedBrand;
+      });
     }
 
     if (searchTerm) {

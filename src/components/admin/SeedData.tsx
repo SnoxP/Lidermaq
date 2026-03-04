@@ -57,21 +57,21 @@ export const SeedData = () => {
   }
 
   return (
-    <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-bg">
+    <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm border border-neutral-bg dark:border-white/5 transition-colors">
       <div className="flex items-start gap-4 mb-6">
         <div className="w-12 h-12 bg-accent/10 text-accent rounded-2xl flex items-center justify-center shrink-0">
           <Database size={24} />
         </div>
         <div>
-          <h3 className="text-xl font-bold mb-1">Importar Catálogo Inicial</h3>
-          <p className="text-sm text-primary/60 leading-relaxed">
+          <h3 className="text-xl font-bold mb-1 dark:text-white">Importar Catálogo Inicial</h3>
+          <p className="text-sm text-primary/60 dark:text-zinc-400 leading-relaxed">
             Seu banco de dados está vazio. Deseja importar os produtos e categorias padrão do site para começar a editá-los?
           </p>
         </div>
       </div>
 
       {status === 'error' && (
-        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl flex items-center gap-3 text-xs font-bold">
+        <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl flex items-center gap-3 text-xs font-bold">
           <AlertCircle size={18} />
           {message}
         </div>

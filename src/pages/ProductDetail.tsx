@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
+import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send } from 'lucide-react';
 import { db } from '../services/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -19,6 +19,12 @@ export const ProductDetail = () => {
   const { addToCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Comments state
+  const [comments, setComments] = useState<any[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [rating, setRating] = useState(5);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   const handleAddToCart = () => {
     if (!user) {
@@ -43,6 +49,18 @@ export const ProductDetail = () => {
     setMainImage(product.images[nextIndex]);
   };
 
+  const fetchComments = async () => {
+    if (!id) return;
+    try {
+      const q = query(collection(db, 'comments'), where('productId', '==', id), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const fetchedComments = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setComments(fetchedComments);
+    } catch (error) {
+      console.error("Erro ao buscar comentários:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) return;
@@ -62,6 +80,7 @@ export const ProductDetail = () => {
     };
 
     fetchProduct();
+    fetchComments();
     window.scrollTo(0, 0);
   }, [id]);
 
@@ -72,6 +91,35 @@ export const ProductDetail = () => {
       setMainImage(product.images?.[0] || product.image || '');
     }
   }, [selectedVariant, product]);
+
+  const handleSubmitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!newComment.trim()) return;
+
+    setIsSubmittingComment(true);
+    try {
+      await addDoc(collection(db, 'comments'), {
+        productId: id,
+        userId: user.uid,
+        userName: user.name || 'Usuário',
+        text: newComment,
+        rating,
+        createdAt: new Date().toISOString()
+      });
+      setNewComment('');
+      setRating(5);
+      fetchComments();
+    } catch (error) {
+      console.error("Erro ao adicionar comentário:", error);
+      alert("Erro ao enviar avaliação.");
+    } finally {
+      setIsSubmittingComment(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -309,6 +357,96 @@ export const ProductDetail = () => {
             </div>
           </div>
         )}
+
+        {/* Comments Section */}
+        <div className="mt-24">
+          <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 dark:text-white font-display">AVALIAÇÕES DO PRODUTO</h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Comment Form */}
+            <div className="lg:col-span-1">
+              <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
+                <h3 className="font-bold mb-6 dark:text-white font-display">Deixe sua avaliação</h3>
+                
+                {user ? (
+                  <form onSubmit={handleSubmitComment} className="space-y-6">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">Sua Nota</label>
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setRating(star)}
+                            className={`p-2 rounded-xl transition-all ${rating >= star ? 'text-yellow-400 bg-yellow-400/10' : 'text-zinc-300 dark:text-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
+                          >
+                            <Star size={24} fill={rating >= star ? "currentColor" : "none"} />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">Seu Comentário</label>
+                      <textarea 
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="O que você achou deste produto?"
+                        rows={4}
+                        className="w-full px-4 py-4 bg-zinc-50 dark:bg-zinc-800 dark:text-white border border-zinc-200 dark:border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none"
+                        required
+                      />
+                    </div>
+                    
+                    <button 
+                      type="submit"
+                      disabled={isSubmittingComment}
+                      className="w-full btn-primary py-4 flex justify-center items-center gap-2 disabled:opacity-50"
+                    >
+                      <Send size={20} />
+                      {isSubmittingComment ? 'Enviando...' : 'Enviar Avaliação'}
+                    </button>
+                  </form>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-zinc-500 dark:text-zinc-400 mb-4">Faça login para avaliar este produto.</p>
+                    <Link to="/login" className="btn-primary inline-block">Fazer Login</Link>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Comments List */}
+            <div className="lg:col-span-2 space-y-6">
+              {comments.length === 0 ? (
+                <div className="bg-white dark:bg-zinc-900 p-12 rounded-[2rem] text-center border border-zinc-200 dark:border-white/5 transition-colors duration-300">
+                  <MessageCircle size={48} className="mx-auto text-zinc-300 dark:text-zinc-700 mb-4" />
+                  <p className="text-xl font-bold text-zinc-500 dark:text-zinc-400">Nenhuma avaliação ainda.</p>
+                  <p className="text-zinc-400 dark:text-zinc-500 mt-2">Seja o primeiro a avaliar este produto!</p>
+                </div>
+              ) : (
+                comments.map((comment) => (
+                  <div key={comment.id} className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <p className="font-bold dark:text-white">{comment.userName}</p>
+                        <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                          {new Date(comment.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                        </p>
+                      </div>
+                      <div className="flex gap-1 text-yellow-400">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} size={16} fill={i < comment.rating ? "currentColor" : "none"} className={i >= comment.rating ? "text-zinc-300 dark:text-zinc-700" : ""} />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">{comment.text}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
