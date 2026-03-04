@@ -16,17 +16,23 @@ export const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
+  const [selectedBrand, setSelectedBrand] = useState('Todas');
   const [categories, setCategories] = useState<string[]>(['Todos']);
 
   const activeCategory = searchParams.get('cat') || 'Todos';
+
+  const brands = useMemo(() => {
+    const uniqueBrands = Array.from(new Set(products.map(p => p.brand)));
+    return ['Todas', ...uniqueBrands.sort()];
+  }, [products]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'categories'));
-        const cats = querySnapshot.docs.map(doc => doc.data().name);
-        cats.sort();
-        setCategories(['Todos', ...cats]);
+        const cats = querySnapshot.docs.map(doc => ({ name: doc.data().name, order: doc.data().order || 0 }));
+        cats.sort((a, b) => a.order - b.order);
+        setCategories(['Todos', ...cats.map(c => c.name)]);
       } catch (e) {
         console.error("Erro ao buscar categorias:", e);
       }
@@ -45,6 +51,10 @@ export const Catalog = () => {
       result = result.filter(p => p.category === activeCategory);
     }
 
+    if (selectedBrand !== 'Todas') {
+      result = result.filter(p => p.brand === selectedBrand);
+    }
+
     if (searchTerm) {
       result = result.filter(p => 
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,7 +69,7 @@ export const Catalog = () => {
     }
 
     return result;
-  }, [activeCategory, searchTerm, sortBy, products]);
+  }, [activeCategory, searchTerm, sortBy, products, selectedBrand]);
 
   return (
     <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
@@ -123,6 +133,16 @@ export const Catalog = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
                 />
+              </div>
+              <div className="relative min-w-[200px]">
+                <select 
+                  value={selectedBrand}
+                  onChange={(e) => setSelectedBrand(e.target.value)}
+                  className="w-full appearance-none px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none font-bold cursor-pointer shadow-sm"
+                >
+                  {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
               </div>
               <div className="relative min-w-[200px]">
                 <select 

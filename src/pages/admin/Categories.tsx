@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Plus, Trash2, Save, X, Edit2, RefreshCw, AlertTriangle } from 'lucide-react';
+import { LayoutDashboard, Plus, Trash2, Save, X, Edit2, RefreshCw, AlertTriangle, ArrowUp, ArrowDown } from 'lucide-react';
 import { db } from '../../services/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, writeBatch } from 'firebase/firestore';
 
 export const Categories = () => {
-  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+  const [categories, setCategories] = useState<{id: string, name: string, order: number}[]>([]);
   const [newCategory, setNewCategory] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -14,9 +14,9 @@ export const Categories = () => {
 
   const fetchCategories = async () => {
     const querySnapshot = await getDocs(collection(db, 'categories'));
-    const cats = querySnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name }));
-    // Sort alphabetically
-    cats.sort((a, b) => a.name.localeCompare(b.name));
+    const cats = querySnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name, order: doc.data().order || 0 }));
+    // Sort by order
+    cats.sort((a, b) => a.order - b.order);
     setCategories(cats);
   };
 
@@ -29,7 +29,9 @@ export const Categories = () => {
     if (!newCategory.trim()) return;
     setIsLoading(true);
     try {
-      await addDoc(collection(db, 'categories'), { name: newCategory });
+      // Find max order
+      const maxOrder = categories.length > 0 ? Math.max(...categories.map(c => c.order)) : 0;
+      await addDoc(collection(db, 'categories'), { name: newCategory, order: maxOrder + 1 });
       setNewCategory('');
       fetchCategories();
     } catch (error) {
@@ -45,10 +47,11 @@ export const Categories = () => {
     setIsLoading(true);
     try {
       const batch = writeBatch(db);
+      let order = 1;
       for (const name of defaults) {
         if (!categories.some(c => c.name === name)) {
            const ref = doc(collection(db, 'categories'));
-           batch.set(ref, { name });
+           batch.set(ref, { name, order: order++ });
         }
       }
       await batch.commit();
@@ -58,6 +61,28 @@ export const Categories = () => {
       alert("Erro ao criar categorias padrão.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
+    const newCategories = [...categories];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    // Swap orders
+    const tempOrder = newCategories[index].order;
+    newCategories[index].order = newCategories[targetIndex].order;
+    newCategories[targetIndex].order = tempOrder;
+    
+    // Update Firestore
+    try {
+      const batch = writeBatch(db);
+      batch.update(doc(db, 'categories', newCategories[index].id), { order: newCategories[index].order });
+      batch.update(doc(db, 'categories', newCategories[targetIndex].id), { order: newCategories[targetIndex].order });
+      await batch.commit();
+      fetchCategories();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao reordenar.");
     }
   };
 
@@ -140,7 +165,7 @@ export const Categories = () => {
             <span className="text-xs text-zinc-400">{categories.length} categorias</span>
           </div>
           <div className="divide-y divide-neutral-bg dark:divide-white/5">
-            {categories.length === 0 ? (
+              {categories.length === 0 ? (
               <div className="p-12 text-center flex flex-col items-center gap-4">
                 <p className="text-primary/40 dark:text-zinc-500 italic">Nenhuma categoria cadastrada.</p>
                 <button 
@@ -153,7 +178,7 @@ export const Categories = () => {
                 </button>
               </div>
             ) : (
-              categories.map((cat) => (
+              categories.map((cat, index) => (
                 <div key={cat.id} className="p-6 flex items-center justify-between hover:bg-neutral-bg/50 dark:hover:bg-white/5 transition-colors">
                   {editingId === cat.id ? (
                     <div className="flex-1 flex items-center gap-4 mr-4">
@@ -184,6 +209,20 @@ export const Categories = () => {
                     <>
                       <span className="font-bold dark:text-white">{cat.name}</span>
                       <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => handleMove(index, 'up')}
+                          disabled={index === 0}
+                          className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors disabled:opacity-30"
+                        >
+                          <ArrowUp size={18} />
+                        </button>
+                        <button 
+                          onClick={() => handleMove(index, 'down')}
+                          disabled={index === categories.length - 1}
+                          className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors disabled:opacity-30"
+                        >
+                          <ArrowDown size={18} />
+                        </button>
                         <button 
                           onClick={() => startEditing(cat)}
                           className="p-3 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
