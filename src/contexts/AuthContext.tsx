@@ -51,14 +51,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const syncUserToFirestore = async (firebaseUser: FirebaseUser, name?: string) => {
     if (!firebaseUser.email) return;
     
+    let ip = '';
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      ip = data.ip;
+    } catch (e) {
+      console.error("Erro ao buscar IP:", e);
+    }
+
     const userRef = doc(db, 'users', firebaseUser.uid);
     await setDoc(userRef, {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
       name: name || firebaseUser.displayName || firebaseUser.email.split('@')[0],
       lastSeen: serverTimestamp(),
-      isOnline: true
+      isOnline: true,
+      lastIp: ip
     }, { merge: true });
+  };
+
+  const checkBanStatus = async (uid: string, ip: string): Promise<boolean> => {
+    try {
+      // Check user ban
+      const userDoc = await getDoc(doc(db, 'users', uid));
+      if (userDoc.exists() && userDoc.data().isBanned) {
+        return true;
+      }
+      
+      // Check IP ban
+      if (ip) {
+        const ipDoc = await getDoc(doc(db, 'banned_ips', ip.replace(/\./g, '_')));
+        if (ipDoc.exists()) {
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error("Erro ao verificar status de banimento:", error);
+      return false;
+    }
   };
 
   useEffect(() => {
@@ -72,15 +104,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser && firebaseUser.email) {
         try {
-          const isAdmin = await checkAdminStatus(firebaseUser.email);
-          setUser({
-            id: firebaseUser.uid,
-            email: firebaseUser.email,
-            name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
-            isAdmin: isAdmin,
-          });
-          // Atualiza o status online sem travar a UI
-          syncUserToFirestore(firebaseUser);
+          let ip = '';
+          try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            ip = data.ip;
+          } catch (e) {
+            console.error("Erro ao buscar IP:", e);
+          }
+
+          const isBanned = await checkBanStatus(firebaseUser.uid, ip);
+          
+          if (isBanned) {
+            await signOut(auth);
+            setUser(null);
+            alert("Sua conta ou IP foi banido do sistema.");
+          } else {
+            const isAdmin = await checkAdminStatus(firebaseUser.email);
+            setUser({
+              id: firebaseUser.uid,
+              email: firebaseUser.email,
+              name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
+              isAdmin: isAdmin,
+            });
+            // Atualiza o status online sem travar a UI
+            syncUserToFirestore(firebaseUser);
+          }
         } catch (e) {
           console.error("Erro ao sincronizar usuário:", e);
         }

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Mail, Eye, EyeOff, Shield, Search, X, Clock, Circle, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
+import { Users, Mail, Eye, EyeOff, Shield, Search, X, Clock, Circle, ShieldAlert, ShieldCheck, Trash2, Ban } from 'lucide-react';
 import { db } from '../../services/firebase';
 import { collection, onSnapshot, query, orderBy, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 export const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
+  const [bannedUsers, setBannedUsers] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'active' | 'banned'>('active');
   const [admins, setAdmins] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,7 +22,8 @@ export const UserList = () => {
     
     const unsubscribeUsers = onSnapshot(q, (querySnapshot) => {
       const userList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setUsers(userList.filter(u => !u.isBanned));
+      setUsers(userList.filter(u => !(u as any).isBanned));
+      setBannedUsers(userList.filter(u => (u as any).isBanned));
       setIsLoading(false);
     }, (error) => {
       console.error("Erro ao buscar usuários:", error);
@@ -107,6 +109,38 @@ export const UserList = () => {
     } catch (error) {
       console.error("Erro ao banir usuário:", error);
       alert("Erro ao banir usuário.");
+    }
+  };
+
+  const unbanUser = async (userId: string, email: string) => {
+    if (!confirm(`Tem certeza que deseja desbanir o usuário ${email}?`)) return;
+
+    try {
+      await setDoc(doc(db, 'users', userId), { isBanned: false }, { merge: true });
+      alert("Usuário desbanido com sucesso.");
+    } catch (error) {
+      console.error("Erro ao desbanir usuário:", error);
+      alert("Erro ao desbanir usuário.");
+    }
+  };
+
+  const banIp = async (ip: string, email: string) => {
+    if (!ip) {
+      alert("IP não encontrado para este usuário.");
+      return;
+    }
+    if (!confirm(`Tem certeza que deseja banir o IP ${ip} (usado por ${email})?`)) return;
+
+    try {
+      await setDoc(doc(db, 'banned_ips', ip.replace(/\./g, '_')), {
+        ip: ip,
+        bannedAt: new Date().toISOString(),
+        bannedEmail: email
+      });
+      alert("IP banido com sucesso.");
+    } catch (error) {
+      console.error("Erro ao banir IP:", error);
+      alert("Erro ao banir IP.");
     }
   };
 
@@ -230,13 +264,30 @@ export const UserList = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right flex gap-2 justify-end">
-                        {activeTab === 'active' && (
+                        {activeTab === 'active' ? (
+                          <>
+                            <button 
+                              onClick={() => banUser(u.id, u.email)}
+                              className="p-2 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition-colors"
+                              title="Banir Conta"
+                            >
+                              <ShieldAlert size={16} />
+                            </button>
+                            <button 
+                              onClick={() => banIp(u.lastIp, u.email)}
+                              className="p-2 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-500/10 rounded-lg transition-colors"
+                              title="Banir IP"
+                            >
+                              <Ban size={16} />
+                            </button>
+                          </>
+                        ) : (
                           <button 
-                            onClick={() => banUser(u.id, u.email)}
-                            className="p-2 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition-colors"
-                            title="Banir Usuário"
+                            onClick={() => unbanUser(u.id, u.email)}
+                            className="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-lg transition-colors"
+                            title="Desbanir Conta"
                           >
-                            <ShieldAlert size={16} />
+                            <ShieldCheck size={16} />
                           </button>
                         )}
                         <button 
