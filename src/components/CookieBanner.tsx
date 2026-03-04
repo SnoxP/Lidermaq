@@ -40,12 +40,6 @@ export const CookieBanner = () => {
               >
                 Aceitar Tudo
               </button>
-              <button 
-                onClick={() => setShow(false)}
-                className="border border-neutral-bg dark:border-white/10 px-6 py-2 rounded-lg text-sm font-bold hover:bg-neutral-bg dark:hover:bg-white/5 dark:text-white transition-colors"
-              >
-                Personalizar
-              </button>
             </div>
           </div>
         </motion.div>
