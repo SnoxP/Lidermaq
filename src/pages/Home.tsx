@@ -59,9 +59,6 @@ export const Home = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <span className="inline-block px-4 py-1.5 bg-black/40 backdrop-blur-md text-accent text-xs font-bold uppercase tracking-[0.3em] rounded-full mb-6 border border-accent">
-                Líder em Equipamentos Comerciais
-              </span>
               <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[0.9] text-zinc-900 dark:text-white font-display">
                 EQUIPANDO O SEU <br />
                 <span className="text-accent">SUCESSO.</span>

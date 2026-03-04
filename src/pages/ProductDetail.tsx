@@ -9,6 +9,7 @@ import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { calculateInstallments } from '../utils/format';
+import { AttendantSelector } from '../components/AttendantSelector';
 
 export const ProductDetail = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ export const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [mainImage, setMainImage] = useState<string>('');
+  const [showAttendantSelector, setShowAttendantSelector] = useState(false);
   const { addToCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -270,9 +272,12 @@ export const ProductDetail = () => {
                 >
                   <ShoppingBag size={24} /> Adicionar ao Carrinho
                 </button>
-                <a href={whatsappUrl} className="btn-secondary flex-1 text-lg py-4 flex items-center justify-center gap-2">
-                  <MessageCircle size={24} /> WhatsApp
-                </a>
+                <button 
+                  onClick={() => setShowAttendantSelector(!showAttendantSelector)}
+                  className="btn-secondary flex-1 text-lg py-4 flex items-center justify-center gap-2"
+                >
+                  <MessageCircle size={24} /> Falar com Atendente
+                </button>
                 <button 
                   onClick={() => {
                     navigator.share?.({
@@ -289,6 +294,12 @@ export const ProductDetail = () => {
                   <Share2 size={20} />
                 </button>
               </div>
+
+              {showAttendantSelector && (
+                <div className="mb-10 p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10">
+                  <AttendantSelector message={`Olá, tenho interesse no produto: ${productName} - Lidermaq`} />
+                </div>
+              )}
 
               {/* Badges */}
               <div className="grid grid-cols-2 gap-6 pt-8 border-t border-zinc-200 dark:border-white/10">

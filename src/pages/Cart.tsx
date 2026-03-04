@@ -5,34 +5,33 @@ import { Trash2, Plus, Minus, ArrowLeft, MessageCircle, ShoppingBag } from 'luci
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { SEO } from '../components/SEO';
+import { AttendantSelector } from '../components/AttendantSelector';
 
 export const Cart = () => {
   const { cart, removeFromCart, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [showAttendantSelector, setShowAttendantSelector] = React.useState(false);
+
+  const cartDetails = cart
+    .map(
+      (item) =>
+        `• ${item.name}${item.variant ? ` (${item.variant})` : ''} x${item.quantity} - R$ ${(
+          item.price * item.quantity
+        ).toLocaleString('pt-BR')}`
+    )
+    .join('\n');
+
+  const message = `Olá Lidermaq! Gostaria de solicitar um orçamento para os seguintes itens:\n\n${cartDetails}\n\nTotal: R$ ${totalPrice.toLocaleString(
+    'pt-BR'
+  )}\n\nCliente: ${user?.email || 'Visitante'}`;
 
   const handleCheckout = () => {
     if (!user) {
       navigate('/login?redirect=/carrinho');
       return;
     }
-
-    const cartDetails = cart
-      .map(
-        (item) =>
-          `• ${item.name}${item.variant ? ` (${item.variant})` : ''} x${item.quantity} - R$ ${(
-            item.price * item.quantity
-          ).toLocaleString('pt-BR')}`
-      )
-      .join('\n');
-
-    const message = `Olá Lidermaq! Gostaria de solicitar um orçamento para os seguintes itens:\n\n${cartDetails}\n\nTotal: R$ ${totalPrice.toLocaleString(
-      'pt-BR'
-    )}\n\nCliente: ${user.email}`;
-
-    const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-    clearCart();
+    setShowAttendantSelector(true);
   };
 
   if (cart.length === 0) {
@@ -154,8 +153,14 @@ export const Cart = () => {
                 onClick={handleCheckout}
                 className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
               >
-                <MessageCircle size={24} /> Finalizar Orçamento
+                <MessageCircle size={24} /> {showAttendantSelector ? 'Escolha um Atendente' : 'Finalizar Orçamento'}
               </button>
+              
+              {showAttendantSelector && (
+                <div className="mt-6 p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10">
+                  <AttendantSelector message={message} />
+                </div>
+              )}
               
               {!user && (
                 <p className="text-[10px] text-center text-zinc-400 mt-4 uppercase font-bold tracking-widest">
