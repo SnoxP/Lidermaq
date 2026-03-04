@@ -1,12 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Filter, Search, ChevronDown, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ProductCard } from '../components/ProductCard';
-import { CATEGORIES } from '../data/mockData';
 import { useProducts } from '../hooks/useProducts';
 import { useAuth } from '../contexts/AuthContext';
 import { SEO } from '../components/SEO';
+import { db } from '../services/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 export const Catalog = () => {
   const { products, loading } = useProducts();
@@ -15,8 +16,23 @@ export const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
+  const [categories, setCategories] = useState<string[]>(['Todos']);
 
   const activeCategory = searchParams.get('cat') || 'Todos';
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'categories'));
+        const cats = querySnapshot.docs.map(doc => doc.data().name);
+        cats.sort();
+        setCategories(['Todos', ...cats]);
+      } catch (e) {
+        console.error("Erro ao buscar categorias:", e);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -43,7 +59,7 @@ export const Catalog = () => {
     }
 
     return result;
-  }, [activeCategory, searchTerm, sortBy]);
+  }, [activeCategory, searchTerm, sortBy, products]);
 
   return (
     <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
@@ -67,7 +83,7 @@ export const Catalog = () => {
                 <Filter size={18} className="text-accent" /> Categorias
               </h3>
               <div className="flex flex-wrap lg:flex-col gap-2">
-                {CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSearchParams({ cat })}
