@@ -1,8 +1,28 @@
-import React from 'react';
-import { Mail, Phone, MapPin, MessageCircle, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, MessageCircle, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { BotVerification } from '../components/BotVerification';
 
 export const Contact = () => {
+  const [isVerified, setIsVerified] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isVerified) {
+      alert("Por favor, complete a verificação de segurança.");
+      return;
+    }
+    
+    setStatus('sending');
+    
+    // Simulação de envio
+    setTimeout(() => {
+      setStatus('success');
+      // Resetar formulário seria ideal aqui
+    }, 1500);
+  };
+
   return (
     <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <div className="container mx-auto px-4">
@@ -64,32 +84,60 @@ export const Contact = () => {
             className="bg-white dark:bg-zinc-900 p-10 rounded-[2rem] border border-zinc-200 dark:border-white/5 shadow-xl transition-colors duration-300"
           >
             <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 dark:text-white font-display">ENVIE UMA MENSAGEM</h2>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Nome Completo</label>
-                  <input type="text" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="Ex: João Silva" required />
+            
+            {status === 'success' ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                <div className="w-20 h-20 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 mb-4">
+                  <CheckCircle size={40} />
+                </div>
+                <h3 className="text-2xl font-black dark:text-white">Mensagem Enviada!</h3>
+                <p className="text-zinc-600 dark:text-zinc-400 max-w-xs">
+                  Obrigado pelo contato. Retornaremos o mais breve possível.
+                </p>
+                <button 
+                  onClick={() => setStatus('idle')}
+                  className="mt-6 text-accent font-bold hover:underline"
+                >
+                  Enviar outra mensagem
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Nome Completo</label>
+                    <input type="text" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="Ex: João Silva" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">WhatsApp / Telefone</label>
+                    <input type="tel" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="(89) 99917-0800" required />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">WhatsApp / Telefone</label>
-                  <input type="tel" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="(89) 99917-0800" required />
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Assunto</label>
+                  <select className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 font-bold transition-all cursor-pointer">
+                    <option>Orçamento de Equipamentos</option>
+                    <option>Assistência Técnica</option>
+                    <option>Dúvidas Gerais</option>
+                    <option>Reclamações / SAC</option>
+                  </select>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Assunto</label>
-                <select className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 font-bold transition-all cursor-pointer">
-                  <option>Orçamento de Equipamentos</option>
-                  <option>Assistência Técnica</option>
-                  <option>Dúvidas Gerais</option>
-                  <option>Reclamações / SAC</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Mensagem</label>
-                <textarea rows={5} className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none" placeholder="Como podemos ajudar?" required></textarea>
-              </div>
-              <button type="submit" className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20">Enviar Mensagem</button>
-            </form>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Mensagem</label>
+                  <textarea rows={5} className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none" placeholder="Como podemos ajudar?" required></textarea>
+                </div>
+                
+                <BotVerification onVerificationChange={setIsVerified} />
+                
+                <button 
+                  type="submit" 
+                  disabled={!isVerified || status === 'sending'}
+                  className={`btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 transition-all ${(!isVerified || status === 'sending') ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
+                >
+                  {status === 'sending' ? 'Enviando...' : 'Enviar Mensagem'}
+                </button>
+              </form>
+            )}
           </motion.div>
 
           {/* Map & Info */}

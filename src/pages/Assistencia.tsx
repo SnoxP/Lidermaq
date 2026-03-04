@@ -1,9 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Wrench, Clock, ShieldCheck, MessageCircle, Phone, Mail, CheckCircle2 } from 'lucide-react';
+import { Wrench, Clock, ShieldCheck, MessageCircle, Phone, Mail, CheckCircle2, CheckCircle } from 'lucide-react';
 import { SEO } from '../components/SEO';
+import { BotVerification } from '../components/BotVerification';
 
 export const Assistencia = () => {
+  const [isVerified, setIsVerified] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isVerified) {
+      alert("Por favor, complete a verificação de segurança.");
+      return;
+    }
+    
+    setStatus('sending');
+    
+    // Simulação de envio
+    setTimeout(() => {
+      setStatus('success');
+      // Resetar formulário seria ideal aqui
+    }, 1500);
+  };
+
   const services = [
     {
       title: 'Manutenção Preventiva',
@@ -150,36 +170,60 @@ export const Assistencia = () => {
             viewport={{ once: true }}
             className="bg-white dark:bg-zinc-900 p-10 rounded-[2rem] shadow-xl border border-zinc-200 dark:border-white/5"
           >
-            <form className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Nome ou Empresa</label>
-                <input type="text" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="Seu nome completo" required />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">WhatsApp</label>
-                  <input type="tel" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="(89) 99917-0800" required />
+            {status === 'success' ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                <div className="w-20 h-20 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 mb-4">
+                  <CheckCircle size={40} />
                 </div>
+                <h3 className="text-2xl font-black dark:text-white">Solicitação Enviada!</h3>
+                <p className="text-zinc-600 dark:text-zinc-400 max-w-xs">
+                  Sua solicitação de assistência foi recebida. Nossa equipe entrará em contato em breve.
+                </p>
+                <button 
+                  onClick={() => setStatus('idle')}
+                  className="mt-6 text-accent font-bold hover:underline"
+                >
+                  Nova solicitação
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Equipamento</label>
-                  <input type="text" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="Ex: Forno Turbo" required />
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Nome ou Empresa</label>
+                  <input type="text" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="Seu nome completo" required />
                 </div>
-              </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">WhatsApp</label>
+                    <input type="tel" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="(89) 99917-0800" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Equipamento</label>
+                    <input type="text" className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" placeholder="Ex: Forno Turbo" required />
+                  </div>
+                </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Descrição do Problema</label>
-                <textarea rows={4} className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none" placeholder="Descreva o que está acontecendo..." required></textarea>
-              </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Descrição do Problema</label>
+                  <textarea rows={4} className="w-full px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none" placeholder="Descreva o que está acontecendo..." required></textarea>
+                </div>
 
-              <button type="submit" className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20">
-                Enviar Solicitação
-              </button>
-              
-              <p className="text-center text-xs text-zinc-500 dark:text-zinc-400 mt-4">
-                Retornaremos seu contato em até 2 horas úteis.
-              </p>
-            </form>
+                <BotVerification onVerificationChange={setIsVerified} />
+
+                <button 
+                  type="submit" 
+                  disabled={!isVerified || status === 'sending'}
+                  className={`btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 transition-all ${(!isVerified || status === 'sending') ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
+                >
+                  {status === 'sending' ? 'Enviando...' : 'Enviar Solicitação'}
+                </button>
+                
+                <p className="text-center text-xs text-zinc-500 dark:text-zinc-400 mt-4">
+                  Retornaremos seu contato em até 2 horas úteis.
+                </p>
+              </form>
+            )}
           </motion.div>
         </div>
       </div>

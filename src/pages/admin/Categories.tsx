@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Plus, Trash2, Save, X, Edit2 } from 'lucide-react';
+import { LayoutDashboard, Plus, Trash2, Save, X, Edit2, RefreshCw, AlertTriangle } from 'lucide-react';
 import { db } from '../../services/firebase';
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, writeBatch } from 'firebase/firestore';
 
 export const Categories = () => {
   const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
@@ -10,10 +10,13 @@ export const Categories = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const fetchCategories = async () => {
     const querySnapshot = await getDocs(collection(db, 'categories'));
     const cats = querySnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name }));
+    // Sort alphabetically
+    cats.sort((a, b) => a.name.localeCompare(b.name));
     setCategories(cats);
   };
 
@@ -31,18 +34,41 @@ export const Categories = () => {
       fetchCategories();
     } catch (error) {
       console.error(error);
+      alert("Erro ao adicionar categoria.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSeed = async () => {
+    const defaults = ['Padarias', 'Restaurantes', 'Açougues', 'Supermercados', 'Lanchonetes', 'Móveis Para Escritório'];
+    setIsLoading(true);
+    try {
+      const batch = writeBatch(db);
+      for (const name of defaults) {
+        if (!categories.some(c => c.name === name)) {
+           const ref = doc(collection(db, 'categories'));
+           batch.set(ref, { name });
+        }
+      }
+      await batch.commit();
+      fetchCategories();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao criar categorias padrão.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta categoria?')) return;
+    if (!confirm('Tem certeza que deseja excluir esta categoria? Produtos nesta categoria não serão excluídos, mas ficarão sem categoria válida.')) return;
     try {
       await deleteDoc(doc(db, 'categories', id));
       fetchCategories();
     } catch (error) {
       console.error(error);
+      alert("Erro ao excluir categoria.");
     }
   };
 
@@ -53,12 +79,34 @@ export const Categories = () => {
 
   const handleEdit = async (id: string) => {
     if (!editName.trim()) return;
+    setIsUpdating(true);
     try {
+      const oldCategoryName = categories.find(c => c.id === id)?.name;
+
+      // 1. Update category document
       await updateDoc(doc(db, 'categories', id), { name: editName });
+
+      // 2. Update all products with this category
+      if (oldCategoryName && oldCategoryName !== editName) {
+        const q = query(collection(db, 'products'), where('category', '==', oldCategoryName));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          const batch = writeBatch(db);
+          querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { category: editName });
+          });
+          await batch.commit();
+        }
+      }
+
       setEditingId(null);
       fetchCategories();
     } catch (error) {
       console.error(error);
+      alert("Erro ao atualizar categoria e produtos relacionados.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -87,12 +135,23 @@ export const Categories = () => {
         </div>
 
         <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-neutral-bg dark:border-white/5">
+          <div className="p-6 border-b border-neutral-bg dark:border-white/5 flex justify-between items-center">
             <h3 className="font-bold dark:text-white">Categorias Atuais</h3>
+            <span className="text-xs text-zinc-400">{categories.length} categorias</span>
           </div>
           <div className="divide-y divide-neutral-bg dark:divide-white/5">
             {categories.length === 0 ? (
-              <div className="p-8 text-center text-primary/40 dark:text-zinc-500 italic">Nenhuma categoria cadastrada.</div>
+              <div className="p-12 text-center flex flex-col items-center gap-4">
+                <p className="text-primary/40 dark:text-zinc-500 italic">Nenhuma categoria cadastrada.</p>
+                <button 
+                  onClick={handleSeed}
+                  disabled={isLoading}
+                  className="text-accent hover:underline text-sm flex items-center gap-2"
+                >
+                  <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
+                  Gerar categorias padrão
+                </button>
+              </div>
             ) : (
               categories.map((cat) => (
                 <div key={cat.id} className="p-6 flex items-center justify-between hover:bg-neutral-bg/50 dark:hover:bg-white/5 transition-colors">
@@ -104,15 +163,18 @@ export const Categories = () => {
                         onChange={(e) => setEditName(e.target.value)}
                         className="flex-1 px-4 py-2 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         autoFocus
+                        disabled={isUpdating}
                       />
                       <button 
                         onClick={() => handleEdit(cat.id)}
-                        className="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-xl transition-colors"
+                        disabled={isUpdating}
+                        className="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-xl transition-colors disabled:opacity-50"
                       >
-                        <Save size={20} />
+                        {isUpdating ? <RefreshCw size={20} className="animate-spin"/> : <Save size={20} />}
                       </button>
                       <button 
                         onClick={() => setEditingId(null)}
+                        disabled={isUpdating}
                         className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
                       >
                         <X size={20} />

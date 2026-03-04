@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { BotVerification } from '../components/BotVerification';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ export const Login = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   
   const { login, resetPassword } = useAuth();
   const navigate = useNavigate();
@@ -19,6 +21,10 @@ export const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isVerified) {
+      setError('Por favor, complete a verificação de segurança.');
+      return;
+    }
     setError('');
     setMessage('');
     setIsLoading(true);
@@ -136,10 +142,12 @@ export const Login = () => {
             </div>
           </div>
 
+          <BotVerification onVerificationChange={setIsVerified} />
+
           <button 
             type="submit" 
-            disabled={isLoading}
-            className="w-full btn-primary py-4 text-lg flex justify-center items-center gap-2"
+            disabled={isLoading || !isVerified}
+            className={`w-full btn-primary py-4 text-lg flex justify-center items-center gap-2 ${(!isVerified || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isLoading ? 'Processando...' : (
               <>Entrar <LogIn size={20} /></>

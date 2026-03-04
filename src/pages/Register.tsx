@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, UserPlus, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { BotVerification } from '../components/BotVerification';
 
 export const Register = () => {
   const [name, setName] = useState('');
@@ -10,12 +11,17 @@ export const Register = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isVerified) {
+      setError('Por favor, complete a verificação de segurança.');
+      return;
+    }
     setError('');
     setIsLoading(true);
 
@@ -101,10 +107,12 @@ export const Register = () => {
             </div>
           </div>
 
+          <BotVerification onVerificationChange={setIsVerified} />
+
           <button 
             type="submit" 
-            disabled={isLoading}
-            className="w-full btn-primary py-4 text-lg flex justify-center items-center gap-2"
+            disabled={isLoading || !isVerified}
+            className={`w-full btn-primary py-4 text-lg flex justify-center items-center gap-2 ${(!isVerified || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isLoading ? 'Criando conta...' : (
               <>Cadastrar <UserPlus size={20} /></>
