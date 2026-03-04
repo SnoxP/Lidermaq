@@ -30,7 +30,7 @@ export const CookieBanner = () => {
             <div className="flex-1">
               <h4 className="font-bold text-lg mb-2 dark:text-white">Privacidade e Cookies</h4>
               <p className="text-sm text-primary/70 dark:text-zinc-400">
-                Utilizamos cookies para melhorar sua experiência em nosso site. Ao continuar navegando, você concorda com nossa <a href="/politica-privacidade" className="text-accent underline">Política de Privacidade</a>.
+                Utilizamos cookies para melhorar sua experiência em nosso site. Ao continuar navegando, você concorda com nossa <a href="/privacidade" className="text-accent underline">Política de Privacidade</a>.
               </p>
             </div>
             <div className="flex gap-3 shrink-0">
