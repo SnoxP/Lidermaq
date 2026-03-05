@@ -23,7 +23,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState<string | null>(null);
-  const [isGeneratingImage, setIsGeneratingImage] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [targetImageIndex, setTargetImageIndex] = useState<number | null>(null);
+  const [targetIsVariant, setTargetIsVariant] = useState(false);
   
   const navigate = useNavigate();
   const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
@@ -152,14 +156,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     }
   };
 
-  const handleGenerateImageWithAI = async (index: number) => {
-    if (!name) {
-      alert("Por favor, preencha o nome do produto primeiro para a IA saber o que buscar.");
+  const handleSearchImages = async (index: number, isVariant: boolean) => {
+    const queryName = isVariant ? (variants[index].name ? `${name} - ${variants[index].name}` : name) : name;
+    
+    if (!queryName) {
+      alert("Por favor, preencha o nome do produto primeiro.");
       return;
     }
 
     try {
-      setIsGeneratingImage(`main-${index}`);
+      setIsSearching(isVariant ? `variant-${index}` : `main-${index}`);
       
       // @ts-ignore
       if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
@@ -177,150 +183,57 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
       const processEnv = typeof process !== 'undefined' ? process.env : {};
       const apiKey = processEnv.API_KEY || env.VITE_GEMINI_API_KEY;
       
-      if (!apiKey) {
-        throw new Error("API Key do Gemini não encontrada.");
-      }
+      if (!apiKey) throw new Error("API Key do Gemini não encontrada.");
 
       const ai = new GoogleGenAI({ apiKey });
 
       const response = await ai.models.generateContent({
         model: 'gemini-3.1-flash-image-preview',
-        contents: {
-          parts: [
-            { text: `A high quality, professional product photo of ${name}. ${brand ? `Brand: ${brand}.` : ''} White background, studio lighting, highly detailed, realistic, commercial photography.` }
-          ]
-        },
+        contents: { parts: [{ text: `Find professional product images of ${queryName}.` }] },
         config: {
-          imageConfig: {
-            aspectRatio: "1:1",
-            imageSize: "1K"
-          },
-          tools: [
-            {
-              googleSearch: {
-                searchTypes: {
-                  webSearch: {},
-                  imageSearch: {}
-                }
-              }
-            }
-          ]
+          tools: [{ googleSearch: { searchTypes: { imageSearch: {} } } }]
         }
       });
 
-      let base64Image = '';
-      if (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts) {
-        for (const part of response.candidates[0].content.parts) {
-          if (part.inlineData) {
-            base64Image = part.inlineData.data;
-            break;
+      const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+      const urls: string[] = [];
+      
+      if (chunks) {
+        for (const chunk of chunks) {
+          // @ts-ignore
+          if (chunk.image && chunk.image.uri) {
+            // @ts-ignore
+            urls.push(chunk.image.uri);
           }
         }
       }
 
-      if (!base64Image) {
-        throw new Error("A IA não retornou nenhuma imagem.");
-      }
+      if (urls.length === 0) throw new Error("Nenhuma imagem encontrada.");
 
-      const byteCharacters = atob(base64Image);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'image/png' });
-      const file = new File([blob], `ai-image-${Date.now()}.png`, { type: 'image/png' });
-
-      await uploadFile(`ai-main-${index}`, file, (url) => {
-        const newImages = [...images];
-        newImages[index] = url;
-        setImages(newImages);
-      });
+      setSearchResults(urls);
+      setTargetImageIndex(index);
+      setTargetIsVariant(isVariant);
+      setShowSearchModal(true);
 
     } catch (error: any) {
-      console.error("Erro ao gerar imagem com IA:", error);
-      alert(`Erro da IA: ${error.message}`);
+      console.error("Erro ao buscar imagens:", error);
+      alert(`Erro na busca: ${error.message}`);
     } finally {
-      setIsGeneratingImage(null);
+      setIsSearching(null);
     }
   };
 
-  const handleGenerateVariantImageWithAI = async (index: number) => {
-    const variantName = variants[index].name;
-    const queryName = variantName ? `${name} - ${variantName}` : name;
-    
-    if (!queryName) {
-      alert("Por favor, preencha o nome do produto ou da variação primeiro.");
-      return;
+  const handleSelectImage = (url: string) => {
+    if (targetImageIndex === null) return;
+
+    if (targetIsVariant) {
+      handleVariantChange(targetImageIndex, 'image', url);
+    } else {
+      const newImages = [...images];
+      newImages[targetImageIndex] = url;
+      setImages(newImages);
     }
-
-    try {
-      setIsGeneratingImage(`variant-${index}`);
-      
-      // @ts-ignore
-      if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
-        // @ts-ignore
-        const hasKey = await window.aistudio.hasSelectedApiKey();
-        if (!hasKey) {
-          // @ts-ignore
-          await window.aistudio.openSelectKey();
-        }
-      }
-
-      const { GoogleGenAI } = await import('@google/genai');
-      // @ts-ignore
-      const env = import.meta.env || {};
-      const processEnv = typeof process !== 'undefined' ? process.env : {};
-      const apiKey = processEnv.API_KEY || env.VITE_GEMINI_API_KEY;
-      
-      if (!apiKey) {
-        throw new Error("API Key do Gemini não encontrada.");
-      }
-
-      const ai = new GoogleGenAI({ apiKey });
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-image-preview',
-        contents: {
-          parts: [
-            { text: `A high quality, professional product photo of ${queryName}. ${brand ? `Brand: ${brand}.` : ''} White background, studio lighting, highly detailed, realistic, commercial photography.` }
-          ]
-        },
-        config: {
-          imageConfig: { aspectRatio: "1:1", imageSize: "1K" },
-          tools: [{ googleSearch: { searchTypes: { webSearch: {}, imageSearch: {} } } }]
-        }
-      });
-
-      let base64Image = '';
-      if (response.candidates?.[0]?.content?.parts) {
-        for (const part of response.candidates[0].content.parts) {
-          if (part.inlineData) {
-            base64Image = part.inlineData.data;
-            break;
-          }
-        }
-      }
-
-      if (!base64Image) throw new Error("A IA não retornou nenhuma imagem.");
-
-      const byteCharacters = atob(base64Image);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) byteNumbers[i] = byteCharacters.charCodeAt(i);
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'image/png' });
-      const file = new File([blob], `ai-variant-${Date.now()}.png`, { type: 'image/png' });
-
-      await uploadFile(`ai-variant-${index}`, file, (url) => {
-        handleVariantChange(index, 'image', url);
-      });
-
-    } catch (error: any) {
-      console.error("Erro ao gerar imagem com IA:", error);
-      alert(`Erro da IA: ${error.message}`);
-    } finally {
-      setIsGeneratingImage(null);
-    }
+    setShowSearchModal(false);
   };
 
   const handleAddImage = () => setImages([...images, '']);
@@ -539,12 +452,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                       <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                         <button
                           type="button"
-                          onClick={() => handleGenerateVariantImageWithAI(index)}
-                          disabled={isGeneratingImage !== null || isUploading !== null}
+                          onClick={() => handleSearchImages(index, true)}
+                          disabled={isSearching !== null || isUploading !== null}
                           className="p-2 hover:bg-neutral-bg dark:hover:bg-zinc-800 rounded-lg cursor-pointer transition-colors text-purple-500 flex items-center justify-center"
-                          title="Pesquisar e Gerar com IA"
+                          title="Pesquisar Imagens na Web"
                         >
-                          {isGeneratingImage === `variant-${index}` ? (
+                          {isSearching === `variant-${index}` ? (
                             <Loader2 size={16} className="animate-spin" />
                           ) : (
                             <Sparkles size={16} />
@@ -623,12 +536,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                       <button
                         type="button"
-                        onClick={() => handleGenerateImageWithAI(index)}
-                        disabled={isGeneratingImage !== null || isUploading !== null}
+                        onClick={() => handleSearchImages(index, false)}
+                        disabled={isSearching !== null || isUploading !== null}
                         className="p-2 hover:bg-white dark:hover:bg-zinc-900 rounded-lg cursor-pointer transition-colors text-purple-500 group flex items-center justify-center"
-                        title="Pesquisar e Gerar com IA"
+                        title="Pesquisar Imagens na Web"
                       >
-                        {isGeneratingImage === `main-${index}` ? (
+                        {isSearching === `main-${index}` ? (
                           <Loader2 size={20} className="animate-spin" />
                         ) : (
                           <div className="flex items-center gap-1">
@@ -685,6 +598,24 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           </div>
         </form>
       </div>
+
+      {showSearchModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold dark:text-white">Selecione uma imagem</h3>
+              <button onClick={() => setShowSearchModal(false)} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full"><X size={20} /></button>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {searchResults.map((url, i) => (
+                <button key={i} onClick={() => handleSelectImage(url)} className="aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-accent">
+                  <img src={url} alt="Result" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
