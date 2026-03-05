@@ -31,6 +31,7 @@ export const Cart = () => {
       navigate('/login?redirect=/carrinho');
       return;
     }
+    console.log("Checkout clicked, toggling attendant selector");
     setShowAttendantSelector(!showAttendantSelector);
   };
 
