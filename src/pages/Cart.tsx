@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trash2, Plus, Minus, ArrowLeft, MessageCircle, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowLeft, MessageCircle, ShoppingBag, X } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { SEO } from '../components/SEO';
@@ -27,7 +27,11 @@ export const Cart = () => {
   )}\n\nCliente: ${user?.email || 'Visitante'}`;
 
   const handleCheckout = () => {
-    setShowAttendantSelector(true);
+    if (!user) {
+      navigate('/login?redirect=/carrinho');
+      return;
+    }
+    setShowAttendantSelector(!showAttendantSelector);
   };
 
   if (cart.length === 0) {
@@ -145,17 +149,35 @@ export const Cart = () => {
                 </div>
               </div>
 
-              <button
-                onClick={handleCheckout}
-                className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
-              >
-                <MessageCircle size={24} /> Finalizar Orçamento
-              </button>
-              
-              {showAttendantSelector && (
-                <div className="mt-6 p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10">
-                  <AttendantSelector message={message} />
-                </div>
+              <div className="relative">
+                {showAttendantSelector && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className="absolute bottom-full left-0 w-full mb-4 p-4 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl z-50"
+                  >
+                    <button 
+                      onClick={() => setShowAttendantSelector(false)}
+                      className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                    <AttendantSelector message={message} className="pr-6" />
+                  </motion.div>
+                )}
+                
+                <button
+                  onClick={handleCheckout}
+                  className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
+                >
+                  <MessageCircle size={24} /> Finalizar Orçamento
+                </button>
+              </div>
+
+              {!user && (
+                <p className="text-[10px] text-center text-zinc-400 mt-4 uppercase font-bold tracking-widest">
+                  * É necessário estar logado para finalizar
+                </p>
               )}
             </div>
           </div>
