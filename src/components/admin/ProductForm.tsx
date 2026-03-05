@@ -178,12 +178,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
       }
 
       const { GoogleGenAI } = await import('@google/genai');
-      // @ts-ignore
-      const env = import.meta.env || {};
-      const processEnv = typeof process !== 'undefined' ? process.env : {};
-      const apiKey = processEnv.API_KEY || env.VITE_GEMINI_API_KEY;
       
-      if (!apiKey) throw new Error("API Key do Gemini não encontrada.");
+      let apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      try {
+        if (!apiKey && typeof process !== 'undefined' && process.env.API_KEY) {
+          apiKey = process.env.API_KEY;
+        }
+      } catch (e) {
+        console.warn("process.env not available");
+      }
+      
+      if (!apiKey) throw new Error("API Key do Gemini não encontrada. Verifique a variável VITE_GEMINI_API_KEY.");
 
       const ai = new GoogleGenAI({ apiKey });
 
