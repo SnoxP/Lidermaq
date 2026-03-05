@@ -281,8 +281,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
       }
       
       clearTimeout(timeoutId);
-      // Redireciona para o catálogo público para ver o resultado na hora
-      navigate('/catalogo');
+      // Redireciona para a lista de produtos passando o ID do produto editado
+      navigate('/admin/produtos', { state: { editedProductId: productId } });
     } catch (error: any) {
       clearTimeout(timeoutId);
       console.error("Erro ao salvar produto:", error);

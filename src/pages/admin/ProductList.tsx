@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X, Database, Filter, ArrowUpDown, Calendar, Tag, DollarSign } from 'lucide-react';
 import { db } from '../../services/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const ProductList = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -15,6 +15,7 @@ export const ProductList = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const brands = Array.from(new Set(products.map(p => p.brand).filter(Boolean)));
   const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
@@ -43,6 +44,18 @@ export const ProductList = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && products.length > 0) {
+      const state = location.state as { editedProductId?: string };
+      if (state?.editedProductId) {
+        const element = document.getElementById(`product-${state.editedProductId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    }
+  }, [isLoading, products, location]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Tem certeza que deseja excluir este produto?')) return;
@@ -259,7 +272,7 @@ export const ProductList = () => {
                   </tr>
                 ) : (
                   filteredProducts.map((product) => (
-                    <tr key={product.id} className="hover:bg-neutral-bg/30 dark:hover:bg-white/5 transition-colors group">
+                    <tr id={`product-${product.id}`} key={product.id} className="hover:bg-neutral-bg/30 dark:hover:bg-white/5 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-neutral-bg dark:bg-zinc-800 rounded-lg overflow-hidden shrink-0">
