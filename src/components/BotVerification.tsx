@@ -30,7 +30,7 @@ export const BotVerification: React.FC<BotVerificationProps> = ({ onVerification
   return (
     <div className="flex justify-center my-4">
       <ReCAPTCHA
-        sitekey="6Ldn9H8sAAAAAAyMpLYV6LKTIkC74l_ACwCY6lES"
+        sitekey="6LdP84AsAAAAAFy3BHFmO_rgIezdpoh2DlnWbWMk"
         onChange={handleVerify}
       />
     </div>

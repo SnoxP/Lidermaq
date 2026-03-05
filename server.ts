@@ -17,7 +17,7 @@ async function startServer() {
     }
 
     try {
-      const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+      const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6LdP84AsAAAAALJ0X1mXBK3E_ojXMWjWil9MXopc";
       if (!secretKey) {
         return res.status(500).json({ success: false, message: "Chave secreta não configurada" });
       }
