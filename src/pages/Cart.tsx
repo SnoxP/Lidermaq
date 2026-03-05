@@ -149,29 +149,19 @@ export const Cart = () => {
                 </div>
               </div>
 
-              <div className="relative">
-                {showAttendantSelector && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className="absolute bottom-full left-0 w-full mb-4 p-4 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl z-50"
-                  >
-                    <button 
-                      onClick={() => setShowAttendantSelector(false)}
-                      className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                    <AttendantSelector message={message} className="pr-6" />
-                  </motion.div>
-                )}
-                
+              <div className="space-y-6">
                 <button
                   onClick={handleCheckout}
                   className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
                 >
                   <MessageCircle size={24} /> Finalizar Orçamento
                 </button>
+                
+                {showAttendantSelector && (
+                  <div className="p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10">
+                    <AttendantSelector message={message} />
+                  </div>
+                )}
               </div>
 
               {!user && (
