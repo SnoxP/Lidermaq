@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon } from 'lucide-react';
+import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -23,6 +23,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState<string | null>(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState<string | null>(null);
   
   const navigate = useNavigate();
   const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
@@ -148,6 +149,177 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           break;
         }
       }
+    }
+  };
+
+  const handleGenerateImageWithAI = async (index: number) => {
+    if (!name) {
+      alert("Por favor, preencha o nome do produto primeiro para a IA saber o que buscar.");
+      return;
+    }
+
+    try {
+      setIsGeneratingImage(`main-${index}`);
+      
+      // @ts-ignore
+      if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
+        // @ts-ignore
+        const hasKey = await window.aistudio.hasSelectedApiKey();
+        if (!hasKey) {
+          // @ts-ignore
+          await window.aistudio.openSelectKey();
+        }
+      }
+
+      const { GoogleGenAI } = await import('@google/genai');
+      // @ts-ignore
+      const env = import.meta.env || {};
+      const processEnv = typeof process !== 'undefined' ? process.env : {};
+      const apiKey = processEnv.API_KEY || env.VITE_GEMINI_API_KEY;
+      
+      if (!apiKey) {
+        throw new Error("API Key do Gemini não encontrada.");
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.1-flash-image-preview',
+        contents: {
+          parts: [
+            { text: `A high quality, professional product photo of ${name}. ${brand ? `Brand: ${brand}.` : ''} White background, studio lighting, highly detailed, realistic, commercial photography.` }
+          ]
+        },
+        config: {
+          imageConfig: {
+            aspectRatio: "1:1",
+            imageSize: "1K"
+          },
+          tools: [
+            {
+              googleSearch: {
+                searchTypes: {
+                  webSearch: {},
+                  imageSearch: {}
+                }
+              }
+            }
+          ]
+        }
+      });
+
+      let base64Image = '';
+      if (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts) {
+        for (const part of response.candidates[0].content.parts) {
+          if (part.inlineData) {
+            base64Image = part.inlineData.data;
+            break;
+          }
+        }
+      }
+
+      if (!base64Image) {
+        throw new Error("A IA não retornou nenhuma imagem.");
+      }
+
+      const byteCharacters = atob(base64Image);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/png' });
+      const file = new File([blob], `ai-image-${Date.now()}.png`, { type: 'image/png' });
+
+      await uploadFile(`ai-main-${index}`, file, (url) => {
+        const newImages = [...images];
+        newImages[index] = url;
+        setImages(newImages);
+      });
+
+    } catch (error: any) {
+      console.error("Erro ao gerar imagem com IA:", error);
+      alert(`Erro da IA: ${error.message}`);
+    } finally {
+      setIsGeneratingImage(null);
+    }
+  };
+
+  const handleGenerateVariantImageWithAI = async (index: number) => {
+    const variantName = variants[index].name;
+    const queryName = variantName ? `${name} - ${variantName}` : name;
+    
+    if (!queryName) {
+      alert("Por favor, preencha o nome do produto ou da variação primeiro.");
+      return;
+    }
+
+    try {
+      setIsGeneratingImage(`variant-${index}`);
+      
+      // @ts-ignore
+      if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
+        // @ts-ignore
+        const hasKey = await window.aistudio.hasSelectedApiKey();
+        if (!hasKey) {
+          // @ts-ignore
+          await window.aistudio.openSelectKey();
+        }
+      }
+
+      const { GoogleGenAI } = await import('@google/genai');
+      // @ts-ignore
+      const env = import.meta.env || {};
+      const processEnv = typeof process !== 'undefined' ? process.env : {};
+      const apiKey = processEnv.API_KEY || env.VITE_GEMINI_API_KEY;
+      
+      if (!apiKey) {
+        throw new Error("API Key do Gemini não encontrada.");
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.1-flash-image-preview',
+        contents: {
+          parts: [
+            { text: `A high quality, professional product photo of ${queryName}. ${brand ? `Brand: ${brand}.` : ''} White background, studio lighting, highly detailed, realistic, commercial photography.` }
+          ]
+        },
+        config: {
+          imageConfig: { aspectRatio: "1:1", imageSize: "1K" },
+          tools: [{ googleSearch: { searchTypes: { webSearch: {}, imageSearch: {} } } }]
+        }
+      });
+
+      let base64Image = '';
+      if (response.candidates?.[0]?.content?.parts) {
+        for (const part of response.candidates[0].content.parts) {
+          if (part.inlineData) {
+            base64Image = part.inlineData.data;
+            break;
+          }
+        }
+      }
+
+      if (!base64Image) throw new Error("A IA não retornou nenhuma imagem.");
+
+      const byteCharacters = atob(base64Image);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) byteNumbers[i] = byteCharacters.charCodeAt(i);
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/png' });
+      const file = new File([blob], `ai-variant-${Date.now()}.png`, { type: 'image/png' });
+
+      await uploadFile(`ai-variant-${index}`, file, (url) => {
+        handleVariantChange(index, 'image', url);
+      });
+
+    } catch (error: any) {
+      console.error("Erro ao gerar imagem com IA:", error);
+      alert(`Erro da IA: ${error.message}`);
+    } finally {
+      setIsGeneratingImage(null);
     }
   };
 
@@ -364,7 +536,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                         className="w-full pl-10 pr-12 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         placeholder="Cole o link ou pressione Ctrl+V"
                       />
-                      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleGenerateVariantImageWithAI(index)}
+                          disabled={isGeneratingImage !== null || isUploading !== null}
+                          className="p-2 hover:bg-neutral-bg dark:hover:bg-zinc-800 rounded-lg cursor-pointer transition-colors text-purple-500 flex items-center justify-center"
+                          title="Pesquisar e Gerar com IA"
+                        >
+                          {isGeneratingImage === `variant-${index}` ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : (
+                            <Sparkles size={16} />
+                          )}
+                        </button>
                         <label className="p-2 hover:bg-neutral-bg dark:hover:bg-zinc-800 rounded-lg cursor-pointer transition-colors text-accent flex items-center justify-center" title="Upload">
                           {isUploading === `variant-${index}` ? (
                             <Loader2 size={16} className="animate-spin" />
@@ -436,6 +621,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                       placeholder="Cole o link ou pressione Ctrl+V para colar uma imagem"
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateImageWithAI(index)}
+                        disabled={isGeneratingImage !== null || isUploading !== null}
+                        className="p-2 hover:bg-white dark:hover:bg-zinc-900 rounded-lg cursor-pointer transition-colors text-purple-500 group flex items-center justify-center"
+                        title="Pesquisar e Gerar com IA"
+                      >
+                        {isGeneratingImage === `main-${index}` ? (
+                          <Loader2 size={20} className="animate-spin" />
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <Sparkles size={20} />
+                            <span className="text-[8px] font-bold uppercase hidden group-hover:block">IA</span>
+                          </div>
+                        )}
+                      </button>
                       <label className="p-2 hover:bg-white dark:hover:bg-zinc-900 rounded-lg cursor-pointer transition-colors text-accent group" title="Upload do dispositivo (Grátis via ImgBB)">
                         {isUploading === `main-${index}` ? (
                           <Loader2 size={20} className="animate-spin" />
