@@ -27,10 +27,6 @@ export const Cart = () => {
   )}\n\nCliente: ${user?.email || 'Visitante'}`;
 
   const handleCheckout = () => {
-    if (!user) {
-      navigate('/login?redirect=/carrinho');
-      return;
-    }
     setShowAttendantSelector(true);
   };
 
@@ -160,12 +156,6 @@ export const Cart = () => {
                 <div className="mt-6 p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10">
                   <AttendantSelector message={message} />
                 </div>
-              )}
-              
-              {!user && (
-                <p className="text-[10px] text-center text-zinc-400 mt-4 uppercase font-bold tracking-widest">
-                  * É necessário estar logado para finalizar
-                </p>
               )}
             </div>
           </div>
