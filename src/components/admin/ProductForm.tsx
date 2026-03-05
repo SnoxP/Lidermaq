@@ -167,53 +167,39 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     try {
       setIsSearching(isVariant ? `variant-${index}` : `main-${index}`);
       
-      // @ts-ignore
-      if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
-        // @ts-ignore
-        const hasKey = await window.aistudio.hasSelectedApiKey();
-        if (!hasKey) {
-          // @ts-ignore
-          await window.aistudio.openSelectKey();
-        }
+      const env = import.meta.env || {};
+      const processEnv = typeof process !== 'undefined' ? process.env : {};
+      const apiKey = env.VITE_SERPER_API_KEY || processEnv.VITE_SERPER_API_KEY;
+      
+      if (!apiKey) {
+        throw new Error("Chave da API do Serper não encontrada. Configure VITE_SERPER_API_KEY.");
       }
 
-      const { GoogleGenAI } = await import('@google/genai');
-      
-      let apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      try {
-        if (!apiKey && typeof process !== 'undefined' && process.env.API_KEY) {
-          apiKey = process.env.API_KEY;
-        }
-      } catch (e) {
-        console.warn("process.env not available");
-      }
-      
-      if (!apiKey) throw new Error("API Key do Gemini não encontrada. Verifique a variável VITE_GEMINI_API_KEY.");
-
-      const ai = new GoogleGenAI({ apiKey });
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-image-preview',
-        contents: { parts: [{ text: `Find professional product images of ${queryName}.` }] },
-        config: {
-          tools: [{ googleSearch: { searchTypes: { imageSearch: {} } } }]
-        }
+      const response = await fetch('https://google.serper.dev/images', {
+        method: 'POST',
+        headers: {
+          'X-API-KEY': apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          q: `${queryName} ${brand ? brand : ''} produto fundo branco`,
+          gl: 'br',
+          hl: 'pt-br'
+        })
       });
 
-      const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
-      const urls: string[] = [];
-      
-      if (chunks) {
-        for (const chunk of chunks) {
-          // @ts-ignore
-          if (chunk.image && chunk.image.uri) {
-            // @ts-ignore
-            urls.push(chunk.image.uri);
-          }
-        }
+      if (!response.ok) {
+        throw new Error("Falha ao buscar imagens na API.");
       }
 
-      if (urls.length === 0) throw new Error("Nenhuma imagem encontrada.");
+      const data = await response.json();
+      
+      if (!data.images || data.images.length === 0) {
+        throw new Error("Nenhuma imagem encontrada para este produto.");
+      }
+
+      // Pega as 15 primeiras imagens
+      const urls = data.images.slice(0, 15).map((img: any) => img.imageUrl);
 
       setSearchResults(urls);
       setTargetImageIndex(index);
