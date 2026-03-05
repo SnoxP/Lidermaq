@@ -153,7 +153,7 @@ export const Cart = () => {
                 onClick={handleCheckout}
                 className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
               >
-                <MessageCircle size={24} /> {showAttendantSelector ? 'Escolha um Atendente' : 'Finalizar Orçamento'}
+                <MessageCircle size={24} /> Finalizar Orçamento
               </button>
               
               {showAttendantSelector && (
