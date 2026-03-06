@@ -65,7 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
             {product.name || 'Produto sem nome'}
           </h3>
         </Link>
-        <p className={`${gridCols >= 2 ? 'hidden sm:block' : 'block'} text-sm text-zinc-500 dark:text-zinc-400 mb-4 line-clamp-2 leading-relaxed`}>
+        <p className={`${gridCols >= 2 ? 'hidden sm:block' : 'block'} text-sm text-zinc-500 dark:text-zinc-400 mb-4 line-clamp-3 leading-relaxed`}>
           {product.description || 'Sem descrição disponível.'}
         </p>
         

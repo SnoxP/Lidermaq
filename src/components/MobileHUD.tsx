@@ -21,25 +21,23 @@ export const MobileHUD = () => {
 
   return (
     <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-xs">
-      <div className="bg-white/95 dark:bg-black/95 backdrop-blur-3xl border border-white/40 dark:border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.2)] rounded-[2rem] p-1 flex items-center justify-around transition-colors duration-500">
+      <div className="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[2rem] p-1.5 flex items-center justify-around transition-all duration-500">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl transition-all duration-300 ${
+              className={`flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-300 ${
                 isActive 
-                  ? 'bg-accent text-white shadow-lg shadow-accent/30 flex-[1.4]' 
-                  : 'text-zinc-400 dark:text-zinc-500 hover:text-accent flex-1'
+                  ? 'bg-white/60 dark:bg-white/10 text-accent shadow-sm' 
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-accent'
               }`}
             >
-              <item.icon size={isActive ? 18 : 16} strokeWidth={isActive ? 2.5 : 2} />
-              {isActive && (
-                <span className="text-[7px] font-black uppercase tracking-widest mt-1">
-                  {item.label}
-                </span>
-              )}
+              <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+              <span className="text-[9px] font-bold uppercase tracking-widest mt-1">
+                {item.label}
+              </span>
             </Link>
           );
         })}
