@@ -13,14 +13,7 @@ export const Footer = () => {
               <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/20">
                 <span className="font-black text-xl font-display">L</span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-black tracking-tighter font-display leading-none">
-                  <span className="text-accent">LIDER</span><span className="text-white">MAQ</span>
-                </span>
-                <span className="text-[10px] font-medium font-sans text-white tracking-[0.3em] leading-none mt-1">
-                  EQUIPAMENTOS
-                </span>
-              </div>
+              <span className="text-2xl font-black tracking-tighter font-display">LIDERMAQ</span>
             </Link>
             <p className="text-zinc-400 leading-relaxed text-sm">
               Equipando o sucesso do seu negócio com as melhores soluções em máquinas e equipamentos comerciais desde 1994 em Picos-PI.

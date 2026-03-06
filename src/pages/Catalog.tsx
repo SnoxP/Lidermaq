@@ -22,22 +22,12 @@ export const Catalog = () => {
   const activeCategory = searchParams.get('cat') || 'Todos';
 
   const brands = useMemo(() => {
-    let filteredForBrands = products;
-    if (activeCategory !== 'Todos') {
-      filteredForBrands = products.filter(p => p.category === activeCategory);
-    }
-    const uniqueBrands = Array.from(new Set(filteredForBrands.map(p => {
+    const uniqueBrands = Array.from(new Set(products.map(p => {
       // Remove accents and convert to uppercase
       return p.brand.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
     })));
     return ['TODAS', ...uniqueBrands.sort()];
-  }, [products, activeCategory]);
-
-  useEffect(() => {
-    if (!brands.includes(selectedBrand) && selectedBrand !== 'TODAS') {
-      setSelectedBrand('TODAS');
-    }
-  }, [brands, selectedBrand]);
+  }, [products]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -88,11 +78,7 @@ export const Catalog = () => {
   }, [activeCategory, searchTerm, sortBy, products, selectedBrand]);
 
   return (
-    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 relative overflow-hidden">
-      {/* Thematic Background */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-accent/10 to-transparent dark:from-accent/5 pointer-events-none" />
-      <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-accent/5 dark:bg-accent/5 blur-3xl pointer-events-none" />
-      
+    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
       <SEO 
         title={`Catálogo de Equipamentos ${activeCategory !== 'Todos' ? `- ${activeCategory}` : ''}`}
         description={`Confira nossa linha completa de equipamentos para ${activeCategory !== 'Todos' ? activeCategory : 'padarias, restaurantes e muito mais'}. Qualidade Lidermaq.`}
