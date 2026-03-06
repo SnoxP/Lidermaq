@@ -118,15 +118,25 @@ export const Catalog = () => {
 
   return (
     <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 relative overflow-hidden">
-      {/* Thematic Background */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-accent/10 to-transparent dark:from-accent/5 pointer-events-none" />
-      <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-accent/5 dark:bg-accent/5 blur-3xl pointer-events-none" />
-      
+      {/* Background Image Header */}
+      <div className="absolute top-0 left-0 w-full h-[500px] z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-50/80 to-zinc-50 dark:via-zinc-950/80 dark:to-zinc-950 z-10" />
+        <motion.img 
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop" 
+          alt="Catálogo Lidermaq" 
+          className="w-full h-full object-cover" 
+          referrerPolicy="no-referrer"
+        />
+      </div>
+
       <SEO 
         title={`Catálogo de Equipamentos ${activeCategory !== 'Todos' ? `- ${activeCategory}` : ''}`}
         description={`Confira nossa linha completa de equipamentos para ${activeCategory !== 'Todos' ? activeCategory : 'padarias, restaurantes e muito mais'}. Qualidade Lidermaq.`}
       />
-      <div className="container mx-auto px-4">
+      <div className="relative z-20 container mx-auto px-4">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-5xl font-black tracking-tighter mb-4 dark:text-white font-display">CATÁLOGO COMPLETO</h1>
