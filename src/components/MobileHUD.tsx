@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Package, MessageSquare, User, LayoutDashboard } from 'lucide-react';
+import { Home, Package, Headset, User, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const MobileHUD = () => {
@@ -10,7 +10,7 @@ export const MobileHUD = () => {
   const navItems = [
     { icon: Home, label: 'Início', path: '/' },
     { icon: Package, label: 'Catálogo', path: '/catalogo' },
-    { icon: MessageSquare, label: 'Contato', path: '/contato' },
+    { icon: Headset, label: 'Suporte', path: '/assistencia' },
     { icon: User, label: 'Perfil', path: '/perfil' },
   ];
 

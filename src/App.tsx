@@ -5,7 +5,6 @@ import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { CookieBanner } from './components/CookieBanner';
 import { MobileHUD } from './components/MobileHUD';
-import { FloatingMenu } from './components/FloatingMenu';
 import { CartDrawer } from './components/CartDrawer';
 import { Home } from './pages/Home';
 import { Catalog } from './pages/Catalog';
@@ -136,7 +135,7 @@ export default function App() {
                 </main>
                 <Footer />
                 <WhatsAppButton />
-                <FloatingMenu />
+                <MobileHUD />
                 <CookieBanner />
               </div>
             </Router>

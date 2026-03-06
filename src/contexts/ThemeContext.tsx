@@ -5,8 +5,6 @@ type Theme = 'light' | 'dark';
 interface ThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
-  zoomLevel: number;
-  setZoomLevel: (level: number) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -16,10 +14,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const savedTheme = localStorage.getItem('theme') as Theme;
     if (savedTheme) return savedTheme;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
-  const [zoomLevel, setZoomLevel] = useState<number>(() => {
-    const savedZoom = localStorage.getItem('zoomLevel');
-    return savedZoom ? parseInt(savedZoom, 10) : 3;
   });
 
   useEffect(() => {
@@ -41,18 +35,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  useEffect(() => {
-    localStorage.setItem('zoomLevel', zoomLevel.toString());
-    // Apply zoom to root
-    document.documentElement.style.setProperty('--zoom-scale', (0.8 + (zoomLevel * 0.1)).toString());
-  }, [zoomLevel]);
-
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, zoomLevel, setZoomLevel }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

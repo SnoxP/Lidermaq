@@ -15,7 +15,6 @@ export const Header = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { cart, setIsCartOpen } = useCart();
-  const { zoomLevel, setZoomLevel } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -325,21 +324,6 @@ export const Header = () => {
                 </Link>
               ))}
               
-              <div className="mt-12 pt-12 border-t border-zinc-100 dark:border-white/10">
-                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Ajuste de Visualização</p>
-                <div className="flex items-center justify-between gap-4">
-                  <button 
-                    onClick={() => setZoomLevel(Math.max(1, zoomLevel - 1))}
-                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center font-black text-xl"
-                  >-</button>
-                  <span className="font-black text-xl">{zoomLevel}</span>
-                  <button 
-                    onClick={() => setZoomLevel(Math.min(5, zoomLevel + 1))}
-                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center font-black text-xl"
-                  >+</button>
-                </div>
-              </div>
-
               <div className="mt-12 pt-12 border-t border-zinc-100 dark:border-white/10">
                 <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Atendimento</p>
                 <a 

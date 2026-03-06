@@ -23,8 +23,7 @@
 
   body {
     @apply font-sans bg-white text-zinc-900 transition-colors duration-500 antialiased;
-    transform: scale(var(--zoom-scale, 1));
-    transform-origin: top center;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
