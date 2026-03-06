@@ -183,13 +183,13 @@ export const ProductDetail = () => {
                 <>
                   <button 
                     onClick={handlePrevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
                   >
                     <ChevronLeft size={24} />
                   </button>
                   <button 
                     onClick={handleNextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
                   >
                     <ChevronRight size={24} />
                   </button>
@@ -214,7 +214,7 @@ export const ProductDetail = () => {
                         backgroundRepeat: 'no-repeat'
                       }}
                     />
-                    <img src={img} alt="Thumb" className="relative w-full h-full object-contain opacity-60 hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
+                    <img src={img} alt="Thumb" className="relative w-full h-full object-contain hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
                   </div>
                 ))}
               </div>
