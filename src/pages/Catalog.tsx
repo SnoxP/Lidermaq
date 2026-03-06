@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Filter, Search, ChevronDown, Plus } from 'lucide-react';
+import { Filter, Search, ChevronDown, Plus, Square, LayoutGrid, Grid3X3, Grid2X2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
@@ -18,16 +18,55 @@ export const Catalog = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [selectedBrand, setSelectedBrand] = useState('TODAS');
   const [categories, setCategories] = useState<string[]>(['Todos']);
+  const [mobileGridCols, setMobileGridCols] = useState<1 | 2 | 3 | 4>(1);
 
   const activeCategory = searchParams.get('cat') || 'Todos';
 
+  const handleGridChange = (cols: 1 | 2 | 3 | 4) => {
+    // Find the first visible product card to maintain scroll position
+    const productCards = document.querySelectorAll('.product-card-item');
+    let firstVisibleCard: Element | null = null;
+    let offset = 0;
+
+    for (const card of productCards) {
+      const rect = card.getBoundingClientRect();
+      if (rect.top >= 0 || rect.bottom > 0) {
+        firstVisibleCard = card;
+        offset = rect.top;
+        break;
+      }
+    }
+
+    setMobileGridCols(cols);
+
+    if (firstVisibleCard) {
+      // Use requestAnimationFrame to wait for the DOM to update with new grid layout
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const newRect = firstVisibleCard!.getBoundingClientRect();
+          window.scrollBy(0, newRect.top - offset);
+        });
+      });
+    }
+  };
+
   const brands = useMemo(() => {
-    const uniqueBrands = Array.from(new Set(products.map(p => {
+    let filteredForBrands = products;
+    if (activeCategory !== 'Todos') {
+      filteredForBrands = products.filter(p => p.category === activeCategory);
+    }
+    const uniqueBrands = Array.from(new Set(filteredForBrands.map(p => {
       // Remove accents and convert to uppercase
       return p.brand.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
     })));
     return ['TODAS', ...uniqueBrands.sort()];
-  }, [products]);
+  }, [products, activeCategory]);
+
+  useEffect(() => {
+    if (!brands.includes(selectedBrand) && selectedBrand !== 'TODAS') {
+      setSelectedBrand('TODAS');
+    }
+  }, [brands, selectedBrand]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -78,7 +117,11 @@ export const Catalog = () => {
   }, [activeCategory, searchTerm, sortBy, products, selectedBrand]);
 
   return (
-    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
+    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 relative overflow-hidden">
+      {/* Thematic Background */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-accent/10 to-transparent dark:from-accent/5 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-accent/5 dark:bg-accent/5 blur-3xl pointer-events-none" />
+      
       <SEO 
         title={`Catálogo de Equipamentos ${activeCategory !== 'Todos' ? `- ${activeCategory}` : ''}`}
         description={`Confira nossa linha completa de equipamentos para ${activeCategory !== 'Todos' ? activeCategory : 'padarias, restaurantes e muito mais'}. Qualidade Lidermaq.`}
@@ -140,6 +183,39 @@ export const Catalog = () => {
                   className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
                 />
               </div>
+              
+              {/* Mobile Grid Toggle */}
+              <div className="flex md:hidden items-center justify-center gap-2 bg-white dark:bg-zinc-900 p-2 rounded-2xl border border-zinc-200 dark:border-white/5 shadow-sm">
+                <button 
+                  onClick={() => handleGridChange(1)}
+                  className={`p-2 rounded-xl transition-all ${mobileGridCols === 1 ? 'bg-accent text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-white'}`}
+                  title="1 por linha"
+                >
+                  <Square size={20} />
+                </button>
+                <button 
+                  onClick={() => handleGridChange(2)}
+                  className={`p-2 rounded-xl transition-all ${mobileGridCols === 2 ? 'bg-accent text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-white'}`}
+                  title="2 por linha"
+                >
+                  <LayoutGrid size={20} />
+                </button>
+                <button 
+                  onClick={() => handleGridChange(3)}
+                  className={`p-2 rounded-xl transition-all ${mobileGridCols === 3 ? 'bg-accent text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-white'}`}
+                  title="3 por linha"
+                >
+                  <Grid3X3 size={20} />
+                </button>
+                <button 
+                  onClick={() => handleGridChange(4)}
+                  className={`p-2 rounded-xl transition-all ${mobileGridCols === 4 ? 'bg-accent text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-white'}`}
+                  title="4 por linha"
+                >
+                  <Grid2X2 size={20} />
+                </button>
+              </div>
+
               <div className="relative min-w-[200px]">
                 <select 
                   value={selectedBrand}
@@ -166,15 +242,15 @@ export const Catalog = () => {
 
             {/* Grid */}
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+              <div className={`grid gap-2 sm:gap-8 ${mobileGridCols === 1 ? 'grid-cols-1' : mobileGridCols === 2 ? 'grid-cols-2' : mobileGridCols === 3 ? 'grid-cols-3' : 'grid-cols-4'} sm:grid-cols-2 xl:grid-cols-3`}>
                 {Array(6).fill(0).map((_, i) => (
                   <div key={i} className="h-80 bg-zinc-200 dark:bg-zinc-800 rounded-3xl animate-pulse" />
                 ))}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+              <div className={`grid gap-2 sm:gap-8 ${mobileGridCols === 1 ? 'grid-cols-1' : mobileGridCols === 2 ? 'grid-cols-2' : mobileGridCols === 3 ? 'grid-cols-3' : 'grid-cols-4'} sm:grid-cols-2 xl:grid-cols-3`}>
                 {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={product} gridCols={mobileGridCols} />
                 ))}
               </div>
             ) : (

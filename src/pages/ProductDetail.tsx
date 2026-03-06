@@ -165,21 +165,31 @@ export const ProductDetail = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="aspect-square rounded-[2rem] overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 shadow-sm relative group"
+              className="aspect-square rounded-[2rem] overflow-hidden bg-white border border-zinc-200 shadow-sm relative group"
             >
-              <img src={productImage} alt={product.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              {/* Adaptive Background */}
+              <div 
+                className="absolute inset-0 w-full h-full"
+                style={{
+                  backgroundImage: `url(${productImage})`,
+                  backgroundSize: '5000% 5000%',
+                  backgroundPosition: '2% 2%',
+                  backgroundRepeat: 'no-repeat'
+                }}
+              />
+              <img src={productImage} alt={product.name} className="relative w-full h-full object-contain" referrerPolicy="no-referrer" />
               
               {product.images?.length > 1 && (
                 <>
                   <button 
                     onClick={handlePrevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
                   >
                     <ChevronLeft size={24} />
                   </button>
                   <button 
                     onClick={handleNextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
                   >
                     <ChevronRight size={24} />
                   </button>
@@ -192,9 +202,19 @@ export const ProductDetail = () => {
                   <div 
                     key={i} 
                     onClick={() => setMainImage(img)}
-                    className={`aspect-square rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border-2 cursor-pointer transition-all ${mainImage === img ? 'border-accent shadow-md shadow-accent/20' : 'border-zinc-200 dark:border-white/5 hover:border-accent/30'}`}
+                    className={`aspect-square rounded-2xl overflow-hidden bg-white border-2 cursor-pointer transition-all relative ${mainImage === img ? 'border-accent shadow-md shadow-accent/20' : 'border-zinc-200 hover:border-accent/30'}`}
                   >
-                    <img src={img} alt="Thumb" className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
+                    {/* Adaptive Background */}
+                    <div 
+                      className="absolute inset-0 w-full h-full"
+                      style={{
+                        backgroundImage: `url(${img})`,
+                        backgroundSize: '5000% 5000%',
+                        backgroundPosition: '2% 2%',
+                        backgroundRepeat: 'no-repeat'
+                      }}
+                    />
+                    <img src={img} alt="Thumb" className="relative w-full h-full object-contain hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
                   </div>
                 ))}
               </div>

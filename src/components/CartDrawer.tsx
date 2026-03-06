@@ -66,11 +66,21 @@ export const CartDrawer = () => {
               ) : (
                 cart.map((item) => (
                   <div key={item.id} className="flex gap-4">
-                    <div className="w-20 h-20 bg-zinc-100 dark:bg-zinc-800 rounded-xl overflow-hidden shrink-0">
+                    <div className="w-20 h-20 bg-white rounded-xl overflow-hidden shrink-0 relative border border-zinc-200">
+                      {/* Adaptive Background */}
+                      <div 
+                        className="absolute inset-0 w-full h-full"
+                        style={{
+                          backgroundImage: `url(${item.image})`,
+                          backgroundSize: '5000% 5000%',
+                          backgroundPosition: '2% 2%',
+                          backgroundRepeat: 'no-repeat'
+                        }}
+                      />
                       <img 
                         src={item.image} 
                         alt={item.name} 
-                        className="w-full h-full object-cover"
+                        className="relative w-full h-full object-contain"
                       />
                     </div>
                     <div className="flex-1">

@@ -45,7 +45,7 @@ export const Home = () => {
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="https://cidadesnanet.com/news/wp-content/uploads/2020/12/IMG_8267.jpg" 
+            src="https://i.imgur.com/71pvHrL.png" 
             alt="Lidermaq Empresa" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"

@@ -25,6 +25,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [isUploading, setIsUploading] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [targetImageIndex, setTargetImageIndex] = useState<number | null>(null);
   const [targetIsVariant, setTargetIsVariant] = useState(false);
@@ -202,6 +203,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
       const urls = data.images.slice(0, 15).map((img: any) => img.imageUrl);
 
       setSearchResults(urls);
+      setSelectedImages([]);
       setTargetImageIndex(index);
       setTargetIsVariant(isVariant);
       setShowSearchModal(true);
@@ -215,15 +217,32 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   };
 
   const handleSelectImage = (url: string) => {
+    if (selectedImages.includes(url)) {
+      setSelectedImages(selectedImages.filter(img => img !== url));
+    } else {
+      setSelectedImages([...selectedImages, url]);
+    }
+  };
+
+  const handleConfirmSelection = () => {
     if (targetImageIndex === null) return;
 
     if (targetIsVariant) {
-      handleVariantChange(targetImageIndex, 'image', url);
+      if (selectedImages.length > 0) {
+        handleVariantChange(targetImageIndex, 'image', selectedImages[0]);
+      }
     } else {
-      const newImages = [...images];
-      newImages[targetImageIndex] = url;
-      setImages(newImages);
+      let newImages = [...images];
+      // If the target index is empty, replace it, otherwise add new ones
+      if (newImages[targetImageIndex] === '') {
+        newImages[targetImageIndex] = selectedImages[0];
+        newImages = [...newImages, ...selectedImages.slice(1)];
+      } else {
+        newImages = [...newImages, ...selectedImages];
+      }
+      setImages(newImages.filter(img => img !== ''));
     }
+    setSelectedImages([]);
     setShowSearchModal(false);
   };
 
@@ -599,10 +618,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             </div>
             <div className="grid grid-cols-3 gap-4">
               {searchResults.map((url, i) => (
-                <button key={i} onClick={() => handleSelectImage(url)} className="aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-accent">
+                <button 
+                  key={i} 
+                  onClick={() => handleSelectImage(url)} 
+                  className={`aspect-square rounded-xl overflow-hidden border-4 ${selectedImages.includes(url) ? 'border-accent' : 'border-transparent'} hover:border-accent`}
+                >
                   <img src={url} alt="Result" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </button>
               ))}
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button 
+                onClick={handleConfirmSelection}
+                className="btn-primary px-6 py-3"
+              >
+                Confirmar ({selectedImages.length})
+              </button>
             </div>
           </div>
         </div>

@@ -15,6 +15,7 @@ export const Header = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { cart, setIsCartOpen } = useCart();
+  const { zoomLevel, setZoomLevel } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,13 +35,14 @@ export const Header = () => {
   ];
 
   return (
-    <header 
-      className={`fixed top-0 left-0 w-full z-[70] transition-all duration-500 ${
-        scrolled 
-          ? 'glass-effect shadow-xl shadow-black/5 py-3' 
-          : 'bg-transparent py-6'
-      }`}
-    >
+    <>
+      <header 
+        className={`fixed top-0 left-0 w-full z-[70] transition-all duration-500 ${
+          scrolled 
+            ? 'glass-effect shadow-xl shadow-black/5 py-3' 
+            : 'bg-transparent py-6'
+        }`}
+      >
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
@@ -49,9 +51,14 @@ export const Header = () => {
             <div className="absolute top-0 left-0 w-full h-1/2 bg-white/20 pointer-events-none" />
             <span className="font-black text-xl font-display relative z-10">L</span>
           </div>
-          <span className="text-2xl font-black tracking-tighter dark:text-white font-display">
-            LIDERMAQ
-          </span>
+          <div className="flex flex-col">
+            <span className="text-2xl font-black tracking-tighter font-display leading-none">
+              <span className="text-accent">LIDER</span><span className="text-zinc-900 dark:text-white">MAQ</span>
+            </span>
+            <span className="text-[10px] font-medium font-sans text-zinc-900 dark:text-white tracking-[0.3em] leading-none mt-1">
+              EQUIPAMENTOS
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Nav */}
@@ -176,12 +183,20 @@ export const Header = () => {
               
               <AnimatePresence>
                 {isUserMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 top-14 w-64 glass-effect rounded-[1.5rem] shadow-2xl border border-zinc-200 dark:border-white/10 p-2 z-[60] overflow-hidden"
-                  >
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="fixed inset-0 z-40"
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 top-14 w-64 glass-effect rounded-[1.5rem] shadow-2xl border border-zinc-200 dark:border-white/10 p-2 z-[60] overflow-hidden"
+                    >
                     <div className="px-5 py-4 border-b border-zinc-100 dark:border-white/5 mb-2">
                       <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Conta Lidermaq</p>
                       <p className="text-sm font-bold truncate dark:text-white">{user?.email || 'Visitante'}</p>
@@ -226,6 +241,7 @@ export const Header = () => {
                       )}
                     </div>
                   </motion.div>
+                  </>
                 )}
               </AnimatePresence>
             </div>
@@ -239,6 +255,8 @@ export const Header = () => {
           </div>
         </div>
       </div>
+
+      </header>
 
       {/* Mobile Nav Overlay */}
       <AnimatePresence>
@@ -261,14 +279,21 @@ export const Header = () => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white dark:bg-zinc-900 z-[100] lg:hidden flex flex-col shadow-2xl"
+            className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl z-[100] lg:hidden flex flex-col shadow-2xl border-l border-white/20 dark:border-white/10"
           >
             <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/10">
               <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white">
                   <span className="font-black text-xl">L</span>
                 </div>
-                <span className="text-xl font-black tracking-tighter text-zinc-900 dark:text-white">LIDERMAQ</span>
+                <div className="flex flex-col">
+                  <span className="text-xl font-black tracking-tighter font-display leading-none">
+                    <span className="text-accent">LIDER</span><span className="text-zinc-900 dark:text-white">MAQ</span>
+                  </span>
+                  <span className="text-[8px] font-medium font-sans text-zinc-900 dark:text-white tracking-[0.3em] leading-none mt-1">
+                    EQUIPAMENTOS
+                  </span>
+                </div>
               </Link>
               <div className="flex items-center gap-2">
                 <button 
@@ -301,6 +326,21 @@ export const Header = () => {
               ))}
               
               <div className="mt-12 pt-12 border-t border-zinc-100 dark:border-white/10">
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Ajuste de Visualização</p>
+                <div className="flex items-center justify-between gap-4">
+                  <button 
+                    onClick={() => setZoomLevel(Math.max(1, zoomLevel - 1))}
+                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center font-black text-xl"
+                  >-</button>
+                  <span className="font-black text-xl">{zoomLevel}</span>
+                  <button 
+                    onClick={() => setZoomLevel(Math.min(5, zoomLevel + 1))}
+                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center font-black text-xl"
+                  >+</button>
+                </div>
+              </div>
+
+              <div className="mt-12 pt-12 border-t border-zinc-100 dark:border-white/10">
                 <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Atendimento</p>
                 <a 
                   href="https://wa.me/5589999170800" 
@@ -314,6 +354,6 @@ export const Header = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
