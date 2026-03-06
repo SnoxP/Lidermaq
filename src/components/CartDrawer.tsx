@@ -1,14 +1,16 @@
 import React from 'react';
-import { X, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { X, Trash2, ShoppingBag, ArrowRight, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { AttendantSelector } from './AttendantSelector';
 
 export const CartDrawer = () => {
   const { cart, removeFromCart, updateQuantity, isCartOpen, setIsCartOpen, total } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [showAttendantSelector, setShowAttendantSelector] = React.useState(false);
 
   const handleCheckout = () => {
     if (!user) {
@@ -16,10 +18,10 @@ export const CartDrawer = () => {
       navigate('/login', { state: { from: 'cart' } });
       return;
     }
-    // Proceed to checkout logic (e.g., WhatsApp or Stripe)
-    const message = `Olá, gostaria de finalizar meu pedido:\n\n${cart.map(item => `${item.quantity}x ${item.name} - R$ ${item.price}`).join('\n')}\n\nTotal: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-    window.open(`https://wa.me/5589999170800?text=${encodeURIComponent(message)}`, '_blank');
+    setShowAttendantSelector(!showAttendantSelector);
   };
+
+  const message = `Olá, gostaria de finalizar meu pedido:\n\n${cart.map(item => `${item.quantity}x ${item.name} - R$ ${item.price}`).join('\n')}\n\nTotal: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 
   return (
     <AnimatePresence>
@@ -113,12 +115,20 @@ export const CartDrawer = () => {
                     R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </span>
                 </div>
-                <button 
-                  onClick={handleCheckout}
-                  className="w-full py-4 bg-accent text-white rounded-xl font-black tracking-wide hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
-                >
-                  FINALIZAR PEDIDO <ArrowRight size={20} />
-                </button>
+                <div className="space-y-4">
+                  <button 
+                    onClick={handleCheckout}
+                    className="w-full py-4 bg-accent text-white rounded-xl font-black tracking-wide hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
+                  >
+                    <MessageCircle size={20} /> FINALIZAR PEDIDO
+                  </button>
+                  
+                  {showAttendantSelector && (
+                    <div className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-white/10">
+                      <AttendantSelector message={message} />
+                    </div>
+                  )}
+                </div>
                 {!user && (
                   <p className="text-center text-xs text-zinc-400 mt-3">
                     Você precisará fazer login para finalizar a compra.
