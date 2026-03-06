@@ -65,9 +65,11 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
             {product.name || 'Produto sem nome'}
           </h3>
         </Link>
-        <p className={`${gridCols >= 2 ? 'hidden sm:block' : 'block'} text-sm text-zinc-500 dark:text-zinc-400 mb-4 line-clamp-3 leading-relaxed`}>
-          {product.description || 'Sem descrição disponível.'}
-        </p>
+        <div className={`${gridCols >= 2 ? 'hidden sm:block' : 'block'} mb-4`}>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+            {product.description || 'Sem descrição disponível.'}
+          </p>
+        </div>
         
         <div className={`flex ${gridCols >= 3 ? 'flex-col items-start gap-2 sm:flex-row sm:items-end sm:justify-between' : gridCols === 2 ? 'flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between' : 'items-end justify-between'} pt-3 sm:pt-4 border-t border-zinc-100 dark:border-white/5`}>
           <div>
@@ -75,7 +77,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
             <span className={`${gridCols >= 4 ? 'text-xs sm:text-xl' : gridCols === 3 ? 'text-sm sm:text-xl' : gridCols === 2 ? 'text-lg sm:text-xl' : 'text-xl'} font-black text-zinc-900 dark:text-white font-display`}>
               R$ {(product.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
-            <span className={`block ${gridCols >= 4 ? 'text-[7px] sm:text-xs' : gridCols === 3 ? 'text-[9px] sm:text-xs' : 'text-xs'} text-accent font-semibold mt-0.5 sm:mt-1 line-clamp-1`}>
+            <span className={`${gridCols >= 4 ? 'text-[7px] sm:text-xs' : gridCols === 3 ? 'text-[9px] sm:text-xs' : 'text-xs'} text-accent font-semibold mt-0.5 sm:mt-1 line-clamp-1`}>
               {product.installments || 'Consulte condições'}
             </span>
           </div>
