@@ -165,10 +165,19 @@ export const ProductDetail = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="aspect-square rounded-[2rem] overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 shadow-sm relative group"
+              className="aspect-square rounded-[2rem] overflow-hidden bg-white border border-zinc-200 shadow-sm relative group"
             >
-              <img src={productImage} alt={product.name} className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110" referrerPolicy="no-referrer" />
-              <img src={productImage} alt={product.name} className="relative w-full h-full object-contain p-8" referrerPolicy="no-referrer" />
+              {/* Adaptive Background */}
+              <div 
+                className="absolute inset-0 w-full h-full"
+                style={{
+                  backgroundImage: `url(${productImage})`,
+                  backgroundSize: '5000% 5000%',
+                  backgroundPosition: '2% 2%',
+                  backgroundRepeat: 'no-repeat'
+                }}
+              />
+              <img src={productImage} alt={product.name} className="relative w-full h-full object-contain" referrerPolicy="no-referrer" />
               
               {product.images?.length > 1 && (
                 <>
@@ -193,10 +202,19 @@ export const ProductDetail = () => {
                   <div 
                     key={i} 
                     onClick={() => setMainImage(img)}
-                    className={`aspect-square rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border-2 cursor-pointer transition-all relative ${mainImage === img ? 'border-accent shadow-md shadow-accent/20' : 'border-zinc-200 dark:border-white/5 hover:border-accent/30'}`}
+                    className={`aspect-square rounded-2xl overflow-hidden bg-white border-2 cursor-pointer transition-all relative ${mainImage === img ? 'border-accent shadow-md shadow-accent/20' : 'border-zinc-200 hover:border-accent/30'}`}
                   >
-                    <img src={img} alt="Thumb bg" className="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110" referrerPolicy="no-referrer" />
-                    <img src={img} alt="Thumb" className="relative w-full h-full object-contain p-2 opacity-60 hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
+                    {/* Adaptive Background */}
+                    <div 
+                      className="absolute inset-0 w-full h-full"
+                      style={{
+                        backgroundImage: `url(${img})`,
+                        backgroundSize: '5000% 5000%',
+                        backgroundPosition: '2% 2%',
+                        backgroundRepeat: 'no-repeat'
+                      }}
+                    />
+                    <img src={img} alt="Thumb" className="relative w-full h-full object-contain opacity-60 hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
                   </div>
                 ))}
               </div>

@@ -74,9 +74,18 @@ export const Cart = () => {
                 key={`${item.id}-${item.variant}`}
                 className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-zinc-200 dark:border-white/5 shadow-sm flex flex-col sm:flex-row items-center gap-6"
               >
-                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white dark:bg-zinc-800 shrink-0 relative border border-zinc-200 dark:border-white/5">
-                  <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover blur-md opacity-40 scale-110" />
-                  <img src={item.image} alt={item.name} className="relative w-full h-full object-contain p-2" />
+                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white shrink-0 relative border border-zinc-200">
+                  {/* Adaptive Background */}
+                  <div 
+                    className="absolute inset-0 w-full h-full"
+                    style={{
+                      backgroundImage: `url(${item.image})`,
+                      backgroundSize: '5000% 5000%',
+                      backgroundPosition: '2% 2%',
+                      backgroundRepeat: 'no-repeat'
+                    }}
+                  />
+                  <img src={item.image} alt={item.name} className="relative w-full h-full object-contain" />
                 </div>
                 
                 <div className="flex-1 text-center sm:text-left">

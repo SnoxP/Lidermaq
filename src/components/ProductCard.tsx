@@ -30,17 +30,21 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product }) => {
       whileHover={{ y: -10 }}
       className="card-premium group"
     >
-      <Link to={`/produto/${product.id}`} className="block relative aspect-[4/3] overflow-hidden bg-white dark:bg-zinc-800">
-        <img 
-          src={product.image || 'https://picsum.photos/seed/lidermaq-placeholder/800/600'} 
-          alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover blur-xl opacity-40 scale-110"
-          referrerPolicy="no-referrer"
+      <Link to={`/produto/${product.id}`} className="block relative aspect-square overflow-hidden bg-white">
+        {/* Adaptive Background */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: `url(${product.image || 'https://picsum.photos/seed/lidermaq-placeholder/800/600'})`,
+            backgroundSize: '5000% 5000%',
+            backgroundPosition: '2% 2%',
+            backgroundRepeat: 'no-repeat'
+          }}
         />
         <img 
           src={product.image || 'https://picsum.photos/seed/lidermaq-placeholder/800/600'} 
           alt={product.name}
-          className="relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 p-4"
+          className="relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
           referrerPolicy="no-referrer"
         />
