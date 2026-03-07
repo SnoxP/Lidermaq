@@ -45,7 +45,7 @@ export const Home = () => {
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="https://i.imgur.com/71pvHrL.png" 
+            src="https://i.imgur.com/519GNtq.png" 
             alt="Lidermaq Empresa" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"

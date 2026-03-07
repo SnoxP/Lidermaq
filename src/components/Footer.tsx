@@ -23,7 +23,7 @@ export const Footer = () => {
               </div>
             </Link>
             <p className="text-zinc-400 leading-relaxed text-sm">
-              Equipando o sucesso do seu negócio com as melhores soluções em máquinas e equipamentos comerciais desde 1994 em Picos-PI.
+              Com mais de 10 anos de experiência, a Lidermaq é referência no fornecimento de máquinas e equipamentos comerciais em Picos-PI, oferecendo soluções completas para o seu negócio.
             </p>
             <div className="flex gap-4">
               <a href="https://www.instagram.com/lidermaqequipamentos/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-accent hover:text-white transition-all">
