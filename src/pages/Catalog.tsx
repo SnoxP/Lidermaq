@@ -6,6 +6,7 @@ import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
 import { useAuth } from '../contexts/AuthContext';
 import { SEO } from '../components/SEO';
+import { Header } from '../components/Header';
 import { db } from '../services/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -125,9 +126,18 @@ export const Catalog = () => {
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.5 }}
-          src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop" 
-          alt="Catálogo Lidermaq" 
-          className="w-full h-full object-cover -scale-x-100 object-[100%_center]" 
+          src="https://i.imgur.com/cU4baTN.png" 
+          alt="Lidermaq Empresa Mobile" 
+          className="w-full h-full object-cover md:hidden"
+          referrerPolicy="no-referrer"
+        />
+        <motion.img 
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          src="https://i.imgur.com/519GNtq.png" 
+          alt="Lidermaq Empresa Desktop" 
+          className="w-full h-full object-cover hidden md:block"
           referrerPolicy="no-referrer"
         />
       </div>

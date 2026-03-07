@@ -46,8 +46,8 @@ export const Home = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
             src="https://i.imgur.com/cU4baTN.png" 
-            alt="Lidermaq Empresa Mobile" 
-            className="w-full h-full object-cover md:hidden"
+            alt="Lidermaq Empresa" 
+            className="md:hidden w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
           <motion.img 
@@ -55,8 +55,8 @@ export const Home = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
             src="https://i.imgur.com/519GNtq.png" 
-            alt="Lidermaq Empresa Desktop" 
-            className="w-full h-full object-cover hidden md:block"
+            alt="Lidermaq Empresa" 
+            className="hidden md:block w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
         </div>
