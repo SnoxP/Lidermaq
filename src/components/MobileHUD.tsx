@@ -22,6 +22,7 @@ export const MobileHUD = () => {
   return (
     <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-xs">
       <div className="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[2rem] p-1.5 flex items-center justify-around transition-all duration-500">
+        <img src="https://i.imgur.com/cU4baTN.png" alt="Mobile HUD Icon" className="w-8 h-8 object-contain" />
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (

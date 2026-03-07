@@ -45,9 +45,18 @@ export const Home = () => {
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
+            src="https://i.imgur.com/cU4baTN.png" 
+            alt="Lidermaq Empresa Mobile" 
+            className="w-full h-full object-cover md:hidden"
+            referrerPolicy="no-referrer"
+          />
+          <motion.img 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.5 }}
             src="https://i.imgur.com/519GNtq.png" 
-            alt="Lidermaq Empresa" 
-            className="w-full h-full object-cover"
+            alt="Lidermaq Empresa Desktop" 
+            className="w-full h-full object-cover hidden md:block"
             referrerPolicy="no-referrer"
           />
         </div>
