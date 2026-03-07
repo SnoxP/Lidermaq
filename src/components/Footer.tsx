@@ -10,8 +10,8 @@ export const Footer = () => {
           {/* Brand */}
           <div className="space-y-8">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/20">
-                <span className="font-black text-xl font-display">L</span>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-white">
+                <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col">
                 <span className="text-2xl font-black tracking-tighter font-display leading-none">

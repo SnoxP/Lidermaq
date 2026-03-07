@@ -45,10 +45,8 @@ export const Header = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white shadow-lg shadow-accent/20 group-hover:rotate-12 transition-transform duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none" />
-            <div className="absolute top-0 left-0 w-full h-1/2 bg-white/20 pointer-events-none" />
-            <span className="font-black text-xl font-display relative z-10">L</span>
+          <div className="relative w-10 h-10 rounded-full flex items-center justify-center shadow-lg shadow-accent/20 group-hover:rotate-12 transition-transform duration-500 overflow-hidden bg-white">
+            <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
           </div>
           <div className="flex flex-col">
             <span className="text-2xl font-black tracking-tighter font-display leading-none">
@@ -282,8 +280,8 @@ export const Header = () => {
           >
             <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/10">
               <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white">
-                  <span className="font-black text-xl">L</span>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden bg-white">
+                  <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xl font-black tracking-tighter font-display leading-none">

@@ -127,7 +127,7 @@ export const Catalog = () => {
           transition={{ duration: 1.5 }}
           src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop" 
           alt="Catálogo Lidermaq" 
-          className="w-full h-full object-cover" 
+          className="w-full h-full object-cover -scale-x-100 object-[100%_center]" 
           referrerPolicy="no-referrer"
         />
       </div>

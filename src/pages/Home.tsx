@@ -142,14 +142,14 @@ export const Home = () => {
             {/* Support */}
             <motion.div 
               whileHover={{ y: -5 }}
-              className="md:col-span-2 card-premium p-10 flex items-center gap-8 bg-zinc-900 text-white"
+              className="md:col-span-2 card-premium p-10 flex items-center gap-8 bg-white dark:bg-zinc-900"
             >
-              <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center text-accent shrink-0">
+              <div className="w-20 h-20 bg-accent/10 dark:bg-white/10 rounded-3xl flex items-center justify-center text-accent shrink-0">
                 <Tool size={40} />
               </div>
               <div>
-                <h3 className="text-2xl font-black mb-2 font-display">SUPORTE TÉCNICO</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
+                <h3 className="text-2xl font-black mb-2 dark:text-white font-display">SUPORTE TÉCNICO</h3>
+                <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
                   Equipe especializada pronta para atender você com agilidade e peças originais.
                 </p>
               </div>
