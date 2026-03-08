@@ -39,7 +39,7 @@ export const Header = () => {
         className={`fixed top-0 left-0 w-full z-[70] transition-all duration-500 ${
           scrolled 
             ? 'glass-effect shadow-xl shadow-black/5 py-3' 
-            : 'bg-transparent py-6'
+            : 'bg-gradient-to-b from-white/90 via-white/50 to-transparent dark:from-black/90 dark:via-black/50 dark:to-transparent py-6'
         }`}
       >
       <div className="container mx-auto px-4 flex items-center justify-between">

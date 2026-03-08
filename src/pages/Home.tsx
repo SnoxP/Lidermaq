@@ -40,7 +40,7 @@ export const Home = () => {
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-50/50 to-white dark:via-zinc-950/50 dark:to-zinc-950 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white dark:via-zinc-950/20 dark:to-zinc-950 z-10" />
           <motion.img 
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
