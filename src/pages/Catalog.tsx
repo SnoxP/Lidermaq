@@ -220,6 +220,37 @@ export const Catalog = () => {
                 ))}
               </div>
 
+              <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5 lg:hidden flex flex-col gap-4">
+                <div className="relative">
+                  <select 
+                    value={selectedBrand}
+                    onChange={(e) => {
+                      setSelectedBrand(e.target.value);
+                      updateParams({ page: '1' });
+                    }}
+                    className="w-full appearance-none px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none font-bold cursor-pointer"
+                  >
+                    {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
+                </div>
+                <div className="relative">
+                  <select 
+                    value={sortBy}
+                    onChange={(e) => {
+                      setSortBy(e.target.value);
+                      updateParams({ page: '1' });
+                    }}
+                    className="w-full appearance-none px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none font-bold cursor-pointer"
+                  >
+                    <option value="featured">Destaques</option>
+                    <option value="price-asc">Menor Preço</option>
+                    <option value="price-desc">Maior Preço</option>
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
+                </div>
+              </div>
+
               {user?.isAdmin && (
                 <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5">
                   <button 
@@ -291,7 +322,7 @@ export const Catalog = () => {
                 </button>
               </div>
 
-              <div className="relative min-w-[200px]">
+              <div className="relative min-w-[200px] hidden lg:block">
                 <select 
                   value={selectedBrand}
                   onChange={(e) => {
@@ -304,7 +335,7 @@ export const Catalog = () => {
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
               </div>
-              <div className="relative min-w-[200px]">
+              <div className="relative min-w-[200px] hidden lg:block">
                 <select 
                   value={sortBy}
                   onChange={(e) => {
@@ -320,6 +351,27 @@ export const Catalog = () => {
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
               </div>
             </div>
+
+            <motion.a 
+              href="/assistencia"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mb-8 max-w-3xl mx-auto"
+            >
+              <img 
+                src="https://i.imgur.com/TNJcglg.png" 
+                alt="Promoção Lidermaq 1" 
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
+                <div className="max-w-lg flex flex-col items-center md:items-end">
+                  <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
+                  <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
+                  <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Suporte</span>
+                </div>
+              </div>
+            </motion.a>
 
             {/* Grid */}
             {loading ? (
@@ -370,27 +422,6 @@ export const Catalog = () => {
                 </button>
               </div>
             )}
-            
-            <motion.a 
-              href="/assistencia"
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6 }}
-              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mt-16 max-w-3xl mx-auto"
-            >
-              <img 
-                src="https://i.imgur.com/TNJcglg.png" 
-                alt="Promoção Lidermaq 1" 
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
-                <div className="max-w-lg flex flex-col items-center md:items-end">
-                  <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
-                  <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
-                  <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Suporte</span>
-                </div>
-              </div>
-            </motion.a>
           </div>
         </div>
       </div>
