@@ -33,12 +33,12 @@ export const About = () => {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <h2 className="text-3xl md:text-5xl font-black tracking-tighter dark:text-white font-display">QUALIDADE QUE VEM DE BERÇO</h2>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter dark:text-white font-display">A VISÃO DE ORTENÍCIO NUNES</h2>
             <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Segundo a matéria publicada no portal Cidades na Net, a empresa atua há cerca de 10 anos no mercado, consolidando-se como referência regional no fornecimento de equipamentos profissionais. Ao longo desse período, a Lidermaq construiu uma reputação baseada na confiança, no atendimento personalizado e na oferta de produtos de qualidade.
+              A história da Lidermaq Equipamentos se confunde com a trajetória de dedicação e empreendedorismo de seu fundador, <strong>Ortenício Nunes</strong>. Há mais de 10 anos, ele identificou a necessidade de oferecer à região de Picos-PI e cidades vizinhas uma empresa especializada que fornecesse não apenas máquinas, mas soluções completas para pequenos e grandes negócios.
             </p>
             <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              A empresa trabalha com uma ampla variedade de máquinas e equipamentos, incluindo itens para padarias, açougues, supermercados e cozinhas industriais. O diferencial da Lidermaq está no suporte oferecido aos clientes, ajudando empreendedores a montar, ampliar ou modernizar seus estabelecimentos com segurança no investimento.
+              Com muito trabalho e focado no atendimento humanizado, Ortenício construiu uma marca que se tornou sinônimo de confiança. Hoje, a Lidermaq é referência no fornecimento de equipamentos para padarias, açougues, supermercados e restaurantes, ajudando milhares de empreendedores a realizarem o sonho de montar ou expandir seus próprios negócios com maquinário de ponta e assistência técnica especializada.
             </p>
             <div className="pt-4">
               <a 
@@ -47,7 +47,7 @@ export const About = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-accent font-bold hover:underline group"
               >
-                Saiba mais sobre nossa história <ExternalLink size={18} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                Leia a matéria completa no Cidades na Net <ExternalLink size={18} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
             <div className="grid grid-cols-2 gap-6 pt-6 border-t border-zinc-200 dark:border-white/5 mt-6">
