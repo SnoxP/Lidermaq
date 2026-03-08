@@ -25,7 +25,7 @@ export const About = () => {
             viewport={{ once: true }}
             className="rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5"
           >
-            <img src="https://i.imgur.com/B9WKZY0.png" alt="Nossa Fábrica" className="w-full h-full object-cover" />
+            <img src="https://i.imgur.com/ZCcSD1Y.png" alt="Família Lidermaq" className="w-full h-full object-cover" />
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, x: 20 }}

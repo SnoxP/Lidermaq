@@ -222,37 +222,50 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Institutional Block */}
+      {/* Promotional Banners */}
       <section className="py-20 bg-white dark:bg-neutral-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative h-[450px] rounded-3xl overflow-hidden group">
-              <div className="absolute inset-0 flex">
-                <div className="w-full md:w-1/2 h-full overflow-hidden">
-                  <img 
-                    src="https://i.imgur.com/F3opP6n.jpeg" 
-                    alt="Equipamentos Lidermaq 1" 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <div className="hidden md:block md:w-1/2 h-full overflow-hidden">
-                  <img 
-                    src="https://i.imgur.com/pz6ILMP.jpeg" 
-                    alt="Equipamentos Lidermaq 2" 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-black via-black/40 to-transparent p-6 md:p-12 flex flex-col justify-end">
-                <div className="max-w-lg">
-                  <h3 className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
-                  <p className="text-white/90 text-lg mb-8 leading-relaxed">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
-                  <Link to="/assistencia" className="btn-primary w-fit px-10 py-4 text-lg">Acessar Suporte</Link>
+          <div className="max-w-3xl mx-auto flex flex-col gap-8">
+            <motion.a 
+              href="/assistencia"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900"
+            >
+              <img 
+                src="https://i.imgur.com/TNJcglg.png" 
+                alt="Promoção Lidermaq 1" 
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
+                <div className="max-w-lg flex flex-col items-center md:items-end">
+                  <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
+                  <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
+                  <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Suporte</span>
                 </div>
               </div>
-            </div>
+            </motion.a>
+            <motion.a 
+              href="/catalogo"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900"
+            >
+              <img 
+                src="https://i.imgur.com/NXt8O6y.png" 
+                alt="Promoção Lidermaq 2" 
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
+                <div className="max-w-lg flex flex-col items-center md:items-end">
+                  <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">CATÁLOGO</h3>
+                  <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Explore todos os equipamentos e soluções da Lidermaq em um só lugar, com informações claras para ajudar você a encontrar o produto ideal para sua necessidade.</p>
+                  <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Catálogo</span>
+                </div>
+              </div>
+            </motion.a>
           </div>
         </div>
       </section>
