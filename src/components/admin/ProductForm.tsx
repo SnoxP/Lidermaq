@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles } from 'lucide-react';
+import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles, ArrowUp, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -248,6 +248,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
   const handleAddImage = () => setImages([...images, '']);
   const handleRemoveImage = (index: number) => setImages(images.filter((_, i) => i !== index));
+  const moveImageUp = (index: number) => {
+    if (index === 0) return;
+    const newImages = [...images];
+    const temp = newImages[index];
+    newImages[index] = newImages[index - 1];
+    newImages[index - 1] = temp;
+    setImages(newImages);
+  };
+  const moveImageDown = (index: number) => {
+    if (index === images.length - 1) return;
+    const newImages = [...images];
+    const temp = newImages[index];
+    newImages[index] = newImages[index + 1];
+    newImages[index + 1] = temp;
+    setImages(newImages);
+  };
   const handleImageChange = (index: number, value: string) => {
     const newImages = [...images];
     newImages[index] = value;
@@ -580,12 +596,35 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                     </div>
                   </div>
                   {images.length > 1 && (
-                    <button 
-                      type="button" onClick={() => handleRemoveImage(index)}
-                      className="p-4 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-1">
+                        <button 
+                          type="button" 
+                          onClick={() => moveImageUp(index)}
+                          disabled={index === 0}
+                          className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Mover para cima"
+                        >
+                          <ArrowUp size={16} />
+                        </button>
+                        <button 
+                          type="button" 
+                          onClick={() => moveImageDown(index)}
+                          disabled={index === images.length - 1}
+                          className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Mover para baixo"
+                        >
+                          <ArrowDown size={16} />
+                        </button>
+                      </div>
+                      <button 
+                        type="button" onClick={() => handleRemoveImage(index)}
+                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors flex justify-center"
+                        title="Remover imagem"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
                   )}
                 </div>
               ))}

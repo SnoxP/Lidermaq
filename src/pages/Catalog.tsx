@@ -19,12 +19,43 @@ export const Catalog = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [selectedBrand, setSelectedBrand] = useState('TODAS');
   const [categories, setCategories] = useState<string[]>(['Todos']);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [columnsCount, setColumnsCount] = useState(1);
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2 | 3 | 4>(() => {
     const saved = localStorage.getItem('mobileGridCols');
     return saved ? (parseInt(saved, 10) as 1 | 2 | 3 | 4) : 1;
   });
 
   const activeCategory = searchParams.get('cat') || 'Todos';
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+
+  const updateParams = (updates: Record<string, string | null>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null) {
+        newParams.delete(key);
+      } else {
+        newParams.set(key, value);
+      }
+    });
+    setSearchParams(newParams);
+  };
+
+  useEffect(() => {
+    const updateColumns = () => {
+      if (window.innerWidth >= 1280) {
+        setColumnsCount(3);
+      } else if (window.innerWidth >= 640) {
+        setColumnsCount(2);
+      } else {
+        setColumnsCount(mobileGridCols);
+      }
+    };
+    
+    updateColumns();
+    window.addEventListener('resize', updateColumns);
+    return () => window.removeEventListener('resize', updateColumns);
+  }, [mobileGridCols]);
 
   const handleGridChange = (cols: 1 | 2 | 3 | 4) => {
     // Find the first visible product card to maintain scroll position
@@ -70,6 +101,7 @@ export const Catalog = () => {
   useEffect(() => {
     if (!brands.includes(selectedBrand) && selectedBrand !== 'TODAS') {
       setSelectedBrand('TODAS');
+      updateParams({ page: '1' });
     }
   }, [brands, selectedBrand]);
 
@@ -89,7 +121,7 @@ export const Catalog = () => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [activeCategory]);
+  }, [activeCategory, currentPage]);
 
   const filteredProducts = useMemo(() => {
     let result = products;
@@ -120,6 +152,10 @@ export const Catalog = () => {
 
     return result;
   }, [activeCategory, searchTerm, sortBy, products, selectedBrand]);
+
+  const itemsPerPage = columnsCount * 7;
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const paginatedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 relative overflow-hidden">
@@ -160,7 +196,7 @@ export const Catalog = () => {
         {/* Filters & Search */}
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           {/* Categories Sidebar/Bar */}
-          <div className="lg:w-64 shrink-0">
+          <div className={`lg:w-64 shrink-0 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
             <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
               <h3 className="font-bold mb-6 flex items-center gap-2 dark:text-white font-display">
                 <Filter size={18} className="text-accent" /> Categorias
@@ -169,7 +205,10 @@ export const Catalog = () => {
                 {categories.map((cat) => (
                   <button
                     key={cat}
-                    onClick={() => setSearchParams({ cat })}
+                    onClick={() => {
+                      updateParams({ cat: cat === 'Todos' ? null : cat, page: '1' });
+                      setShowMobileFilters(false);
+                    }}
                     className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
                       activeCategory === cat 
                         ? 'bg-accent text-white shadow-lg shadow-accent/20' 
@@ -197,15 +236,27 @@ export const Catalog = () => {
           {/* Main Content */}
           <div className="flex-1">
             <div className="flex flex-col md:flex-row gap-4 mb-8">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
-                <input 
-                  type="text" 
-                  placeholder="Buscar equipamentos..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
-                />
+              <div className="flex gap-2 flex-1">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
+                  <input 
+                    type="text" 
+                    placeholder="Buscar equipamentos..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      updateParams({ page: '1' });
+                    }}
+                    className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
+                  />
+                </div>
+                <button
+                  onClick={() => setShowMobileFilters(!showMobileFilters)}
+                  className="lg:hidden p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                  title="Filtros"
+                >
+                  <Filter size={24} />
+                </button>
               </div>
               
               {/* Mobile Grid Toggle */}
@@ -243,7 +294,10 @@ export const Catalog = () => {
               <div className="relative min-w-[200px]">
                 <select 
                   value={selectedBrand}
-                  onChange={(e) => setSelectedBrand(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedBrand(e.target.value);
+                    updateParams({ page: '1' });
+                  }}
                   className="w-full appearance-none px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none font-bold cursor-pointer shadow-sm"
                 >
                   {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
@@ -253,7 +307,10 @@ export const Catalog = () => {
               <div className="relative min-w-[200px]">
                 <select 
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    updateParams({ page: '1' });
+                  }}
                   className="w-full appearance-none px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none font-bold cursor-pointer shadow-sm"
                 >
                   <option value="featured">Destaques</option>
@@ -271,12 +328,37 @@ export const Catalog = () => {
                   <div key={i} className="h-80 bg-zinc-200 dark:bg-zinc-800 rounded-3xl animate-pulse" />
                 ))}
               </div>
-            ) : filteredProducts.length > 0 ? (
-              <div className={`grid gap-2 sm:gap-8 ${mobileGridCols === 1 ? 'grid-cols-1' : mobileGridCols === 2 ? 'grid-cols-2' : mobileGridCols === 3 ? 'grid-cols-3' : 'grid-cols-4'} sm:grid-cols-2 xl:grid-cols-3`}>
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} gridCols={mobileGridCols} />
-                ))}
-              </div>
+            ) : paginatedProducts.length > 0 ? (
+              <>
+                <div className={`grid gap-2 sm:gap-8 ${mobileGridCols === 1 ? 'grid-cols-1' : mobileGridCols === 2 ? 'grid-cols-2' : mobileGridCols === 3 ? 'grid-cols-3' : 'grid-cols-4'} sm:grid-cols-2 xl:grid-cols-3`}>
+                  {paginatedProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} gridCols={mobileGridCols} />
+                  ))}
+                </div>
+                
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-2 mt-12 flex-wrap">
+                    {Array.from({ length: totalPages }).map((_, i) => {
+                      const page = i + 1;
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => {
+                            updateParams({ page: page.toString() });
+                          }}
+                          className={`w-10 h-10 rounded-xl font-bold transition-all ${
+                            currentPage === page
+                              ? 'bg-accent text-white shadow-lg shadow-accent/20'
+                              : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-white/5'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
             ) : (
               <div className="py-20 text-center">
                 <p className="text-xl text-zinc-500 font-bold">Nenhum produto encontrado para sua busca.</p>
