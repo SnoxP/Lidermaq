@@ -72,7 +72,7 @@ export const Home = () => {
                 EQUIPANDO O SEU <br />
                 <span className="text-accent">SUCESSO.</span>
               </h1>
-              <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 mb-10 max-w-2xl leading-relaxed">
+              <p className="text-xl md:text-2xl text-black dark:text-white mb-10 max-w-2xl leading-relaxed">
                 As melhores soluções em máquinas e equipamentos para padarias, açougues, supermercados e cozinhas industriais.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
