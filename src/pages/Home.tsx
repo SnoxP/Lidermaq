@@ -227,26 +227,6 @@ export const Home = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto flex flex-col gap-8">
             <motion.a 
-              href="/assistencia"
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6 }}
-              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900"
-            >
-              <img 
-                src="https://i.imgur.com/TNJcglg.png" 
-                alt="Promoção Lidermaq 1" 
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
-                <div className="max-w-lg flex flex-col items-center md:items-end">
-                  <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
-                  <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
-                  <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Suporte</span>
-                </div>
-              </div>
-            </motion.a>
-            <motion.a 
               href="/catalogo"
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
