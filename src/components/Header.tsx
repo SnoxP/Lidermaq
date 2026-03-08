@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard, Sun, Moon, LogIn, ShoppingBag } from 'lucide-react';
+import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -146,9 +146,9 @@ export const Header = () => {
             <button 
               onClick={toggleTheme}
               className="text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors"
-              title={theme === 'light' ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'}
+              title={theme === 'light' ? 'Ativar Modo Escuro' : theme === 'dark' ? 'Ativar Modo Sistema' : 'Ativar Modo Claro'}
             >
-              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+              {theme === 'light' ? <Moon size={16} /> : theme === 'dark' ? <Monitor size={16} /> : <Sun size={16} />}
             </button>
           </div>
 
@@ -296,9 +296,9 @@ export const Header = () => {
                 <button 
                   onClick={toggleTheme}
                   className="p-2 bg-zinc-100 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 rounded-xl"
-                  title={theme === 'light' ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'}
+                  title={theme === 'light' ? 'Ativar Modo Escuro' : theme === 'dark' ? 'Ativar Modo Sistema' : 'Ativar Modo Claro'}
                 >
-                  {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                  {theme === 'light' ? <Moon size={20} /> : theme === 'dark' ? <Monitor size={20} /> : <Sun size={20} />}
                 </button>
                 <button onClick={() => setIsOpen(false)} className="p-2 bg-zinc-100 dark:bg-white/5 dark:text-white rounded-xl">
                   <X size={24} />

@@ -19,7 +19,10 @@ export const Catalog = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [selectedBrand, setSelectedBrand] = useState('TODAS');
   const [categories, setCategories] = useState<string[]>(['Todos']);
-  const [mobileGridCols, setMobileGridCols] = useState<1 | 2 | 3 | 4>(1);
+  const [mobileGridCols, setMobileGridCols] = useState<1 | 2 | 3 | 4>(() => {
+    const saved = localStorage.getItem('mobileGridCols');
+    return saved ? (parseInt(saved, 10) as 1 | 2 | 3 | 4) : 1;
+  });
 
   const activeCategory = searchParams.get('cat') || 'Todos';
 
@@ -39,6 +42,7 @@ export const Catalog = () => {
     }
 
     setMobileGridCols(cols);
+    localStorage.setItem('mobileGridCols', cols.toString());
 
     if (firstVisibleCard) {
       // Use requestAnimationFrame to wait for the DOM to update with new grid layout
