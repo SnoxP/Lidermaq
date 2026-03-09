@@ -266,7 +266,7 @@ export const Catalog = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="flex flex-col md:flex-row gap-2 mb-4">
               <div className="flex gap-2 flex-1">
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
@@ -357,20 +357,13 @@ export const Catalog = () => {
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6 }}
-              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mb-8 max-w-3xl mx-auto"
+              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mb-6 max-w-3xl mx-auto"
             >
               <img 
-                src="https://i.imgur.com/TNJcglg.png" 
-                alt="Promoção Lidermaq 1" 
+                src="https://i.imgur.com/BQ8vxhM_d.webp?maxwidth=760&fidelity=grand" 
+                alt="Assistência Técnica Lidermaq" 
                 className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
-                <div className="max-w-lg flex flex-col items-center md:items-end">
-                  <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
-                  <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
-                  <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Suporte</span>
-                </div>
-              </div>
             </motion.a>
 
             {/* Grid */}

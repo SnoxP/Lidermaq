@@ -118,8 +118,7 @@ export const Home = () => {
             <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
               <div className="max-w-lg flex flex-col items-center md:items-end">
                 <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">CATÁLOGO</h3>
-                <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Explore todos os equipamentos e soluções da Lidermaq em um só lugar, com informações claras para ajudar você a encontrar o produto ideal para sua necessidade.</p>
-                <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Catálogo</span>
+                <p className="text-white/90 text-base md:text-lg leading-relaxed">Explore todos os equipamentos e soluções da Lidermaq em um só lugar, com informações claras para ajudar você a encontrar o produto ideal para sua necessidade.</p>
               </div>
             </div>
           </motion.a>
@@ -253,17 +252,10 @@ export const Home = () => {
             className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 max-w-5xl mx-auto"
           >
             <img 
-              src="https://i.imgur.com/TNJcglg.png" 
-              alt="Promoção Lidermaq 1" 
+              src="https://i.imgur.com/BQ8vxhM_d.webp?maxwidth=760&fidelity=grand" 
+              alt="Assistência Técnica Lidermaq" 
               className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
             />
-            <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
-              <div className="max-w-lg flex flex-col items-center md:items-end">
-                <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">ASSISTÊNCIA TÉCNICA</h3>
-                <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6">Suporte especializado para seus equipamentos Lidermaq, garantindo vida longa ao seu investimento.</p>
-                <span className="btn-primary w-fit px-8 py-3 text-base md:text-lg">Acessar Suporte</span>
-              </div>
-            </div>
           </motion.a>
         </div>
       </section>
