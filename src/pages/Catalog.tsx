@@ -366,19 +366,18 @@ export const Catalog = () => {
               </div>
             </div>
 
-            <motion.a 
-              href="/assistencia"
+            <motion.div 
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6 }}
-              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mb-4 max-w-3xl mx-auto"
+              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 mb-4 max-w-3xl mx-auto"
             >
               <img 
                 src="https://i.imgur.com/TNJcglg.png" 
                 alt="Assistência Técnica Lidermaq" 
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-auto object-cover"
               />
-            </motion.a>
+            </motion.div>
 
             {/* Grid */}
             {loading ? (

@@ -103,25 +103,18 @@ export const Home = () => {
       {/* Features Section - Bento Grid Style */}
       <section className="section-padding bg-zinc-50 dark:bg-zinc-950 transition-colors duration-500">
         <div className="container mx-auto px-4">
-          <motion.a 
-            href="/catalogo"
+          <motion.div 
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mb-16 max-w-5xl mx-auto"
+            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 mb-16 max-w-5xl mx-auto -mt-[20%] md:mt-0"
           >
             <img 
               src="https://i.imgur.com/NXt8O6y.png" 
               alt="Promoção Lidermaq 2" 
-              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+              className="w-full h-auto object-cover"
             />
-            <div className="relative md:absolute inset-0 bg-zinc-900 md:bg-transparent md:bg-gradient-to-tl md:from-black/90 md:via-black/40 md:to-transparent p-6 md:p-10 flex flex-col justify-end items-center md:items-end text-center md:text-right">
-              <div className="max-w-lg flex flex-col items-center md:items-end">
-                <h3 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tighter">CATÁLOGO</h3>
-                <p className="text-white/90 text-base md:text-lg leading-relaxed">Explore todos os equipamentos e soluções da Lidermaq em um só lugar, com informações claras para ajudar você a encontrar o produto ideal para sua necessidade.</p>
-              </div>
-            </div>
-          </motion.a>
+          </motion.div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div className="max-w-2xl">
@@ -244,19 +237,18 @@ export const Home = () => {
 
       <section className="pt-0 pb-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <motion.a 
-            href="/assistencia"
+          <motion.div 
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 max-w-5xl mx-auto"
+            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 max-w-5xl mx-auto"
           >
             <img 
               src="https://i.imgur.com/BQ8vxhM_d.webp?maxwidth=760&fidelity=grand" 
               alt="Assistência Técnica Lidermaq" 
-              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+              className="w-full h-auto object-cover"
             />
-          </motion.a>
+          </motion.div>
         </div>
       </section>
 
