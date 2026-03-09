@@ -123,7 +123,7 @@ export const Catalog = () => {
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [activeCategory, currentPage]);
+  }, [currentPage]);
 
   const filteredProducts = useMemo(() => {
     let result = products;
@@ -222,7 +222,6 @@ export const Catalog = () => {
                     key={cat}
                     onClick={() => {
                       updateParams({ cat: cat === 'Todos' ? null : cat, page: '1' });
-                      setShowMobileFilters(false);
                     }}
                     className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
                       activeCategory === cat 
