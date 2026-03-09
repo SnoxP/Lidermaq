@@ -216,7 +216,7 @@ export const Home = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="py-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
+      <section className="pt-20 pb-6 md:pb-12 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
@@ -228,7 +228,7 @@ export const Home = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {productsLoading ? (
               Array(4).fill(0).map((_, i) => (
                 <div key={i} className="h-80 bg-white rounded-3xl animate-pulse" />
@@ -242,7 +242,7 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
+      <section className="pt-0 pb-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <motion.a 
             href="/assistencia"

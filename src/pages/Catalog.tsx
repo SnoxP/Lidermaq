@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Filter, Search, ChevronDown, Plus, Square, LayoutGrid, Grid3X3, Grid2X2 } from 'lucide-react';
+import { Filter, Search, ChevronDown, Plus, Square, LayoutGrid, Grid3X3, Grid2X2, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
@@ -196,12 +196,25 @@ export const Catalog = () => {
         {/* Filters & Search */}
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           {/* Categories Sidebar/Bar */}
-          <div className={`lg:w-64 shrink-0 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
-              <h3 className="font-bold mb-6 flex items-center gap-2 dark:text-white font-display">
-                <Filter size={18} className="text-accent" /> Categorias
-              </h3>
-              <div className="flex flex-wrap lg:flex-col gap-2">
+          <div 
+            className={`lg:w-64 shrink-0 grid transition-all duration-500 ease-in-out ${
+              showMobileFilters ? 'grid-rows-[1fr] opacity-100 mb-8 lg:mb-0' : 'grid-rows-[0fr] opacity-0 lg:grid-rows-[1fr] lg:opacity-100'
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-bold flex items-center gap-2 dark:text-white font-display">
+                    <Filter size={18} className="text-accent" /> Categorias
+                  </h3>
+                  <button 
+                    onClick={() => setShowMobileFilters(false)}
+                    className="lg:hidden p-2 -mr-2 -mt-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+                <div className="flex flex-wrap lg:flex-col gap-2">
                 {categories.map((cat) => (
                   <button
                     key={cat}
@@ -262,11 +275,12 @@ export const Catalog = () => {
                 </div>
               )}
             </div>
+            </div>
           </div>
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="flex flex-col md:flex-row gap-2 mb-4">
+            <div className="flex flex-col md:flex-row gap-2 mb-2">
               <div className="flex gap-2 flex-1">
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
@@ -357,7 +371,7 @@ export const Catalog = () => {
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6 }}
-              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mb-6 max-w-3xl mx-auto"
+              className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 hover:shadow-accent/20 transition-all duration-500 group bg-zinc-900 mb-4 max-w-3xl mx-auto"
             >
               <img 
                 src="https://i.imgur.com/BQ8vxhM_d.webp?maxwidth=760&fidelity=grand" 
