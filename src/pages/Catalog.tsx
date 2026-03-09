@@ -18,6 +18,7 @@ export const Catalog = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
   const [selectedBrand, setSelectedBrand] = useState('Marcas');
+  const [showBrandDropdown, setShowBrandDropdown] = useState(false);
   const [categories, setCategories] = useState<string[]>(['Todos']);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [columnsCount, setColumnsCount] = useState(1);
@@ -340,7 +341,44 @@ export const Catalog = () => {
               </div>
             </div>
 
-            {activeCategory !== 'Todos' && brands.length > 1 && (
+            {brands.length > 1 && activeCategory === 'Todos' && (
+              <div className="mb-8 relative z-30">
+                <button
+                  onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+                  className="w-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                >
+                  {selectedBrand}
+                  <ChevronDown size={20} className={`transition-transform ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                </button>
+                {showBrandDropdown && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    className="absolute top-full left-0 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-2"
+                  >
+                    {brands.map(brand => (
+                      <button
+                        key={brand}
+                        onClick={() => {
+                          setSelectedBrand(brand);
+                          setShowBrandDropdown(false);
+                          updateParams({ page: '1' });
+                        }}
+                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
+                          selectedBrand === brand
+                            ? 'bg-accent text-white'
+                            : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                        }`}
+                      >
+                        {brand}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+            )}
+
+            {brands.length > 1 && activeCategory !== 'Todos' && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
