@@ -17,7 +17,7 @@ export const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('featured');
-  const [selectedBrand, setSelectedBrand] = useState('Marcas');
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [showBrandDropdown, setShowBrandDropdown] = useState(false);
   const [categories, setCategories] = useState<string[]>(['Todos']);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -96,15 +96,16 @@ export const Catalog = () => {
       // Remove accents and convert to uppercase
       return p.brand.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
     })));
-    return ['Marcas', ...uniqueBrands.sort()];
+    return uniqueBrands.sort();
   }, [products, activeCategory]);
 
   useEffect(() => {
-    if (!brands.includes(selectedBrand) && selectedBrand !== 'Marcas') {
-      setSelectedBrand('Marcas');
+    const validSelectedBrands = selectedBrands.filter(b => brands.includes(b));
+    if (validSelectedBrands.length !== selectedBrands.length) {
+      setSelectedBrands(validSelectedBrands);
       updateParams({ page: '1' });
     }
-  }, [brands, selectedBrand]);
+  }, [brands, selectedBrands]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -131,10 +132,10 @@ export const Catalog = () => {
       result = result.filter(p => p.category === activeCategory);
     }
 
-    if (selectedBrand !== 'Marcas') {
+    if (selectedBrands.length > 0) {
       result = result.filter(p => {
         const pBrandFormatted = p.brand.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-        return pBrandFormatted === selectedBrand;
+        return selectedBrands.includes(pBrandFormatted);
       });
     }
 
@@ -152,7 +153,7 @@ export const Catalog = () => {
     }
 
     return result;
-  }, [activeCategory, searchTerm, sortBy, products, selectedBrand]);
+  }, [activeCategory, searchTerm, sortBy, products, selectedBrands]);
 
   const itemsPerPage = columnsCount * 7;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -341,13 +342,13 @@ export const Catalog = () => {
               </div>
             </div>
 
-            {brands.length > 1 && activeCategory === 'Todos' && (
+            {brands.length > 0 && activeCategory === 'Todos' && (
               <div className="mb-8 relative z-30">
                 <button
                   onClick={() => setShowBrandDropdown(!showBrandDropdown)}
                   className="w-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
                 >
-                  {selectedBrand}
+                  {selectedBrands.length > 0 ? `${selectedBrands.length} marca(s) selecionada(s)` : 'Marcas'}
                   <ChevronDown size={20} className={`transition-transform ${showBrandDropdown ? 'rotate-180' : ''}`} />
                 </button>
                 {showBrandDropdown && (
@@ -360,12 +361,13 @@ export const Catalog = () => {
                       <button
                         key={brand}
                         onClick={() => {
-                          setSelectedBrand(brand);
-                          setShowBrandDropdown(false);
+                          setSelectedBrands(prev => 
+                            prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                          );
                           updateParams({ page: '1' });
                         }}
                         className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
-                          selectedBrand === brand
+                          selectedBrands.includes(brand)
                             ? 'bg-accent text-white'
                             : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                         }`}
@@ -378,22 +380,24 @@ export const Catalog = () => {
               </div>
             )}
 
-            {brands.length > 1 && activeCategory !== 'Todos' && (
+            {brands.length > 0 && activeCategory !== 'Todos' && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 className="mb-8 overflow-hidden"
               >
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {brands.filter(b => b !== 'Marcas').map(brand => (
+                  {brands.map(brand => (
                     <button
                       key={brand}
                       onClick={() => {
-                        setSelectedBrand(brand === selectedBrand ? 'Marcas' : brand);
+                        setSelectedBrands(prev => 
+                          prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                        );
                         updateParams({ page: '1' });
                       }}
                       className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
-                        selectedBrand === brand
+                        selectedBrands.includes(brand)
                           ? 'bg-accent text-white'
                           : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                       }`}
