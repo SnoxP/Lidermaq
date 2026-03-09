@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send } from 'lucide-react';
+import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send, Pencil } from 'lucide-react';
 import { db } from '../services/firebase';
 import { doc, getDoc, collection, addDoc, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
@@ -33,8 +33,8 @@ export const ProductDetail = () => {
       navigate('/login');
       return;
     }
-    const productToAdd = selectedVariant ? { ...product, ...selectedVariant, id: `${product.id}-${selectedVariant.name}` } : product;
-    addToCart(productToAdd);
+    const productToAdd = selectedVariant ? { ...product, price: selectedVariant.price, image: selectedVariant.image || product.image } : product;
+    addToCart(productToAdd, selectedVariant?.name);
   };
 
   const handlePrevImage = () => {
@@ -106,7 +106,7 @@ export const ProductDetail = () => {
     try {
       await addDoc(collection(db, 'comments'), {
         productId: id,
-        userId: user.uid,
+        userId: user.id,
         userName: user.name || 'Usuário',
         text: newComment,
         rating,
@@ -229,7 +229,18 @@ export const ProductDetail = () => {
                 <span className="w-1 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full" />
                 <span className="text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest text-[10px]">{product.brand || 'Lidermaq'}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-6 dark:text-white font-display">{product.name || 'Produto sem nome'}</h1>
+              <div className="flex items-center justify-between mb-6">
+                <h1 className="text-4xl md:text-5xl font-black tracking-tighter dark:text-white font-display">{product.name || 'Produto sem nome'}</h1>
+                {user?.isAdmin && (
+                  <Link 
+                    to={`/admin/editar-produto/${product.id}`}
+                    className="p-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-accent dark:hover:text-accent hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shrink-0"
+                    title="Editar Produto"
+                  >
+                    <Pencil size={24} />
+                  </Link>
+                )}
+              </div>
               
               {product.variants && product.variants.length > 0 && (
                 <div className="mb-8">
@@ -286,18 +297,26 @@ export const ProductDetail = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <button 
-                  onClick={handleAddToCart}
-                  className="btn-primary flex-1 text-lg py-4 shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
-                >
-                  <ShoppingBag size={24} /> Adicionar ao Carrinho
-                </button>
-                <button 
-                  onClick={() => setShowAttendantSelector(!showAttendantSelector)}
-                  className="btn-secondary flex-1 text-lg py-4 flex items-center justify-center gap-2"
-                >
-                  <MessageCircle size={24} /> Falar com Atendente
-                </button>
+                {product.available === false ? (
+                  <div className="flex-1 py-4 px-6 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 font-bold rounded-2xl text-center text-lg flex items-center justify-center">
+                    Produto Esgotado
+                  </div>
+                ) : (
+                  <>
+                    <button 
+                      onClick={handleAddToCart}
+                      className="btn-primary flex-1 text-lg py-4 shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
+                    >
+                      <ShoppingBag size={24} /> Adicionar ao Carrinho
+                    </button>
+                    <button 
+                      onClick={() => setShowAttendantSelector(!showAttendantSelector)}
+                      className="btn-secondary flex-1 text-lg py-4 flex items-center justify-center gap-2"
+                    >
+                      <MessageCircle size={24} /> Falar com Atendente
+                    </button>
+                  </>
+                )}
                 <button 
                   onClick={() => {
                     navigator.share?.({

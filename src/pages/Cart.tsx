@@ -8,10 +8,13 @@ import { SEO } from '../components/SEO';
 import { AttendantSelector } from '../components/AttendantSelector';
 
 export const Cart = () => {
-  const { cart, removeFromCart, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showAttendantSelector, setShowAttendantSelector] = React.useState(false);
+
+  const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const cartDetails = cart
     .map(

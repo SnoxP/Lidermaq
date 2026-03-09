@@ -9,13 +9,20 @@ import {
   User as FirebaseUser 
 } from 'firebase/auth';
 import { auth, db } from '../services/firebase';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
 
 interface User {
   id: string;
   email: string;
   name: string;
   isAdmin: boolean;
+  tag?: string;
+  createdAt?: any;
+  cep?: string;
+  birthDate?: string;
+  photoURL?: string;
+  totalOrders?: number;
+  totalSpent?: number;
 }
 
 interface AuthContextType {
@@ -61,10 +68,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const userRef = doc(db, 'users', firebaseUser.uid);
+    const userDoc = await getDoc(userRef);
+    
+    let tag = '';
+    let createdAt = serverTimestamp();
+    
+    if (!userDoc.exists() || !userDoc.data().tag) {
+      const counterRef = doc(db, 'metadata', 'userCounter');
+      try {
+        const newTagNum = await runTransaction(db, async (transaction) => {
+          const counterDoc = await transaction.get(counterRef);
+          let nextId = 1;
+          if (counterDoc.exists()) {
+            nextId = (counterDoc.data().count || 0) + 1;
+          }
+          transaction.set(counterRef, { count: nextId }, { merge: true });
+          return nextId;
+        });
+        tag = `#${newTagNum.toString().padStart(4, '0')}`;
+      } catch (error) {
+        console.error("Erro ao gerar tag:", error);
+        tag = `#${Math.floor(1000 + Math.random() * 9000)}`;
+      }
+    } else {
+      tag = userDoc.data().tag;
+      createdAt = userDoc.data().createdAt || serverTimestamp();
+    }
+
     await setDoc(userRef, {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
       name: name || firebaseUser.displayName || firebaseUser.email.split('@')[0],
+      tag,
+      createdAt,
       lastSeen: serverTimestamp(),
       isOnline: true,
       lastIp: ip
@@ -121,11 +157,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             alert("Sua conta ou IP foi banido do sistema.");
           } else {
             const isAdmin = await checkAdminStatus(firebaseUser.email);
+            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+            const userData = userDoc.exists() ? userDoc.data() : {};
+            
             setUser({
               id: firebaseUser.uid,
               email: firebaseUser.email,
               name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
               isAdmin: isAdmin,
+              tag: userData.tag,
+              createdAt: userData.createdAt,
+              cep: userData.cep,
+              birthDate: userData.birthDate,
+              photoURL: userData.photoURL || firebaseUser.photoURL,
+              totalOrders: userData.totalOrders || 0,
+              totalSpent: userData.totalSpent || 0
             });
             // Atualiza o status online sem travar a UI
             syncUserToFirestore(firebaseUser);

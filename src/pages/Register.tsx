@@ -27,7 +27,7 @@ export const Register = () => {
 
     try {
       await register(email, password, name);
-      navigate(-1); // Volta para onde estava
+      navigate('/perfil');
     } catch (err: any) {
       console.error("Erro no cadastro:", err);
       if (err.code === 'auth/email-already-in-use') {

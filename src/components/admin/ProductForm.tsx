@@ -18,6 +18,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [description, setDescription] = useState('');
   const [descriptionTitle, setDescriptionTitle] = useState('Descrição do Produto');
   const [category, setCategory] = useState('');
+  const [available, setAvailable] = useState(true);
   const [images, setImages] = useState<string[]>(['']);
   const [variants, setVariants] = useState<{ name: string; price: string; image?: string; description?: string }[]>([]);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
@@ -60,6 +61,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           setDescription(data.description || '');
           setDescriptionTitle(data.descriptionTitle || 'Descrição do Produto');
           setCategory(data.category || '');
+          setAvailable(data.available !== false);
           setImages(data.images || ['']);
           setVariants(data.variants || []);
         }
@@ -168,8 +170,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     try {
       setIsSearching(isVariant ? `variant-${index}` : `main-${index}`);
       
-      const env = import.meta.env || {};
-      const processEnv = typeof process !== 'undefined' ? process.env : {};
+      const env = (import.meta.env as any) || {};
+      const processEnv = typeof process !== 'undefined' ? (process.env as any) : {};
       const apiKey = env.VITE_SERPER_API_KEY || processEnv.VITE_SERPER_API_KEY;
       
       if (!apiKey) {
@@ -302,7 +304,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         images: images.filter(img => img !== ''),
         variants: variants.filter(v => v.name !== ''),
         installments: calculateInstallments(parseFloat(price)),
-        available: true,
+        available,
         updatedAt: new Date().toISOString()
       };
 
@@ -394,6 +396,26 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-2">Disponibilidade</label>
+                <label className="flex items-center gap-3 cursor-pointer p-4 bg-neutral-bg dark:bg-zinc-800 rounded-xl border border-transparent hover:border-accent/20 transition-colors">
+                  <div className="relative">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only" 
+                      checked={available}
+                      onChange={(e) => setAvailable(e.target.checked)}
+                    />
+                    <div className={`block w-14 h-8 rounded-full transition-colors ${available ? 'bg-accent' : 'bg-zinc-300 dark:bg-zinc-600'}`}></div>
+                    <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${available ? 'transform translate-x-6' : ''}`}></div>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold dark:text-white">{available ? 'Em Estoque' : 'Esgotado'}</span>
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400">Controla se o produto pode ser comprado</span>
+                  </div>
+                </label>
               </div>
             </div>
 

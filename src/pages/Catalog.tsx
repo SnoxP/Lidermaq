@@ -236,19 +236,6 @@ export const Catalog = () => {
               <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5 lg:hidden flex flex-col gap-4">
                 <div className="relative">
                   <select 
-                    value={selectedBrand}
-                    onChange={(e) => {
-                      setSelectedBrand(e.target.value);
-                      updateParams({ page: '1' });
-                    }}
-                    className="w-full appearance-none px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none font-bold cursor-pointer"
-                  >
-                    {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
-                </div>
-                <div className="relative">
-                  <select 
                     value={sortBy}
                     onChange={(e) => {
                       setSortBy(e.target.value);
@@ -338,19 +325,6 @@ export const Catalog = () => {
 
               <div className="relative min-w-[200px] hidden lg:block">
                 <select 
-                  value={selectedBrand}
-                  onChange={(e) => {
-                    setSelectedBrand(e.target.value);
-                    updateParams({ page: '1' });
-                  }}
-                  className="w-full appearance-none px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none font-bold cursor-pointer shadow-sm"
-                >
-                  {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
-              </div>
-              <div className="relative min-w-[200px] hidden lg:block">
-                <select 
                   value={sortBy}
                   onChange={(e) => {
                     setSortBy(e.target.value);
@@ -365,6 +339,33 @@ export const Catalog = () => {
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
               </div>
             </div>
+
+            {activeCategory !== 'Todos' && brands.length > 1 && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                className="mb-8 overflow-hidden"
+              >
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {brands.filter(b => b !== 'Marcas').map(brand => (
+                    <button
+                      key={brand}
+                      onClick={() => {
+                        setSelectedBrand(brand === selectedBrand ? 'Marcas' : brand);
+                        updateParams({ page: '1' });
+                      }}
+                      className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                        selectedBrand === brand
+                          ? 'bg-accent text-white'
+                          : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      {brand}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             <motion.div 
               initial={{ y: 20, opacity: 0 }}

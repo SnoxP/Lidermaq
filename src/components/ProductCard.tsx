@@ -45,10 +45,15 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
         <img 
           src={product.image || 'https://picsum.photos/seed/lidermaq-placeholder/800/600'} 
           alt={product.name}
-          className="relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
+          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''}`}
           loading="lazy"
           referrerPolicy="no-referrer"
         />
+        {product.available === false && (
+          <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full z-10 shadow-lg">
+            Esgotado
+          </div>
+        )}
         <div className={`absolute ${gridCols >= 3 ? 'top-2 left-2 sm:top-4 sm:left-4' : 'top-4 left-4'} ${gridCols >= 3 ? 'hidden sm:block' : ''}`}>
           <span className={`bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md text-zinc-900 dark:text-white ${gridCols >= 3 ? 'text-[8px] px-2 py-0.5 sm:text-[10px] sm:px-3 sm:py-1' : 'text-[10px] px-3 py-1'} font-black uppercase tracking-widest rounded-full border border-white/20`}>
             {product.category || 'Geral'}
@@ -83,13 +88,15 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
           </div>
           
             <div className={`flex items-center ${gridCols >= 4 ? 'gap-1 sm:gap-2' : gridCols === 3 ? 'gap-1 sm:gap-2' : 'gap-2'} w-full sm:w-auto justify-end mt-2 sm:mt-0`}>
-              <button 
-                onClick={handleAddToCart}
-                className={`${gridCols >= 4 ? 'w-7 h-7 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : gridCols === 3 ? 'w-8 h-8 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : 'w-10 h-10 rounded-xl'} bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all`}
-                title="Adicionar ao Carrinho"
-              >
-                <ShoppingBag className={`${gridCols >= 4 ? 'w-3 h-3 sm:w-[18px] sm:h-[18px]' : gridCols === 3 ? 'w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]' : 'w-[18px] h-[18px]'}`} />
-              </button>
+              {product.available !== false && (
+                <button 
+                  onClick={handleAddToCart}
+                  className={`${gridCols >= 4 ? 'w-7 h-7 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : gridCols === 3 ? 'w-8 h-8 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : 'w-10 h-10 rounded-xl'} bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all`}
+                  title="Adicionar ao Carrinho"
+                >
+                  <ShoppingBag className={`${gridCols >= 4 ? 'w-3 h-3 sm:w-[18px] sm:h-[18px]' : gridCols === 3 ? 'w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]' : 'w-[18px] h-[18px]'}`} />
+                </button>
+              )}
               {isAdmin && (
                 <Link 
                   to={`/admin/editar-produto/${product.id}`}
