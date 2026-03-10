@@ -198,23 +198,13 @@ export const Catalog = () => {
         {/* Filters & Search */}
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           {/* Categories Sidebar/Bar */}
-          <div 
-            className={`lg:w-64 shrink-0 grid transition-all duration-500 ease-in-out ${
-              showMobileFilters ? 'grid-rows-[1fr] opacity-100 mb-8 lg:mb-0' : 'grid-rows-[0fr] opacity-0 lg:grid-rows-[1fr] lg:opacity-100'
-            }`}
-          >
+          <div className="lg:w-64 shrink-0 mb-8 lg:mb-0">
             <div className="overflow-hidden">
               <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-bold flex items-center gap-2 dark:text-white font-display">
                     <Tag size={18} className="text-accent" /> Setores
                   </h3>
-                  <button 
-                    onClick={() => setShowMobileFilters(false)}
-                    className="lg:hidden p-2 -mr-2 -mt-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
                 </div>
                 <div className="flex flex-wrap lg:flex-col gap-2">
                 {categories.map((cat) => (
@@ -233,6 +223,17 @@ export const Catalog = () => {
                   </button>
                 ))}
               </div>
+
+              {user?.isAdmin && (
+                <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5">
+                  <button 
+                    onClick={() => navigate('/admin/novo-produto')}
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-accent/10 text-accent rounded-xl font-bold text-sm hover:bg-accent hover:text-white transition-all"
+                  >
+                    <Plus size={18} /> Novo Produto
+                  </button>
+                </div>
+              )}
             </div>
             </div>
           </div>
@@ -254,52 +255,6 @@ export const Catalog = () => {
                     className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
                   />
                 </div>
-                
-                {brands.length > 0 && activeCategory === 'Todos' && (
-                  <div className="relative hidden lg:block w-1/5">
-                    <button
-                      onClick={() => setShowBrandDropdown(!showBrandDropdown)}
-                      className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
-                    >
-                      <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
-                      <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
-                    </button>
-                    {showBrandDropdown && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        className="absolute top-full left-0 w-[400px] mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 gap-2 z-40"
-                      >
-                        {brands.map(brand => (
-                          <button
-                            key={brand}
-                            onClick={() => {
-                              setSelectedBrands(prev => 
-                                prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-                              );
-                              updateParams({ page: '1' });
-                            }}
-                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
-                              selectedBrands.includes(brand)
-                                ? 'bg-accent text-white'
-                                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                            }`}
-                          >
-                            {brand}
-                          </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </div>
-                )}
-
-                <button
-                  onClick={() => setShowMobileFilters(!showMobileFilters)}
-                  className="lg:hidden p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                  title="Filtros"
-                >
-                  <Tag size={24} />
-                </button>
               </div>
               
               {/* Mobile Grid Toggle */}
@@ -335,45 +290,7 @@ export const Catalog = () => {
               </div>
             </div>
 
-            {brands.length > 0 && activeCategory === 'Todos' && (
-              <div className="mb-8 relative z-30 lg:hidden">
-                <button
-                  onClick={() => setShowBrandDropdown(!showBrandDropdown)}
-                  className="w-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
-                >
-                  {selectedBrands.length > 0 ? `${selectedBrands.length} marca(s) selecionada(s)` : 'Marcas'}
-                  <ChevronDown size={20} className={`transition-transform ${showBrandDropdown ? 'rotate-180' : ''}`} />
-                </button>
-                {showBrandDropdown && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    className="absolute top-full left-0 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-2"
-                  >
-                    {brands.map(brand => (
-                      <button
-                        key={brand}
-                        onClick={() => {
-                          setSelectedBrands(prev => 
-                            prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-                          );
-                          updateParams({ page: '1' });
-                        }}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
-                          selectedBrands.includes(brand)
-                            ? 'bg-accent text-white'
-                            : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                        }`}
-                      >
-                        {brand}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </div>
-            )}
-
-            {brands.length > 0 && activeCategory !== 'Todos' && (
+            {brands.length > 0 && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
