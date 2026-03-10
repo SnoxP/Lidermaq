@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Filter, Search, ChevronDown, Plus, Square, LayoutGrid, Grid3X3, Grid2X2, X } from 'lucide-react';
+import { Filter, Search, ChevronDown, Plus, Square, LayoutGrid, Grid3X3, Grid2X2, X, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
@@ -207,7 +207,7 @@ export const Catalog = () => {
               <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-bold flex items-center gap-2 dark:text-white font-display">
-                    <Filter size={18} className="text-accent" /> Categorias
+                    <Tag size={18} className="text-accent" /> Setores
                   </h3>
                   <button 
                     onClick={() => setShowMobileFilters(false)}
@@ -233,35 +233,6 @@ export const Catalog = () => {
                   </button>
                 ))}
               </div>
-
-              <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5 lg:hidden flex flex-col gap-4">
-                <div className="relative">
-                  <select 
-                    value={sortBy}
-                    onChange={(e) => {
-                      setSortBy(e.target.value);
-                      updateParams({ page: '1' });
-                    }}
-                    className="w-full appearance-none px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 dark:text-white rounded-xl focus:outline-none font-bold cursor-pointer"
-                  >
-                    <option value="featured">Destaques</option>
-                    <option value="price-asc">Menor Preço</option>
-                    <option value="price-desc">Maior Preço</option>
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
-                </div>
-              </div>
-
-              {user?.isAdmin && (
-                <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5">
-                  <button 
-                    onClick={() => navigate('/admin/novo-produto')}
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-accent/10 text-accent rounded-xl font-bold text-sm hover:bg-accent hover:text-white transition-all"
-                  >
-                    <Plus size={18} /> Novo Produto
-                  </button>
-                </div>
-              )}
             </div>
             </div>
           </div>
@@ -283,12 +254,51 @@ export const Catalog = () => {
                     className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
                   />
                 </div>
+                
+                {brands.length > 0 && activeCategory === 'Todos' && (
+                  <div className="relative hidden lg:block w-1/5">
+                    <button
+                      onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+                      className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                    >
+                      <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
+                      <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+                    {showBrandDropdown && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className="absolute top-full left-0 w-[400px] mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 gap-2 z-40"
+                      >
+                        {brands.map(brand => (
+                          <button
+                            key={brand}
+                            onClick={() => {
+                              setSelectedBrands(prev => 
+                                prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                              );
+                              updateParams({ page: '1' });
+                            }}
+                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
+                              selectedBrands.includes(brand)
+                                ? 'bg-accent text-white'
+                                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                            }`}
+                          >
+                            {brand}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+
                 <button
                   onClick={() => setShowMobileFilters(!showMobileFilters)}
                   className="lg:hidden p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
                   title="Filtros"
                 >
-                  <Filter size={24} />
+                  <Tag size={24} />
                 </button>
               </div>
               
@@ -323,26 +333,10 @@ export const Catalog = () => {
                   <Grid2X2 size={20} />
                 </button>
               </div>
-
-              <div className="relative min-w-[200px] hidden lg:block">
-                <select 
-                  value={sortBy}
-                  onChange={(e) => {
-                    setSortBy(e.target.value);
-                    updateParams({ page: '1' });
-                  }}
-                  className="w-full appearance-none px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none font-bold cursor-pointer shadow-sm"
-                >
-                  <option value="featured">Destaques</option>
-                  <option value="price-asc">Menor Preço</option>
-                  <option value="price-desc">Maior Preço</option>
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" size={20} />
-              </div>
             </div>
 
             {brands.length > 0 && activeCategory === 'Todos' && (
-              <div className="mb-8 relative z-30">
+              <div className="mb-8 relative z-30 lg:hidden">
                 <button
                   onClick={() => setShowBrandDropdown(!showBrandDropdown)}
                   className="w-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"

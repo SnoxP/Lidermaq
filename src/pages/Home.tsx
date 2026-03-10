@@ -107,10 +107,10 @@ export const Home = () => {
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 mb-16 max-w-5xl mx-auto -mt-[20%] md:mt-0"
+            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 mb-16 max-w-3xl mx-auto -mt-[20%] md:mt-0"
           >
             <img 
-              src="https://i.imgur.com/NXt8O6y.png" 
+              src="https://i.imgur.com/DLtOjUS.png" 
               alt="Promoção Lidermaq 2" 
               className="w-full h-auto object-cover"
             />

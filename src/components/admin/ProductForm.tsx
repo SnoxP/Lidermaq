@@ -16,7 +16,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [price, setPrice] = useState('');
   const [brand, setBrand] = useState('');
   const [description, setDescription] = useState('');
-  const [descriptionTitle, setDescriptionTitle] = useState('Descrição do Produto');
+  const [descriptionTitle, setDescriptionTitle] = useState('');
   const [category, setCategory] = useState('');
   const [available, setAvailable] = useState(true);
   const [images, setImages] = useState<string[]>(['']);
@@ -59,7 +59,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           setPrice(data.price?.toString() || '');
           setBrand(data.brand || '');
           setDescription(data.description || '');
-          setDescriptionTitle(data.descriptionTitle || 'Descrição do Produto');
+          setDescriptionTitle(data.descriptionTitle || '');
           setCategory(data.category || '');
           setAvailable(data.available !== false);
           setImages(data.images || ['']);
@@ -295,15 +295,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     try {
       const productData = {
         name,
-        price: parseFloat(price),
+        price: parseFloat(price.replace(',', '.')),
         brand,
         description,
         descriptionTitle,
         category,
         image: images.filter(img => img !== '')[0] || '',
         images: images.filter(img => img !== ''),
-        variants: variants.filter(v => v.name !== ''),
-        installments: calculateInstallments(parseFloat(price)),
+        variants: variants.filter(v => v.name !== '').map(v => ({
+          ...v,
+          price: v.price.replace(',', '.')
+        })),
+        installments: calculateInstallments(parseFloat(price.replace(',', '.'))),
         available,
         updatedAt: new Date().toISOString()
       };
@@ -380,7 +383,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2">Preço (R$)</label>
                 <input 
-                  type="number" step="0.01" required value={price} onChange={(e) => setPrice(e.target.value)}
+                  type="text" inputMode="decimal" required value={price} onChange={(e) => setPrice(e.target.value)}
                   className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                   placeholder="0,00"
                 />
@@ -421,7 +424,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1">Título da Descrição</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1">Título da Descrição (Opcional)</label>
               </div>
               <input 
                 type="text" value={descriptionTitle} onChange={(e) => setDescriptionTitle(e.target.value)}
@@ -476,7 +479,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-1">Preço da Variação (R$)</label>
                       <input 
-                        type="number" step="0.01" value={variant.price} onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                        type="text" inputMode="decimal" value={variant.price} onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
                         className="w-full px-4 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         placeholder="0,00"
                       />
