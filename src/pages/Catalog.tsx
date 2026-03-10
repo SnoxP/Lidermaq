@@ -296,7 +296,7 @@ export const Catalog = () => {
                 animate={{ height: 'auto', opacity: 1 }}
                 className="mb-8 overflow-hidden"
               >
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
                   {brands.map(brand => (
                     <button
                       key={brand}
@@ -306,7 +306,7 @@ export const Catalog = () => {
                         );
                         updateParams({ page: '1' });
                       }}
-                      className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                      className={`px-2 py-2 rounded-xl text-xs md:text-sm font-bold transition-all truncate ${
                         selectedBrands.includes(brand)
                           ? 'bg-accent text-white'
                           : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
