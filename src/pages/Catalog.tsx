@@ -292,66 +292,72 @@ export const Catalog = () => {
           {/* Main Content */}
           <div className="flex-1">
             <div className="flex flex-col md:flex-row gap-2 mb-2">
-              <div className="flex gap-2 flex-1">
-                <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
-                  <input 
-                    type="text" 
-                    placeholder="Buscar equipamentos..."
-                    value={searchTerm}
-                    onChange={(e) => {
-                      setSearchTerm(e.target.value);
-                      updateParams({ page: '1' });
-                    }}
-                    className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
-                  />
+              <div className="flex flex-col gap-2 flex-1">
+                <div className="lg:hidden text-xs text-zinc-500 dark:text-zinc-400 flex items-center justify-end gap-1 px-2">
+                  <Filter size={12} />
+                  <span>Setores e filtros estão no funil</span>
                 </div>
-                
-                {brands.length > 0 && activeCategory === 'Todos' && (
-                  <div className="relative hidden lg:block w-1/5">
-                    <button
-                      onClick={() => setShowBrandDropdown(!showBrandDropdown)}
-                      className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
-                    >
-                      <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
-                      <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
-                    </button>
-                    {showBrandDropdown && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        className="absolute top-full left-0 w-[400px] mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 gap-2 z-40"
-                      >
-                        {brands.map(brand => (
-                          <button
-                            key={brand}
-                            onClick={() => {
-                              setSelectedBrands(prev => 
-                                prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-                              );
-                              updateParams({ page: '1' });
-                            }}
-                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
-                              selectedBrands.includes(brand)
-                                ? 'bg-accent text-white'
-                                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                            }`}
-                          >
-                            {brand}
-                          </button>
-                        ))}
-                      </motion.div>
-                    )}
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
+                    <input 
+                      type="text" 
+                      placeholder="Buscar equipamentos..."
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        updateParams({ page: '1' });
+                      }}
+                      className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
+                    />
                   </div>
-                )}
+                  
+                  {brands.length > 0 && activeCategory === 'Todos' && (
+                    <div className="relative hidden lg:block w-1/5">
+                      <button
+                        onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+                        className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                      >
+                        <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
+                        <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                      </button>
+                      {showBrandDropdown && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          className="absolute top-full left-0 w-[400px] mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 gap-2 z-40"
+                        >
+                          {brands.map(brand => (
+                            <button
+                              key={brand}
+                              onClick={() => {
+                                setSelectedBrands(prev => 
+                                  prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                                );
+                                updateParams({ page: '1' });
+                              }}
+                              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
+                                selectedBrands.includes(brand)
+                                  ? 'bg-accent text-white'
+                                  : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                              }`}
+                            >
+                              {brand}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </div>
+                  )}
 
-                <button
-                  onClick={() => setShowMobileFilters(!showMobileFilters)}
-                  className="lg:hidden p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                  title="Filtros"
-                >
-                  <Filter size={24} />
-                </button>
+                  <button
+                    onClick={() => setShowMobileFilters(!showMobileFilters)}
+                    className="lg:hidden p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                    title="Filtros"
+                  >
+                    <Filter size={24} />
+                  </button>
+                </div>
               </div>
               
               {/* Mobile Grid Toggle */}
