@@ -345,15 +345,6 @@ export const Catalog = () => {
                       )}
                     </div>
                   )}
-
-                  <button
-                    onClick={() => setShowMobileFilters(!showMobileFilters)}
-                    className="lg:hidden px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex flex-col items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                    title="Filtros"
-                  >
-                    <span className="font-bold text-sm leading-tight">Setores</span>
-                    <span className="text-[10px] text-zinc-400 leading-tight">e mais</span>
-                  </button>
                 </div>
               </div>
               
@@ -390,71 +381,98 @@ export const Catalog = () => {
               </div>
             </div>
 
-            {brands.length > 0 && activeCategory === 'Todos' && (
-              <div className="mb-8 relative z-30 lg:hidden">
+            {activeCategory === 'Todos' ? (
+              <div className="mb-8 flex gap-2 relative z-30 lg:hidden">
+                {brands.length > 0 && (
+                  <div className="flex-1 relative">
+                    <button
+                      onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+                      className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                    >
+                      <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
+                      <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+                    {showBrandDropdown && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className="absolute top-full left-0 w-[calc(100vw-2rem)] mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-2"
+                      >
+                        {brands.map(brand => (
+                          <button
+                            key={brand}
+                            onClick={() => {
+                              setSelectedBrands(prev => 
+                                prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                              );
+                              updateParams({ page: '1' });
+                            }}
+                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
+                              selectedBrands.includes(brand)
+                                ? 'bg-accent text-white'
+                                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                            }`}
+                          >
+                            {brand}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </div>
+                )}
                 <button
-                  onClick={() => setShowBrandDropdown(!showBrandDropdown)}
-                  className="w-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                  onClick={() => setShowMobileFilters(!showMobileFilters)}
+                  className="px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex flex-col items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 shrink-0"
                 >
-                  {selectedBrands.length > 0 ? `${selectedBrands.length} marca(s) selecionada(s)` : 'Marcas'}
-                  <ChevronDown size={20} className={`transition-transform ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                  <span className="font-bold text-sm leading-tight">Setores</span>
+                  <span className="text-[10px] text-zinc-400 leading-tight">e mais</span>
                 </button>
-                {showBrandDropdown && (
+              </div>
+            ) : (
+              <div className="mb-8 flex flex-col gap-4 lg:hidden">
+                <button
+                  onClick={() => setShowMobileFilters(!showMobileFilters)}
+                  className="w-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                >
+                  <div className="flex flex-col items-start">
+                    <span className="font-bold text-sm leading-tight">Setor Selecionado:</span>
+                    <span className="text-lg font-black text-zinc-800 dark:text-white leading-tight">{activeCategory}</span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs text-zinc-400">Trocar setor</span>
+                    <span className="text-xs text-zinc-400">e filtros</span>
+                  </div>
+                </button>
+
+                {brands.length > 0 && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
-                    className="absolute top-full left-0 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-2"
+                    className="overflow-hidden"
                   >
-                    {brands.map(brand => (
-                      <button
-                        key={brand}
-                        onClick={() => {
-                          setSelectedBrands(prev => 
-                            prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-                          );
-                          updateParams({ page: '1' });
-                        }}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
-                          selectedBrands.includes(brand)
-                            ? 'bg-accent text-white'
-                            : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                        }`}
-                      >
-                        {brand}
-                      </button>
-                    ))}
+                    <div className="grid grid-cols-3 gap-2">
+                      {brands.map(brand => (
+                        <button
+                          key={brand}
+                          onClick={() => {
+                            setSelectedBrands(prev => 
+                              prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                            );
+                            updateParams({ page: '1' });
+                          }}
+                          className={`px-2 py-2 rounded-xl text-xs md:text-sm font-bold transition-all truncate ${
+                            selectedBrands.includes(brand)
+                              ? 'bg-accent text-white'
+                              : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                          }`}
+                        >
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
                   </motion.div>
                 )}
               </div>
-            )}
-
-            {brands.length > 0 && activeCategory !== 'Todos' && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                className="mb-8 overflow-hidden"
-              >
-                <div className="grid grid-cols-3 gap-2">
-                  {brands.map(brand => (
-                    <button
-                      key={brand}
-                      onClick={() => {
-                        setSelectedBrands(prev => 
-                          prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-                        );
-                        updateParams({ page: '1' });
-                      }}
-                      className={`px-2 py-2 rounded-xl text-xs md:text-sm font-bold transition-all truncate ${
-                        selectedBrands.includes(brand)
-                          ? 'bg-accent text-white'
-                          : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                      }`}
-                    >
-                      {brand}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
             )}
 
             <motion.div 
