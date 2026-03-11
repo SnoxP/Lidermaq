@@ -243,38 +243,6 @@ export const Catalog = () => {
                   </div>
                 </div>
 
-                <div className="mb-8">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-3">Ordenar por</h4>
-                  <div className="relative">
-                    <select 
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm font-bold text-zinc-600 dark:text-zinc-400 focus:ring-2 focus:ring-accent/20 appearance-none transition-colors"
-                    >
-                      <option value="featured">Destaques</option>
-                      <option value="price-asc">Menor Preço</option>
-                      <option value="price-desc">Maior Preço</option>
-                    </select>
-                    <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-3">Disponibilidade</h4>
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${inStockOnly ? 'bg-accent border-accent text-white' : 'border-zinc-300 dark:border-zinc-600 bg-transparent group-hover:border-accent'}`}>
-                      {inStockOnly && <svg viewBox="0 0 14 14" fill="none" className="w-3 h-3"><path d="M3 7.5L5.5 10L11 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                    </div>
-                    <input 
-                      type="checkbox" 
-                      checked={inStockOnly}
-                      onChange={(e) => setInStockOnly(e.target.checked)}
-                      className="hidden"
-                    />
-                    <span className="text-sm font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-800 dark:group-hover:text-white transition-colors">Apenas em estoque</span>
-                  </label>
-                </div>
-
               {user?.isAdmin && (
                 <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5">
                   <button 
@@ -312,7 +280,7 @@ export const Catalog = () => {
                     <div className="relative hidden lg:block w-1/5">
                       <button
                         onClick={() => setShowBrandDropdown(!showBrandDropdown)}
-                        className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                        className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-accent shadow-sm"
                       >
                         <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
                         <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
@@ -387,7 +355,7 @@ export const Catalog = () => {
                   <div className="flex-1 relative">
                     <button
                       onClick={() => setShowBrandDropdown(!showBrandDropdown)}
-                      className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                      className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-accent shadow-sm"
                     >
                       <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
                       <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
@@ -425,7 +393,6 @@ export const Catalog = () => {
                   className="px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex flex-col items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 shrink-0"
                 >
                   <span className="font-bold text-sm leading-tight">Setores</span>
-                  <span className="text-[10px] text-zinc-400 leading-tight">e mais</span>
                 </button>
               </div>
             ) : (
@@ -440,7 +407,6 @@ export const Catalog = () => {
                   </div>
                   <div className="flex flex-col items-end">
                     <span className="text-xs text-zinc-400">Trocar setor</span>
-                    <span className="text-xs text-zinc-400">e filtros</span>
                   </div>
                 </button>
 
