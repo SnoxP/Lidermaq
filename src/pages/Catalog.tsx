@@ -21,6 +21,7 @@ export const Catalog = () => {
   const [showBrandDropdown, setShowBrandDropdown] = useState(false);
   const [categories, setCategories] = useState<string[]>(['Todos']);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [inStockOnly, setInStockOnly] = useState(false);
   const [columnsCount, setColumnsCount] = useState(1);
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2 | 3 | 4>(() => {
     const saved = localStorage.getItem('mobileGridCols');
@@ -146,6 +147,10 @@ export const Catalog = () => {
       );
     }
 
+    if (inStockOnly) {
+      result = result.filter(p => p.available);
+    }
+
     if (sortBy === 'price-asc') {
       result = [...result].sort((a, b) => a.price - b.price);
     } else if (sortBy === 'price-desc') {
@@ -198,31 +203,77 @@ export const Catalog = () => {
         {/* Filters & Search */}
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           {/* Categories Sidebar/Bar */}
-          <div className="lg:w-64 shrink-0 mb-8 lg:mb-0">
+          <div 
+            className={`lg:w-64 shrink-0 grid transition-all duration-500 ease-in-out ${
+              showMobileFilters ? 'grid-rows-[1fr] opacity-100 mb-8 lg:mb-0' : 'grid-rows-[0fr] opacity-0 lg:grid-rows-[1fr] lg:opacity-100'
+            }`}
+          >
             <div className="overflow-hidden">
               <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-bold flex items-center gap-2 dark:text-white font-display">
-                    <Tag size={18} className="text-accent" /> Setores
+                    <Filter size={18} className="text-accent" /> Filtros
                   </h3>
-                </div>
-                <div className="flex flex-wrap lg:flex-col gap-2">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => {
-                      updateParams({ cat: cat === 'Todos' ? null : cat, page: '1' });
-                    }}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
-                      activeCategory === cat 
-                        ? 'bg-accent text-white shadow-lg shadow-accent/20' 
-                        : 'bg-zinc-50 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/10'
-                    }`}
+                  <button 
+                    onClick={() => setShowMobileFilters(false)}
+                    className="lg:hidden p-2 -mr-2 -mt-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors"
                   >
-                    {cat}
+                    <X size={20} />
                   </button>
-                ))}
-              </div>
+                </div>
+
+                <div className="mb-8">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-3">Setores</h4>
+                  <div className="flex flex-wrap lg:flex-col gap-2">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        updateParams({ cat: cat === 'Todos' ? null : cat, page: '1' });
+                      }}
+                      className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
+                        activeCategory === cat 
+                          ? 'bg-accent text-white shadow-lg shadow-accent/20' 
+                          : 'bg-zinc-50 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/10'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-3">Ordenar por</h4>
+                  <div className="relative">
+                    <select 
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm font-bold text-zinc-600 dark:text-zinc-400 focus:ring-2 focus:ring-accent/20 appearance-none transition-colors"
+                    >
+                      <option value="featured">Destaques</option>
+                      <option value="price-asc">Menor Preço</option>
+                      <option value="price-desc">Maior Preço</option>
+                    </select>
+                    <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-3">Disponibilidade</h4>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${inStockOnly ? 'bg-accent border-accent text-white' : 'border-zinc-300 dark:border-zinc-600 bg-transparent group-hover:border-accent'}`}>
+                      {inStockOnly && <svg viewBox="0 0 14 14" fill="none" className="w-3 h-3"><path d="M3 7.5L5.5 10L11 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={inStockOnly}
+                      onChange={(e) => setInStockOnly(e.target.checked)}
+                      className="hidden"
+                    />
+                    <span className="text-sm font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-800 dark:group-hover:text-white transition-colors">Apenas em estoque</span>
+                  </label>
+                </div>
 
               {user?.isAdmin && (
                 <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-white/5">
@@ -255,6 +306,52 @@ export const Catalog = () => {
                     className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all shadow-sm"
                   />
                 </div>
+                
+                {brands.length > 0 && activeCategory === 'Todos' && (
+                  <div className="relative hidden lg:block w-1/5">
+                    <button
+                      onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+                      className="w-full h-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                    >
+                      <span className="truncate">{selectedBrands.length > 0 ? `${selectedBrands.length} marca(s)` : 'Marcas'}</span>
+                      <ChevronDown size={20} className={`transition-transform shrink-0 ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+                    {showBrandDropdown && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className="absolute top-full left-0 w-[400px] mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 gap-2 z-40"
+                      >
+                        {brands.map(brand => (
+                          <button
+                            key={brand}
+                            onClick={() => {
+                              setSelectedBrands(prev => 
+                                prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                              );
+                              updateParams({ page: '1' });
+                            }}
+                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
+                              selectedBrands.includes(brand)
+                                ? 'bg-accent text-white'
+                                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                            }`}
+                          >
+                            {brand}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setShowMobileFilters(!showMobileFilters)}
+                  className="lg:hidden p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl text-accent shadow-sm flex items-center justify-center transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                  title="Filtros"
+                >
+                  <Filter size={24} />
+                </button>
               </div>
               
               {/* Mobile Grid Toggle */}
@@ -290,13 +387,51 @@ export const Catalog = () => {
               </div>
             </div>
 
-            {brands.length > 0 && (
+            {brands.length > 0 && activeCategory === 'Todos' && (
+              <div className="mb-8 relative z-30 lg:hidden">
+                <button
+                  onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+                  className="w-full flex justify-between items-center px-6 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-400 shadow-sm"
+                >
+                  {selectedBrands.length > 0 ? `${selectedBrands.length} marca(s) selecionada(s)` : 'Marcas'}
+                  <ChevronDown size={20} className={`transition-transform ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                </button>
+                {showBrandDropdown && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    className="absolute top-full left-0 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl shadow-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-2"
+                  >
+                    {brands.map(brand => (
+                      <button
+                        key={brand}
+                        onClick={() => {
+                          setSelectedBrands(prev => 
+                            prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+                          );
+                          updateParams({ page: '1' });
+                        }}
+                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all text-left ${
+                          selectedBrands.includes(brand)
+                            ? 'bg-accent text-white'
+                            : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                        }`}
+                      >
+                        {brand}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+            )}
+
+            {brands.length > 0 && activeCategory !== 'Todos' && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 className="mb-8 overflow-hidden"
               >
-                <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {brands.map(brand => (
                     <button
                       key={brand}
