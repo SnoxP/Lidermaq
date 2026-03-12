@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trash2, Plus, Minus, ArrowLeft, MessageCircle, ShoppingBag, X } from 'lucide-react';
@@ -11,7 +11,27 @@ export const Cart = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [showAttendantSelector, setShowAttendantSelector] = React.useState(false);
+  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'form' | 'attendant'>('cart');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    cep: '',
+    street: '',
+    number: '',
+    complement: '',
+    paymentMethod: 'Pix'
+  });
+
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        email: prev.email || user.email || ''
+      }));
+    }
+  }, [user]);
 
   const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -25,17 +45,21 @@ export const Cart = () => {
     )
     .join('\n');
 
-  const message = `Olá Lidermaq! Gostaria de solicitar um orçamento para os seguintes itens:\n\n${cartDetails}\n\nTotal: R$ ${totalPrice.toLocaleString(
+  const message = `Olá Lidermaq! Gostaria de solicitar um pedido para os seguintes itens:\n\n${cartDetails}\n\nTotal: R$ ${totalPrice.toLocaleString(
     'pt-BR'
-  )}\n\nCliente: ${user?.email || 'Visitante'}`;
+  )}\n\n*Dados do Cliente:*\nNome: ${formData.name}\nEmail: ${formData.email}\nTelefone: ${formData.phone}\n\n*Endereço de Entrega:*\nCEP: ${formData.cep}\nRua: ${formData.street}, Nº ${formData.number}\nComplemento: ${formData.complement || 'Nenhum'}\n\n*Método de Pagamento:* ${formData.paymentMethod}`;
 
   const handleCheckout = () => {
     if (!user) {
       navigate('/login?redirect=/carrinho');
       return;
     }
-    console.log("Checkout clicked, toggling attendant selector");
-    setShowAttendantSelector(!showAttendantSelector);
+    setCheckoutStep('form');
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCheckoutStep('attendant');
   };
 
   if (cart.length === 0) {
@@ -164,15 +188,62 @@ export const Cart = () => {
               </div>
 
               <div className="space-y-6">
-                <button
-                  onClick={handleCheckout}
-                  className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
-                >
-                  <MessageCircle size={24} /> Finalizar Orçamento
-                </button>
+                {checkoutStep === 'cart' && (
+                  <button
+                    onClick={handleCheckout}
+                    className="btn-primary w-full py-4 text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
+                  >
+                    <ShoppingBag size={24} /> Concluir Pedido
+                  </button>
+                )}
+
+                {checkoutStep === 'form' && (
+                  <form onSubmit={handleFormSubmit} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="space-y-3">
+                      <h4 className="font-bold text-sm uppercase tracking-widest text-zinc-400">Contato</h4>
+                      <input type="text" required placeholder="Nome Completo" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all" />
+                      <input type="email" required placeholder="E-mail (Gmail)" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all" />
+                      <input type="tel" required placeholder="Telefone / WhatsApp" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all" />
+                    </div>
+
+                    <div className="space-y-3 pt-4 border-t border-zinc-100 dark:border-white/5">
+                      <h4 className="font-bold text-sm uppercase tracking-widest text-zinc-400">Endereço de Entrega</h4>
+                      <input type="text" required placeholder="CEP" value={formData.cep} onChange={e => setFormData({...formData, cep: e.target.value})} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all" />
+                      <div className="flex gap-3">
+                        <input type="text" required placeholder="Rua" value={formData.street} onChange={e => setFormData({...formData, street: e.target.value})} className="w-2/3 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all" />
+                        <input type="text" required placeholder="Nº" value={formData.number} onChange={e => setFormData({...formData, number: e.target.value})} className="w-1/3 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all" />
+                      </div>
+                      <input type="text" placeholder="Complemento (Opcional)" value={formData.complement} onChange={e => setFormData({...formData, complement: e.target.value})} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all" />
+                    </div>
+
+                    <div className="space-y-3 pt-4 border-t border-zinc-100 dark:border-white/5">
+                      <h4 className="font-bold text-sm uppercase tracking-widest text-zinc-400">Pagamento</h4>
+                      <select value={formData.paymentMethod} onChange={e => setFormData({...formData, paymentMethod: e.target.value})} className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-white/5 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none dark:text-white transition-all appearance-none">
+                        <option value="Pix">Pix (Desconto de 5%)</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Boleto">Boleto Bancário</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                      </select>
+                    </div>
+
+                    <div className="pt-4 flex gap-3">
+                      <button type="button" onClick={() => setCheckoutStep('cart')} className="flex-1 py-4 rounded-xl font-bold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                        Voltar
+                      </button>
+                      <button type="submit" className="flex-1 btn-primary py-4 shadow-lg shadow-accent/20">
+                        Continuar
+                      </button>
+                    </div>
+                  </form>
+                )}
                 
-                {showAttendantSelector && (
-                  <div className="p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10">
+                {checkoutStep === 'attendant' && (
+                  <div className="p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h4 className="font-bold text-sm uppercase tracking-widest text-zinc-400">Falar com Vendedor</h4>
+                      <button onClick={() => setCheckoutStep('form')} className="text-xs text-accent hover:underline">Editar Dados</button>
+                    </div>
                     <AttendantSelector message={message} />
                   </div>
                 )}
