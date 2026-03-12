@@ -16,7 +16,9 @@ export const BotVerification: React.FC<BotVerificationProps> = ({ onVerification
     }
 
     try {
-      const response = await fetch('/api/verify-recaptcha', {
+      // Use window.location.origin to ensure the request goes to the correct Vercel domain
+      const apiUrl = `${window.location.origin}/api/verify-recaptcha`;
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
