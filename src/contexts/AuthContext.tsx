@@ -98,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await setDoc(userRef, {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
-      name: name || firebaseUser.displayName || firebaseUser.email.split('@')[0],
+      name: name || firebaseUser.displayName || (userDoc.exists() ? userDoc.data().name : null) || firebaseUser.email.split('@')[0],
       tag,
       createdAt,
       lastSeen: serverTimestamp(),
@@ -160,18 +160,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
             const userData = userDoc.exists() ? userDoc.data() : {};
             
-            setUser({
-              id: firebaseUser.uid,
-              email: firebaseUser.email,
-              name: firebaseUser.displayName || firebaseUser.email.split('@')[0] || 'Usuário',
-              isAdmin: isAdmin,
-              tag: userData.tag,
-              createdAt: userData.createdAt,
-              cep: userData.cep,
-              birthDate: userData.birthDate,
-              photoURL: userData.photoURL || firebaseUser.photoURL,
-              totalOrders: userData.totalOrders || 0,
-              totalSpent: userData.totalSpent || 0
+            setUser(prev => {
+              const fetchedName = userData.name || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário';
+              // Preserve the name if it was already set by register() and is not just the email prefix
+              const finalName = (prev && prev.name && prev.name !== firebaseUser.email?.split('@')[0]) ? prev.name : fetchedName;
+              
+              return {
+                id: firebaseUser.uid,
+                email: firebaseUser.email!,
+                name: finalName,
+                isAdmin: isAdmin,
+                tag: userData.tag,
+                createdAt: userData.createdAt,
+                cep: userData.cep,
+                birthDate: userData.birthDate,
+                photoURL: userData.photoURL || firebaseUser.photoURL,
+                totalOrders: userData.totalOrders || 0,
+                totalSpent: userData.totalSpent || 0
+              };
             });
             // Atualiza o status online sem travar a UI
             syncUserToFirestore(firebaseUser);
@@ -202,6 +208,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const result = await createUserWithEmailAndPassword(auth, email, password);
     if (result.user) {
       await updateProfile(result.user, { displayName: name });
+      setUser(prev => prev ? { ...prev, name } : null);
       // Não aguarda a sincronização para não travar o cadastro
       syncUserToFirestore(result.user, name).catch(console.error);
     }
