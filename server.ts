@@ -49,6 +49,16 @@ async function startServer() {
 
   app.use(express.json());
 
+  // API route to check env vars
+  app.get("/api/check-env", (req, res) => {
+    res.json({
+      siteKeySet: !!process.env.VITE_RECAPTCHA_SITE_KEY,
+      secretKeySet: !!process.env.RECAPTCHA_SECRET_KEY,
+      siteKeyPrefix: process.env.VITE_RECAPTCHA_SITE_KEY ? process.env.VITE_RECAPTCHA_SITE_KEY.substring(0, 5) : null,
+      secretKeyPrefix: process.env.RECAPTCHA_SECRET_KEY ? process.env.RECAPTCHA_SECRET_KEY.substring(0, 5) : null,
+    });
+  });
+
   // API route for reCAPTCHA verification
   app.post("/api/verify-recaptcha", async (req, res) => {
     const { token } = req.body;
