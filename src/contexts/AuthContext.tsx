@@ -6,10 +6,11 @@ import {
   signOut,
   updateProfile,
   sendPasswordResetEmail,
+  deleteUser,
   User as FirebaseUser 
 } from 'firebase/auth';
 import { auth, db } from '../services/firebase';
-import { doc, getDoc, setDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
 
 interface User {
   id: string;
@@ -31,6 +32,7 @@ interface AuthContextType {
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  deleteAccount: () => Promise<void>;
   loading: boolean;
 }
 
@@ -244,8 +246,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await sendPasswordResetEmail(auth, email);
   };
 
+  const deleteAccount = async () => {
+    if (!auth || !auth.currentUser) throw new Error("Usuário não autenticado.");
+    
+    try {
+      const uid = auth.currentUser.uid;
+      // Exclui o documento do usuário no Firestore
+      await deleteDoc(doc(db, 'users', uid));
+      // Exclui o usuário da autenticação do Firebase
+      await deleteUser(auth.currentUser);
+      setUser(null);
+    } catch (error: any) {
+      console.error("Erro ao excluir conta:", error);
+      if (error.code === 'auth/requires-recent-login') {
+        throw new Error("Por motivos de segurança, você precisa fazer login novamente antes de excluir sua conta. Por favor, saia e entre novamente.");
+      }
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, resetPassword, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, resetPassword, deleteAccount, loading }}>
       {children}
     </AuthContext.Provider>
   );
