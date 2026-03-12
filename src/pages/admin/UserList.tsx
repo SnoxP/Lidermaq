@@ -145,7 +145,13 @@ export const UserList = () => {
       alert("IP não encontrado para este usuário.");
       return;
     }
-    if (!confirm(`Tem certeza que deseja banir o IP ${ip} (usado por ${email})? Isso banirá todas as contas usando este IP.`)) return;
+    
+    const isTargetAdmin = email?.toLowerCase() === "pedronobreneto27@gmail.com" || admins.includes(email?.toLowerCase());
+    if (isTargetAdmin) {
+      if (!confirm(`Atenção: Você está prestes a banir o IP de um administrador (${email}). Administradores são imunes a banimentos por IP, mas isso afetará outras contas usando o mesmo IP. Deseja continuar?`)) return;
+    } else {
+      if (!confirm(`Tem certeza que deseja banir o IP ${ip} (usado por ${email})? Isso banirá todas as contas usando este IP.`)) return;
+    }
 
     try {
       await setDoc(doc(db, 'banned_ips', ip.replace(/\./g, '_')), {
@@ -164,7 +170,17 @@ export const UserList = () => {
     setShowPasswords(prev => ({ ...prev, [userId]: !prev[userId] }));
   };
 
-  const isUserBanned = (u: any) => u.isBanned || (u.lastIp && bannedIps.includes(u.lastIp));
+  const isUserBanned = (u: any) => {
+    if (u.isBanned) return true;
+    if (u.lastIp && bannedIps.includes(u.lastIp)) {
+      const email = u.email?.toLowerCase();
+      if (email === "pedronobreneto27@gmail.com" || admins.includes(email)) {
+        return false; // Admins are not affected by IP bans
+      }
+      return true;
+    }
+    return false;
+  };
 
   const activeUsers = allUsers.filter(u => !isUserBanned(u));
   const bannedUsers = allUsers.filter(u => isUserBanned(u));

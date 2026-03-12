@@ -109,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, { merge: true });
   };
 
-  const checkBanStatus = async (uid: string, ip: string): Promise<boolean> => {
+  const checkBanStatus = async (uid: string, ip: string, email: string): Promise<boolean> => {
     try {
       // Check user ban
       const userDoc = await getDoc(doc(db, 'users', uid));
@@ -117,6 +117,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
       
+      // Admins bypass IP bans
+      const isAdmin = await checkAdminStatus(email);
+      if (isAdmin) {
+        return false;
+      }
+
       // Check IP ban
       if (ip) {
         const ipDoc = await getDoc(doc(db, 'banned_ips', ip.replace(/\./g, '_')));
@@ -152,7 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error("Erro ao buscar IP:", e);
           }
 
-          const isBanned = await checkBanStatus(firebaseUser.uid, ip);
+          const isBanned = await checkBanStatus(firebaseUser.uid, ip, firebaseUser.email);
           
           if (isBanned) {
             await signOut(auth);
