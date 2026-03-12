@@ -77,10 +77,18 @@ export const UserList = () => {
       return;
     }
 
-    if (!confirm(`Tem certeza que deseja remover o usuário ${email} do banco de dados? Esta ação não pode ser desfeita.`)) return;
+    if (!confirm(`Tem certeza que deseja remover o usuário ${email} do banco de dados e da autenticação? Esta ação não pode ser desfeita.`)) return;
 
     try {
-      // Remove do cadastro de usuários
+      // Remove do Firebase Auth via backend
+      const response = await fetch(`/api/delete-user/${userId}`, { method: 'DELETE' });
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || "Erro ao deletar do Auth");
+      }
+
+      // Remove do cadastro de usuários no Firestore
       await deleteDoc(doc(db, 'users', userId));
       
       // Se for admin, remove também da lista de admins
