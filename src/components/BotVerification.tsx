@@ -30,7 +30,7 @@ export const BotVerification: React.FC<BotVerificationProps> = ({ onVerification
   return (
     <div className="flex justify-center my-4">
       <ReCAPTCHA
-        sitekey="6LdP84AsAAAAAFy3BHFmO_rgIezdpoh2DlnWbWMk"
+        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LdP84AsAAAAAFy3BHFmO_rgIezdpoh2DlnWbWMk"}
         onChange={handleVerify}
       />
     </div>

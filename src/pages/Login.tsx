@@ -146,8 +146,8 @@ export const Login = () => {
 
           <button 
             type="submit" 
-            disabled={isLoading || !isVerified}
-            className={`w-full btn-primary py-4 text-lg flex justify-center items-center gap-2 ${(!isVerified || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isLoading}
+            className={`w-full btn-primary py-4 text-lg flex justify-center items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isLoading ? 'Processando...' : (
               <>Entrar <LogIn size={20} /></>
