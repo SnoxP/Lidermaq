@@ -139,6 +139,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Escuta mudanças no estado de autenticação do Firebase
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser && firebaseUser.email) {
+        setLoading(true); // Prevent redirects while fetching user data
         try {
           let ip = '';
           try {
@@ -196,21 +197,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     if (!auth) throw new Error("Sistema de autenticação não disponível.");
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    if (result.user) {
-      // Não aguarda a sincronização para não travar o login
-      syncUserToFirestore(result.user).catch(console.error);
+    setLoading(true);
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      if (result.user) {
+        // Não aguarda a sincronização para não travar o login
+        syncUserToFirestore(result.user).catch(console.error);
+      }
+    } catch (error) {
+      setLoading(false);
+      throw error;
     }
   };
 
   const register = async (email: string, password: string, name: string) => {
     if (!auth) throw new Error("Sistema de autenticação não disponível.");
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    if (result.user) {
-      await updateProfile(result.user, { displayName: name });
-      setUser(prev => prev ? { ...prev, name } : null);
-      // Não aguarda a sincronização para não travar o cadastro
-      syncUserToFirestore(result.user, name).catch(console.error);
+    setLoading(true);
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      if (result.user) {
+        await updateProfile(result.user, { displayName: name });
+        setUser(prev => prev ? { ...prev, name } : null);
+        // Não aguarda a sincronização para não travar o cadastro
+        syncUserToFirestore(result.user, name).catch(console.error);
+      }
+    } catch (error) {
+      setLoading(false);
+      throw error;
     }
   };
 
