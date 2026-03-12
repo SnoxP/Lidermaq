@@ -6,8 +6,8 @@ import { collection, onSnapshot, query, orderBy, doc, setDoc, getDoc, deleteDoc 
 import { useNavigate } from 'react-router-dom';
 
 export const UserList = () => {
-  const [users, setUsers] = useState<any[]>([]);
-  const [bannedUsers, setBannedUsers] = useState<any[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [bannedIps, setBannedIps] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'active' | 'banned'>('active');
   const [admins, setAdmins] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,8 +22,7 @@ export const UserList = () => {
     
     const unsubscribeUsers = onSnapshot(q, (querySnapshot) => {
       const userList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setUsers(userList.filter(u => !(u as any).isBanned));
-      setBannedUsers(userList.filter(u => (u as any).isBanned));
+      setAllUsers(userList);
       setIsLoading(false);
     }, (error) => {
       console.error("Erro ao buscar usuários:", error);
@@ -35,9 +34,15 @@ export const UserList = () => {
       setAdmins(adminEmails);
     });
 
+    const unsubscribeBannedIps = onSnapshot(collection(db, 'banned_ips'), (snapshot) => {
+      const ips = snapshot.docs.map(doc => doc.data().ip);
+      setBannedIps(ips);
+    });
+
     return () => {
       unsubscribeUsers();
       unsubscribeAdmins();
+      unsubscribeBannedIps();
     };
   }, []);
 
@@ -120,11 +125,14 @@ export const UserList = () => {
     }
   };
 
-  const unbanUser = async (userId: string, email: string) => {
+  const unbanUser = async (userId: string, email: string, ip?: string) => {
     if (!confirm(`Tem certeza que deseja desbanir o usuário ${email}?`)) return;
 
     try {
       await setDoc(doc(db, 'users', userId), { isBanned: false }, { merge: true });
+      if (ip && bannedIps.includes(ip)) {
+        await deleteDoc(doc(db, 'banned_ips', ip.replace(/\./g, '_')));
+      }
       alert("Usuário desbanido com sucesso.");
     } catch (error) {
       console.error("Erro ao desbanir usuário:", error);
@@ -137,7 +145,7 @@ export const UserList = () => {
       alert("IP não encontrado para este usuário.");
       return;
     }
-    if (!confirm(`Tem certeza que deseja banir o IP ${ip} (usado por ${email})?`)) return;
+    if (!confirm(`Tem certeza que deseja banir o IP ${ip} (usado por ${email})? Isso banirá todas as contas usando este IP.`)) return;
 
     try {
       await setDoc(doc(db, 'banned_ips', ip.replace(/\./g, '_')), {
@@ -156,10 +164,22 @@ export const UserList = () => {
     setShowPasswords(prev => ({ ...prev, [userId]: !prev[userId] }));
   };
 
-  const filteredUsers = users.filter(u => 
+  const isUserBanned = (u: any) => u.isBanned || (u.lastIp && bannedIps.includes(u.lastIp));
+
+  const activeUsers = allUsers.filter(u => !isUserBanned(u));
+  const bannedUsers = allUsers.filter(u => isUserBanned(u));
+
+  const filteredActiveUsers = activeUsers.filter(u => 
     u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const filteredBannedUsers = bannedUsers.filter(u => 
+    u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const currentUsers = activeTab === 'active' ? filteredActiveUsers : filteredBannedUsers;
 
   const formatLastSeen = (timestamp: any) => {
     if (!timestamp) return 'Nunca';
@@ -225,12 +245,12 @@ export const UserList = () => {
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-primary/40 dark:text-zinc-500 animate-pulse">Carregando usuários...</td>
                   </tr>
-                ) : (activeTab === 'active' ? filteredUsers : bannedUsers).length === 0 ? (
+                ) : currentUsers.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-primary/40 dark:text-zinc-500 italic">Nenhum usuário encontrado.</td>
                   </tr>
                 ) : (
-                  (activeTab === 'active' ? filteredUsers : bannedUsers).map((u) => (
+                  currentUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-neutral-bg/30 dark:hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
@@ -291,7 +311,7 @@ export const UserList = () => {
                           </>
                         ) : (
                           <button 
-                            onClick={() => unbanUser(u.id, u.email)}
+                            onClick={() => unbanUser(u.id, u.email, u.lastIp)}
                             className="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-lg transition-colors"
                             title="Desbanir Conta"
                           >
