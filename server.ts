@@ -95,13 +95,18 @@ async function startServer() {
   app.delete("/api/delete-user/:uid", async (req, res) => {
     const { uid } = req.params;
     if (!adminAuth) {
-      return res.status(500).json({ success: false, message: "Firebase Admin não inicializado" });
+      console.warn("Firebase Admin não inicializado. Não foi possível deletar do Auth, mas prosseguindo com a limpeza no Firestore.");
+      return res.json({ success: true, message: "Firebase Admin não inicializado. Removendo apenas do Firestore." });
     }
     try {
       await adminAuth.deleteUser(uid);
       res.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao deletar usuário:", error);
+      if (error.code === 'auth/user-not-found') {
+        // Se o usuário já não existe no Auth, consideramos sucesso para permitir que o frontend limpe o Firestore
+        return res.json({ success: true, message: "Usuário não encontrado no Auth, prosseguindo com a limpeza." });
+      }
       res.status(500).json({ success: false, message: "Erro ao deletar usuário do Firebase Auth" });
     }
   });
