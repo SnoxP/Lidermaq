@@ -4,6 +4,10 @@ import fetch from "node-fetch";
 import * as admin from 'firebase-admin';
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Initialize Firebase Admin
 let adminAuth: admin.auth.Auth | null = null;
@@ -63,11 +67,13 @@ async function startServer() {
 
       const response = await fetch(verifyUrl, { method: "POST" });
       const data = (await response.json()) as any;
+      
+      console.log("reCAPTCHA verification response:", data);
 
       if (data.success) {
         res.json({ success: true });
       } else {
-        res.status(400).json({ success: false, message: "Falha na verificação do reCAPTCHA" });
+        res.status(400).json({ success: false, message: "Falha na verificação do reCAPTCHA", errors: data['error-codes'] });
       }
     } catch (error) {
       console.error("Erro ao verificar reCAPTCHA:", error);
