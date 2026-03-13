@@ -5,6 +5,8 @@ import { db } from '../../services/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
+import { formatCurrency } from '../../utils/format';
+
 export const ProductList = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -275,7 +277,7 @@ export const ProductList = () => {
                       <td className="px-6 py-4 text-sm dark:text-zinc-400">{product.category}</td>
                       <td className="px-6 py-4 text-sm dark:text-zinc-400">{product.brand}</td>
                       <td className="px-6 py-4 text-sm font-bold text-accent">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
+                        {formatCurrency(product.price)}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">

@@ -8,6 +8,8 @@ import { SeedData } from '../components/admin/SeedData';
 import { db } from '../services/firebase';
 import { collection, getDocs, doc, getDoc, setDoc, increment } from 'firebase/firestore';
 
+import { formatCurrency } from '../utils/format';
+
 export const AdminDashboard = () => {
   const { user } = useAuth();
   const { products, loading } = useProducts();
@@ -146,7 +148,7 @@ export const AdminDashboard = () => {
                       <p className="text-xs text-primary/40 dark:text-zinc-500">{product.category}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-sm dark:text-white">R$ {product.price.toLocaleString('pt-BR')}</p>
+                      <p className="font-bold text-sm dark:text-white">{formatCurrency(product.price)}</p>
                     </div>
                   </div>
                 ))

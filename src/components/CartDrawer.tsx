@@ -5,6 +5,7 @@ import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { AttendantSelector } from './AttendantSelector';
+import { formatCurrency } from '../utils/format';
 
 export const CartDrawer = () => {
   const { cart, removeFromCart, updateQuantity, isCartOpen, setIsCartOpen, total } = useCart();
@@ -21,7 +22,7 @@ export const CartDrawer = () => {
     setShowAttendantSelector(!showAttendantSelector);
   };
 
-  const message = `Olá, gostaria de finalizar meu pedido:\n\n${cart.map(item => `${item.quantity}x ${item.name} - R$ ${item.price}`).join('\n')}\n\nTotal: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+  const message = `Olá, gostaria de finalizar meu pedido:\n\n${cart.map(item => `${item.quantity}x ${item.name} - ${formatCurrency(item.price)}`).join('\n')}\n\nTotal: ${formatCurrency(total)}`;
 
   return (
     <AnimatePresence>
@@ -86,7 +87,7 @@ export const CartDrawer = () => {
                     <div className="flex-1">
                       <h3 className="font-bold text-zinc-900 dark:text-white line-clamp-1">{item.name}</h3>
                       <p className="text-accent font-black text-sm mb-2">
-                        R$ {item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        {formatCurrency(item.price)}
                       </p>
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 bg-zinc-100 dark:bg-white/5 rounded-lg p-1">
@@ -122,7 +123,7 @@ export const CartDrawer = () => {
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-zinc-500 dark:text-zinc-400 font-bold">Total</span>
                   <span className="text-2xl font-black text-zinc-900 dark:text-white">
-                    R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    {formatCurrency(total)}
                   </span>
                 </div>
                 <div className="space-y-4">

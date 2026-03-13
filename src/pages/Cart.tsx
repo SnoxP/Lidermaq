@@ -7,6 +7,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { SEO } from '../components/SEO';
 import { AttendantSelector } from '../components/AttendantSelector';
 
+import { formatCurrency } from '../utils/format';
+
 export const Cart = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const { user } = useAuth();
@@ -125,7 +127,7 @@ export const Cart = () => {
                     </p>
                   )}
                   <p className="text-xl font-black text-zinc-900 dark:text-white font-display">
-                    R$ {item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    {formatCurrency(item.price)}
                   </p>
                 </div>
 
@@ -171,7 +173,7 @@ export const Cart = () => {
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-zinc-500 dark:text-zinc-400">
                   <span>Subtotal</span>
-                  <span className="font-bold">R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-bold">{formatCurrency(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between text-zinc-500 dark:text-zinc-400">
                   <span>Entrega</span>
@@ -181,7 +183,7 @@ export const Cart = () => {
                   <span className="text-lg font-bold dark:text-white">Total</span>
                   <div className="text-right">
                     <span className="block text-3xl font-black text-accent font-display leading-none">
-                      R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      {formatCurrency(totalPrice)}
                     </span>
                   </div>
                 </div>

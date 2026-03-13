@@ -55,7 +55,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         if (productDoc.exists()) {
           const data = productDoc.data();
           setName(data.name || '');
-          setPrice(data.price?.toString() || '');
+          setPrice(data.price ? Number(data.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '');
           setBrand(data.brand || '');
           if (data.descriptions && data.descriptions.length > 0) {
             setDescriptions(data.descriptions);
@@ -67,7 +67,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           setCategory(data.category || '');
           setAvailable(data.available !== false);
           setImages(data.images || ['']);
-          setVariants(data.variants || []);
+          setVariants(data.variants?.map((v: any) => ({
+            ...v,
+            price: v.price ? Number(v.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''
+          })) || []);
         }
       }
     };
@@ -332,6 +335,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     setVariants(newVariants);
   };
 
+  const parsePriceInput = (val: string) => {
+    if (!val) return 0;
+    // If it contains both dot and comma (e.g., 1.050,50), or just comma (e.g., 1050,50)
+    if (val.includes(',') || (val.includes('.') && val.indexOf('.') < val.length - 3)) {
+      return parseFloat(val.replace(/\./g, '').replace(',', '.'));
+    }
+    // If it contains only a dot and it's near the end (e.g., 1050.50)
+    return parseFloat(val);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -354,14 +367,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
       const processedVariants = await Promise.all(
         variants.filter(v => v.name !== '').map(async v => ({
           ...v,
-          price: v.price.replace(/\./g, '').replace(',', '.'),
+          price: parsePriceInput(v.price),
           image: v.image ? await ensureImgBBMirror(v.image) : ''
         }))
       );
 
       const productData = {
         name,
-        price: parseFloat(price.replace(/\./g, '').replace(',', '.')),
+        price: parsePriceInput(price),
         brand,
         description: descriptions[0]?.text || '',
         descriptionTitle: descriptions[0]?.title || '',
@@ -370,7 +383,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         image: processedImages[0] || '',
         images: processedImages,
         variants: processedVariants,
-        installments: calculateInstallments(parseFloat(price.replace(/\./g, '').replace(',', '.'))),
+        installments: calculateInstallments(parsePriceInput(price)),
         available,
         updatedAt: new Date().toISOString()
       };
