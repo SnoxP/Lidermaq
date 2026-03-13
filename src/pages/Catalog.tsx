@@ -454,6 +454,29 @@ export const Catalog = () => {
               />
             </motion.div>
 
+            {!loading && paginatedProducts.length > 0 && totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mb-8 flex-wrap">
+                {Array.from({ length: totalPages }).map((_, i) => {
+                  const page = i + 1;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => {
+                        updateParams({ page: page.toString() });
+                      }}
+                      className={`w-10 h-10 rounded-xl font-bold transition-all ${
+                        currentPage === page
+                          ? 'bg-accent text-white shadow-lg shadow-accent/20'
+                          : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-white/5'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
             {/* Grid */}
             {loading ? (
               <div className={`grid gap-2 sm:gap-8 ${mobileGridCols === 1 ? 'grid-cols-1' : mobileGridCols === 2 ? 'grid-cols-2' : mobileGridCols === 3 ? 'grid-cols-3' : 'grid-cols-4'} sm:grid-cols-2 xl:grid-cols-3`}>

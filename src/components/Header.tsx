@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Search, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag } from 'lucide-react';
+import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -153,10 +153,6 @@ export const Header = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="p-2.5 text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors hidden sm:block">
-              <Search size={20} />
-            </button>
-
             <button 
               onClick={() => setIsCartOpen(true)}
               className="relative p-2.5 text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors"
