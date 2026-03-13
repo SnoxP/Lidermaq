@@ -244,7 +244,7 @@ export const Home = () => {
             className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 max-w-5xl mx-auto"
           >
             <img 
-              src="https://i.imgur.com/BQ8vxhM_d.webp?maxwidth=760&fidelity=grand" 
+              src="https://i.ibb.co/q2j76FQ/Cn-P-13032026-203914.png" 
               alt="Assistência Técnica Lidermaq" 
               className="w-full h-auto object-cover"
             />

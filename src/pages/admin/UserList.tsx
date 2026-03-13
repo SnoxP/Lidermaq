@@ -269,12 +269,21 @@ export const UserList = () => {
                   currentUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-neutral-bg/30 dark:hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <Circle size={10} className={u.isOnline ? "fill-emerald-500 text-emerald-500" : "fill-neutral-300 dark:fill-zinc-700 text-neutral-300 dark:text-zinc-700"} />
-                          <span className="text-[10px] font-bold uppercase tracking-tighter dark:text-zinc-400">
-                            {u.isOnline ? 'Online' : 'Offline'}
-                          </span>
-                        </div>
+                        {activeTab === 'banned' ? (
+                          <div className="flex items-center gap-2">
+                            <Circle size={10} className="fill-red-500 text-red-500" />
+                            <span className="text-[10px] font-bold uppercase tracking-tighter text-red-500">
+                              {u.isBanned ? 'Banido' : 'Banido por IP'}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Circle size={10} className={u.isOnline ? "fill-emerald-500 text-emerald-500" : "fill-neutral-300 dark:fill-zinc-700 text-neutral-300 dark:text-zinc-700"} />
+                            <span className="text-[10px] font-bold uppercase tracking-tighter dark:text-zinc-400">
+                              {u.isOnline ? 'Online' : 'Offline'}
+                            </span>
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">

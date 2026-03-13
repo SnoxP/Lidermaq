@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles, ArrowUp, ArrowDown } from 'lucide-react';
+import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles, ArrowUp, ArrowDown, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -15,8 +15,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [brand, setBrand] = useState('');
-  const [description, setDescription] = useState('');
-  const [descriptionTitle, setDescriptionTitle] = useState('');
+  const [descriptions, setDescriptions] = useState<{title: string, text: string}[]>([{title: '', text: ''}]);
   const [category, setCategory] = useState('');
   const [available, setAvailable] = useState(true);
   const [images, setImages] = useState<string[]>(['']);
@@ -58,8 +57,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           setName(data.name || '');
           setPrice(data.price?.toString() || '');
           setBrand(data.brand || '');
-          setDescription(data.description || '');
-          setDescriptionTitle(data.descriptionTitle || '');
+          if (data.descriptions && data.descriptions.length > 0) {
+            setDescriptions(data.descriptions);
+          } else if (data.description || data.descriptionTitle) {
+            setDescriptions([{ title: data.descriptionTitle || '', text: data.description || '' }]);
+          } else {
+            setDescriptions([{title: '', text: ''}]);
+          }
           setCategory(data.category || '');
           setAvailable(data.available !== false);
           setImages(data.images || ['']);
@@ -226,26 +230,74 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     }
   };
 
-  const handleConfirmSelection = () => {
+  const ensureImgBBMirror = async (url: string): Promise<string> => {
+    if (!url) return url;
+    if (url.includes('i.ibb.co') || url.includes('imgbb.com')) return url;
+    if (url.startsWith('data:')) return url; // base64
+    if (!url.startsWith('http')) return url; // invalid url
+
+    if (!IMGBB_API_KEY || IMGBB_API_KEY === "sua_chave_aqui") {
+      return url;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('image', url);
+
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        return data.data.url;
+      }
+      return url;
+    } catch (error) {
+      console.error("Erro ao espelhar imagem no ImgBB:", error);
+      return url;
+    }
+  };
+
+  const handleConfirmSelection = async () => {
     if (targetImageIndex === null) return;
 
-    if (targetIsVariant) {
-      if (selectedImages.length > 0) {
-        handleVariantChange(targetImageIndex, 'image', selectedImages[0]);
-      }
-    } else {
-      let newImages = [...images];
-      // If the target index is empty, replace it, otherwise add new ones
-      if (newImages[targetImageIndex] === '') {
-        newImages[targetImageIndex] = selectedImages[0];
-        newImages = [...newImages, ...selectedImages.slice(1)];
-      } else {
-        newImages = [...newImages, ...selectedImages];
-      }
-      setImages(newImages.filter(img => img !== ''));
+    if (selectedImages.length === 0) {
+      setShowSearchModal(false);
+      return;
     }
-    setSelectedImages([]);
-    setShowSearchModal(false);
+
+    setIsUploading('urls');
+    try {
+      const uploadedUrls = await Promise.all(
+        selectedImages.map(url => ensureImgBBMirror(url))
+      );
+
+      if (targetIsVariant) {
+        if (uploadedUrls.length > 0) {
+          handleVariantChange(targetImageIndex, 'image', uploadedUrls[0]);
+        }
+      } else {
+        let newImages = [...images];
+        // If the target index is empty, replace it, otherwise add new ones
+        if (newImages[targetImageIndex] === '') {
+          newImages[targetImageIndex] = uploadedUrls[0];
+          newImages = [...newImages, ...uploadedUrls.slice(1)];
+        } else {
+          newImages = [...newImages, ...uploadedUrls];
+        }
+        setImages(newImages.filter(img => img !== ''));
+      }
+      setSelectedImages([]);
+      setShowSearchModal(false);
+    } catch (error) {
+      console.error("Erro geral no upload:", error);
+      alert("Ocorreu um erro ao processar as imagens.");
+    } finally {
+      setIsUploading(null);
+    }
   };
 
   const handleAddImage = () => setImages([...images, '']);
@@ -290,23 +342,35 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         setIsLoading(false);
         alert("A operação está demorando mais que o esperado. Verifique sua conexão ou as regras do Firebase.");
       }
-    }, 10000);
+    }, 30000);
 
     try {
+      // Process images to ensure they are on ImgBB
+      const processedImages = await Promise.all(
+        images.filter(img => img !== '').map(img => ensureImgBBMirror(img))
+      );
+
+      // Process variant images
+      const processedVariants = await Promise.all(
+        variants.filter(v => v.name !== '').map(async v => ({
+          ...v,
+          price: v.price.replace(/\./g, '').replace(',', '.'),
+          image: v.image ? await ensureImgBBMirror(v.image) : ''
+        }))
+      );
+
       const productData = {
         name,
-        price: parseFloat(price.replace(',', '.')),
+        price: parseFloat(price.replace(/\./g, '').replace(',', '.')),
         brand,
-        description,
-        descriptionTitle,
+        description: descriptions[0]?.text || '',
+        descriptionTitle: descriptions[0]?.title || '',
+        descriptions: descriptions.filter(d => d.title !== '' || d.text !== ''),
         category,
-        image: images.filter(img => img !== '')[0] || '',
-        images: images.filter(img => img !== ''),
-        variants: variants.filter(v => v.name !== '').map(v => ({
-          ...v,
-          price: v.price.replace(',', '.')
-        })),
-        installments: calculateInstallments(parseFloat(price.replace(',', '.'))),
+        image: processedImages[0] || '',
+        images: processedImages,
+        variants: processedVariants,
+        installments: calculateInstallments(parseFloat(price.replace(/\./g, '').replace(',', '.'))),
         available,
         updatedAt: new Date().toISOString()
       };
@@ -422,24 +486,58 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1">Título da Descrição (Opcional)</label>
+            <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-sm space-y-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold flex items-center gap-2 dark:text-white">
+                  <FileText className="text-accent" /> Descrições do Produto
+                </h3>
+                <button 
+                  type="button" onClick={() => setDescriptions([...descriptions, {title: '', text: ''}])}
+                  className="text-accent font-bold text-sm flex items-center gap-1 hover:underline"
+                >
+                  <Plus size={18} /> Adicionar Descrição
+                </button>
               </div>
-              <input 
-                type="text" value={descriptionTitle} onChange={(e) => setDescriptionTitle(e.target.value)}
-                className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 mb-4"
-                placeholder="Ex: Especificações Técnicas"
-              />
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1">Descrição</label>
+              
+              <div className="space-y-6">
+                {descriptions.map((desc, index) => (
+                  <div key={index} className="p-6 bg-neutral-bg dark:bg-zinc-800 rounded-2xl relative">
+                    {descriptions.length > 1 && (
+                      <button 
+                        type="button" onClick={() => setDescriptions(descriptions.filter((_, i) => i !== index))}
+                        className="absolute top-4 right-4 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-2 rounded-lg transition-colors"
+                      >
+                        <X size={20} />
+                      </button>
+                    )}
+                    <div className="mb-4">
+                      <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1 mb-2">Título da Descrição (Opcional)</label>
+                      <input 
+                        type="text" value={desc.title} onChange={(e) => {
+                          const newDesc = [...descriptions];
+                          newDesc[index].title = e.target.value;
+                          setDescriptions(newDesc);
+                        }}
+                        className="w-full px-4 py-4 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        placeholder="Ex: Especificações Técnicas"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 ml-1 mb-2">Descrição</label>
+                      <textarea 
+                        required={index === 0} value={desc.text} onChange={(e) => {
+                          const newDesc = [...descriptions];
+                          newDesc[index].text = e.target.value;
+                          setDescriptions(newDesc);
+                        }}
+                        rows={6}
+                        className="w-full px-4 py-4 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        placeholder="Descreva o produto detalhadamente..."
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-              <textarea 
-                required value={description} onChange={(e) => setDescription(e.target.value)}
-                rows={6}
-                className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
-                placeholder="Descreva o produto detalhadamente..."
-              />
             </div>
           </div>
 
@@ -694,9 +792,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             <div className="mt-6 flex justify-end">
               <button 
                 onClick={handleConfirmSelection}
-                className="btn-primary px-6 py-3"
+                disabled={isUploading === 'urls'}
+                className="btn-primary px-6 py-3 flex items-center gap-2"
               >
-                Confirmar ({selectedImages.length})
+                {isUploading === 'urls' ? (
+                  <><Loader2 size={20} className="animate-spin" /> Processando...</>
+                ) : (
+                  `Confirmar (${selectedImages.length})`
+                )}
               </button>
             </div>
           </div>

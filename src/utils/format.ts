@@ -7,5 +7,6 @@ export const formatCurrency = (value: number) => {
 
 export const calculateInstallments = (price: number, count: number = 12) => {
   if (!price || price <= 0) return 'Consulte condições';
-  return `até ${count}x`;
+  const installmentPrice = price / count;
+  return `até ${count}x de ${formatCurrency(installmentPrice)}`;
 };

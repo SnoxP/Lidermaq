@@ -8,7 +8,7 @@ import { SEO } from '../components/SEO';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { calculateInstallments } from '../utils/format';
+import { calculateInstallments, formatCurrency } from '../utils/format';
 import { AttendantSelector } from '../components/AttendantSelector';
 
 export const ProductDetail = () => {
@@ -275,7 +275,7 @@ export const ProductDetail = () => {
               <div className="flex flex-col mb-8">
                 <div className="flex items-center gap-4 mb-2">
                   <span className="text-4xl font-black text-zinc-900 dark:text-white font-display">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(productPrice)}
+                    {formatCurrency(productPrice)}
                   </span>
                   <span className="bg-emerald-100/50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-emerald-200 dark:border-emerald-800/50">
                     <Check size={14} /> Em estoque
@@ -286,15 +286,41 @@ export const ProductDetail = () => {
                 </span>
               </div>
               
-              <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
-                <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
-                  <span className="w-2 h-2 bg-accent rounded-full" />
-                  {product.descriptionTitle || 'Descrição do Produto'}
-                </h3>
-                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
-                  {productDescription}
-                </p>
-              </div>
+              {selectedVariant?.description ? (
+                <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
+                  <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
+                    <span className="w-2 h-2 bg-accent rounded-full" />
+                    Descrição do Modelo
+                  </h3>
+                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
+                    {selectedVariant.description}
+                  </p>
+                </div>
+              ) : product.descriptions && product.descriptions.length > 0 ? (
+                product.descriptions.map((desc: any, index: number) => (
+                  <div key={index} className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
+                    {desc.title && (
+                      <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
+                        <span className="w-2 h-2 bg-accent rounded-full" />
+                        {desc.title}
+                      </h3>
+                    )}
+                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
+                      {desc.text}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
+                  <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
+                    <span className="w-2 h-2 bg-accent rounded-full" />
+                    {product.descriptionTitle || 'Descrição do Produto'}
+                  </h3>
+                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
+                    {productDescription}
+                  </p>
+                </div>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-4 mb-10">
                 {product.available === false ? (
