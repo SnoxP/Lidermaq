@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings as SettingsIcon, Bell, Shield, Palette, Globe, Save, Moon, Sun, Monitor } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, Shield, Palette, Globe, Save, Moon, Sun, Monitor, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { db } from '../../services/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 
 export const Settings = () => {
   const { theme, setTheme } = useTheme();
@@ -53,7 +54,17 @@ export const Settings = () => {
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
+    <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 pb-20">
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 py-3 px-4 mb-12">
+        <div className="container mx-auto flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+          <Link to="/" className="hover:text-accent transition-colors">Início</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <Link to="/admin" className="hover:text-accent transition-colors">Painel Administrativo</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <span className="text-zinc-900 dark:text-white font-medium">Configurações</span>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-12">
           <h1 className="text-3xl font-black tracking-tighter dark:text-white">CONFIGURAÇÕES DO SITE</h1>

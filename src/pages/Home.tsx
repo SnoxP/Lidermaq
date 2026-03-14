@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool } from 'lucide-react';
+import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool, Star, CreditCard, Package, DollarSign, Layers, Utensils, ShoppingCart, Coffee, Briefcase, Snowflake, Settings, Store, Flame, Zap } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
 import { SEO } from '../components/SEO';
@@ -100,110 +100,85 @@ export const Home = () => {
         </motion.div>
       </section>
 
-      {/* Features Section - Bento Grid Style */}
-      <section className="section-padding bg-zinc-50 dark:bg-zinc-950 transition-colors duration-500">
+      {/* Motivos para escolher a Lidermaq */}
+      <section className="py-12 bg-white dark:bg-zinc-900 border-y border-zinc-200 dark:border-white/5">
         <div className="container mx-auto px-4">
-          <motion.div 
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 mb-16 max-w-3xl mx-auto -mt-[20%] md:mt-0"
-          >
-            <img 
-              src="https://i.imgur.com/DLtOjUS.png" 
-              alt="Promoção Lidermaq 2" 
-              className="w-full h-auto object-cover"
-            />
-          </motion.div>
-
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div className="max-w-2xl">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 dark:text-white font-display">
-                POR QUE ESCOLHER A <br />
-                <span className="text-accent">LIDERMAQ?</span>
-              </h2>
-              <p className="text-lg text-zinc-600 dark:text-zinc-400">
-                Combinamos tecnologia de ponta com um atendimento humano e especializado para garantir o melhor para o seu negócio.
-              </p>
+          <h2 className="text-2xl md:text-3xl font-black text-center mb-10 dark:text-white font-display">MOTIVOS PARA ESCOLHER A <span className="text-accent">LIDERMAQ</span></h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Star size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">+ DE 40 ANOS DE TRADIÇÃO</span>
             </div>
-            <Link to="/sobre" className="text-accent font-bold flex items-center gap-2 hover:underline group">
-              Conheça nossa história <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Shield size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">FOCO NA SUA SATISFAÇÃO</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><CreditCard size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">FACILIDADE NO PAGAMENTO</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Package size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">PRODUTOS À PRONTA-ENTREGA</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><DollarSign size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">PREÇO JUSTO</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Layers size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">VARIEDADE DE ITENS</span>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {/* Main Feature */}
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="md:col-span-2 md:row-span-2 card-premium p-10 flex flex-col justify-between bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-950"
-            >
-              <div>
-                <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mb-8">
-                  <Shield size={32} />
+      {/* Categorias */}
+      <section className="py-16 bg-zinc-50 dark:bg-zinc-950">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">CATEGORIAS</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: 'Refrigeração Comercial', icon: Snowflake, query: 'refrigeracao' },
+              { name: 'Maquinário de Produção', icon: Settings, query: 'maquina' },
+              { name: 'Expositores de Alimentos', icon: Store, query: 'expositor' },
+              { name: 'Equipamentos para Cocção', icon: Flame, query: 'fogao' },
+              { name: 'Portáteis Industriais', icon: Zap, query: 'liquidificador' },
+              { name: 'Mobiliário Comercial', icon: Briefcase, query: 'mesa' }
+            ].map((cat, i) => (
+              <Link key={i} to={`/catalogo?q=${cat.query}`} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl p-6 flex flex-col items-center text-center gap-4 hover:border-accent hover:shadow-lg hover:-translate-y-1 transition-all group">
+                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:bg-accent group-hover:text-white transition-colors">
+                  <cat.icon size={32} />
                 </div>
-                <h3 className="text-3xl font-black mb-4 dark:text-white font-display">QUALIDADE <br />GARANTIDA</h3>
-                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  Trabalhamos apenas com as melhores marcas do mercado, garantindo durabilidade e alta performance para seus equipamentos.
-                </p>
-              </div>
-              <div className="mt-8 pt-8 border-t border-zinc-100 dark:border-white/5">
-                <div className="flex -space-x-3">
-                  {[1,2,3,4].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-zinc-900 bg-zinc-200 dark:bg-zinc-800 overflow-hidden">
-                      <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
-                    </div>
-                  ))}
-                  <div className="w-10 h-10 rounded-full border-2 border-white dark:border-zinc-900 bg-accent text-white flex items-center justify-center text-[10px] font-bold">
-                    +15k
-                  </div>
+                <span className="font-bold text-sm dark:text-white">{cat.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Segmentos */}
+      <section className="py-16 bg-white dark:bg-zinc-900 border-y border-zinc-200 dark:border-white/5">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">SEGMENTOS</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: 'Açougues', icon: Flame, img: 'https://images.unsplash.com/photo-1607623814075-e51df1bd638f?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Lanchonetes', icon: Coffee, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Padarias', icon: Utensils, img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Restaurantes', icon: Utensils, img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Supermercados', icon: ShoppingCart, img: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Móveis Para Escritório', icon: Briefcase, img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=400&h=400&auto=format&fit=crop' }
+            ].map((seg, i) => (
+              <Link key={i} to={`/catalogo?cat=${seg.name}`} className="relative overflow-hidden rounded-2xl aspect-square group">
+                <div className="absolute inset-0 bg-zinc-900/60 group-hover:bg-zinc-900/40 transition-colors z-10" />
+                <img src={seg.img} alt={seg.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white p-4 text-center">
+                  <seg.icon size={32} className="mb-3 opacity-80" />
+                  <span className="font-bold text-lg leading-tight">{seg.name}</span>
                 </div>
-                <p className="text-xs font-bold text-zinc-400 mt-3 uppercase tracking-widest">Clientes satisfeitos em todo o Piauí</p>
-              </div>
-            </motion.div>
-
-            {/* Support */}
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="md:col-span-2 card-premium p-10 flex items-center gap-8 bg-white dark:bg-zinc-900"
-            >
-              <div className="w-20 h-20 bg-accent/10 dark:bg-white/10 rounded-3xl flex items-center justify-center text-accent shrink-0">
-                <Tool size={40} />
-              </div>
-              <div>
-                <h3 className="text-2xl font-black mb-2 dark:text-white font-display">SUPORTE TÉCNICO</h3>
-                <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
-                  Equipe especializada pronta para atender você com agilidade e peças originais.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Delivery */}
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="card-premium p-8 bg-white dark:bg-zinc-900"
-            >
-              <div className="w-12 h-12 bg-emerald-500/10 text-emerald-500 rounded-xl flex items-center justify-center mb-6">
-                <Truck size={24} />
-              </div>
-              <h3 className="text-xl font-black mb-2 dark:text-white font-display">ENTREGA RÁPIDA</h3>
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-                Logística própria para garantir que seu equipamento chegue seguro.
-              </p>
-            </motion.div>
-
-            {/* Consulting */}
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="card-premium p-8 bg-white dark:bg-zinc-900"
-            >
-              <div className="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center mb-6">
-                <Shield size={24} />
-              </div>
-              <h3 className="text-xl font-black mb-2 dark:text-white font-display">MONTAGEM</h3>
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-                Instalação completa e profissional no seu estabelecimento.
-              </p>
-            </motion.div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -235,7 +210,19 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className="pt-0 pb-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
+      {/* Marcas */}
+      <section className="py-16 bg-zinc-50 dark:bg-zinc-950">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-black mb-12 dark:text-white font-display">TRABALHAMOS COM AS MELHORES MARCAS</h2>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+            {['GELOPAR', 'VENÂNCIO', 'METVISA', 'SKYSEN', 'PROGÁS', 'BRAESI'].map((brand, i) => (
+              <span key={i} className="text-2xl md:text-4xl font-black text-zinc-800 dark:text-zinc-200 tracking-widest">{brand}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="pt-20 pb-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <motion.div 
             initial={{ y: 20, opacity: 0 }}

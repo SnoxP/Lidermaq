@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X, Database, Filter, ArrowUpDown, Calendar, Tag, DollarSign } from 'lucide-react';
+import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X, Database, Filter, ArrowUpDown, Calendar, Tag, DollarSign, ChevronRight } from 'lucide-react';
 import { db } from '../../services/firebase';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import { formatCurrency } from '../../utils/format';
 
@@ -95,7 +95,17 @@ export const ProductList = () => {
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
+    <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 pb-20">
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 py-3 px-4 mb-12">
+        <div className="container mx-auto flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+          <Link to="/" className="hover:text-accent transition-colors">Início</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <Link to="/admin" className="hover:text-accent transition-colors">Painel Administrativo</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <span className="text-zinc-900 dark:text-white font-medium">Produtos</span>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4">
         <div className="mb-8 flex flex-col gap-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">

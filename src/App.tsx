@@ -17,6 +17,7 @@ import { Terms } from './pages/Terms';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
+import { Cart } from './pages/Cart';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { NewProduct } from './pages/admin/NewProduct';
 import { EditProduct } from './pages/admin/EditProduct';
@@ -55,6 +56,7 @@ export default function App() {
                     <Route path="/termos" element={<Terms />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/cadastro" element={<Register />} />
+                    <Route path="/carrinho" element={<Cart />} />
                     <Route 
                       path="/perfil" 
                       element={

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles, ArrowUp, ArrowDown, FileText } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles, ArrowUp, ArrowDown, FileText, ChevronRight } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 
@@ -329,6 +329,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
   const handleAddVariant = () => setVariants([...variants, { name: '', price: '', description: '' }]);
   const handleRemoveVariant = (index: number) => setVariants(variants.filter((_, i) => i !== index));
+  const moveVariantUp = (index: number) => {
+    if (index === 0) return;
+    const newVariants = [...variants];
+    const temp = newVariants[index];
+    newVariants[index] = newVariants[index - 1];
+    newVariants[index - 1] = temp;
+    setVariants(newVariants);
+  };
+  const moveVariantDown = (index: number) => {
+    if (index === variants.length - 1) return;
+    const newVariants = [...variants];
+    const temp = newVariants[index];
+    newVariants[index] = newVariants[index + 1];
+    newVariants[index + 1] = temp;
+    setVariants(newVariants);
+  };
   const handleVariantChange = (index: number, field: 'name' | 'price' | 'image' | 'description', value: string) => {
     const newVariants = [...variants];
     newVariants[index] = { ...newVariants[index], [field]: value };
@@ -410,9 +426,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   };
 
   return (
-    <div className="pt-32 pb-20 bg-neutral-bg dark:bg-zinc-950 min-h-screen transition-colors duration-500">
+    <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 pb-20">
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 py-3 px-4 mb-12">
+        <div className="container mx-auto flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+          <Link to="/" className="hover:text-accent transition-colors">Início</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <Link to="/admin" className="hover:text-accent transition-colors">Painel Administrativo</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <Link to="/admin/produtos" className="hover:text-accent transition-colors">Produtos</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <span className="text-zinc-900 dark:text-white font-medium">{isEdit ? 'Editar Produto' : 'Novo Produto'}</span>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 max-w-4xl">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-12 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-black tracking-tighter dark:text-white">{isEdit ? 'EDITAR PRODUTO' : 'NOVO PRODUTO'}</h1>
             <p className="text-primary/60 dark:text-zinc-400">{isEdit ? 'Atualize as informações do item selecionado.' : 'Adicione um novo item ao catálogo da Lidermaq.'}</p>
@@ -572,12 +600,35 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             <div className="space-y-4">
               {variants.map((variant, index) => (
                 <div key={index} className="p-6 bg-neutral-bg dark:bg-zinc-800 rounded-2xl space-y-4 relative">
-                  <button 
-                    type="button" onClick={() => handleRemoveVariant(index)}
-                    className="absolute top-4 right-4 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-2 rounded-lg transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
+                  <div className="absolute top-4 right-4 flex gap-1">
+                    {variants.length > 1 && (
+                      <>
+                        <button 
+                          type="button" onClick={() => moveVariantUp(index)}
+                          disabled={index === 0}
+                          className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Mover para cima"
+                        >
+                          <ArrowUp size={20} />
+                        </button>
+                        <button 
+                          type="button" onClick={() => moveVariantDown(index)}
+                          disabled={index === variants.length - 1}
+                          className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Mover para baixo"
+                        >
+                          <ArrowDown size={20} />
+                        </button>
+                      </>
+                    )}
+                    <button 
+                      type="button" onClick={() => handleRemoveVariant(index)}
+                      className="text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-2 rounded-lg transition-colors"
+                      title="Remover variação"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-1">Nome da Variação</label>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag, Search, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -8,170 +8,105 @@ import { useCart } from '../contexts/CartContext';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isPhoneMenuOpen, setIsPhoneMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { cart, setIsCartOpen } = useCart();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/catalogo?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
-  const navLinks = [
-    { name: 'Início', path: '/' },
-    { name: 'Catálogo', path: '/catalogo' },
-    { name: 'Sobre', path: '/sobre' },
-    { name: 'Assistência', path: '/assistencia' },
-    { name: 'Contato', path: '/contato' },
+  const categories = [
+    { name: 'Refrigeração Comercial', path: '/catalogo?q=refrigeracao' },
+    { name: 'Maquinário de Produção', path: '/catalogo?q=maquina' },
+    { name: 'Expositores de Alimentos', path: '/catalogo?q=expositor' },
+    { name: 'Equipamentos para Cocção', path: '/catalogo?q=fogao' },
+    { name: 'Portáteis Industriais', path: '/catalogo?q=liquidificador' },
+    { name: 'Mobiliário Comercial', path: '/catalogo?q=mesa' }
   ];
 
   return (
     <>
-      <header 
-        className={`fixed top-0 left-0 w-full z-[70] transition-all duration-500 ${
-          scrolled 
-            ? 'glass-effect shadow-xl shadow-black/5 py-3' 
-            : 'bg-gradient-to-b from-white/90 via-white/50 to-transparent dark:from-black/90 dark:via-black/50 dark:to-transparent py-6'
-        }`}
-      >
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10 rounded-full flex items-center justify-center shadow-lg shadow-accent/20 group-hover:rotate-12 transition-transform duration-500 overflow-hidden bg-white">
-            <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-2xl font-black tracking-tighter font-display leading-none">
-              <span className="text-accent">LIDER</span><span className="text-zinc-900 dark:text-white">MAQ</span>
-            </span>
-            <span className="text-[10px] font-medium font-sans text-zinc-900 dark:text-white tracking-[0.3em] leading-none mt-1">
-              EQUIPAMENTOS
-            </span>
-          </div>
-        </Link>
-
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-10">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`text-xs font-bold uppercase tracking-[0.2em] transition-all hover:text-accent relative group ${
-                location.pathname === link.path ? 'text-accent' : 'text-zinc-500 dark:text-zinc-400'
-              }`}
-            >
-              {link.name}
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-accent transition-all duration-300 ${location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-            </Link>
-          ))}
-        </nav>
-
-        {/* Actions */}
-        <div className="flex items-center gap-3 sm:gap-6">
-          <div className="hidden md:flex items-center gap-4 px-5 py-2.5 bg-zinc-100 dark:bg-white/5 rounded-full border border-zinc-200 dark:border-white/5 transition-colors">
-            <div className="relative">
-              <button 
-                onClick={() => setIsPhoneMenuOpen(!isPhoneMenuOpen)}
-                className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300 hover:text-accent transition-colors"
-                title="Contatos"
-              >
-                <Phone size={16} className="text-accent" />
-              </button>
-              
-              <AnimatePresence>
-                {isPhoneMenuOpen && (
-                  <>
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      onClick={() => setIsPhoneMenuOpen(false)}
-                      className="fixed inset-0 z-40"
-                    />
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-full right-0 mt-4 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-100 dark:border-white/5 overflow-hidden z-50"
-                    >
-                      <div className="p-4 border-b border-zinc-100 dark:border-white/5">
-                        <p className="text-xs font-bold uppercase tracking-widest text-zinc-400">Fale Conosco</p>
-                      </div>
-                      <div className="p-2">
-                        <a 
-                          href="https://wa.me/5589999170800" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-3 p-3 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors group"
-                        >
-                          <div className="w-8 h-8 bg-accent/10 text-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
-                            <Phone size={14} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold dark:text-white">(89) 99917-0800</p>
-                            <p className="text-xs text-zinc-500">Jonas</p>
-                          </div>
-                        </a>
-                        <a 
-                          href="https://wa.me/5589999861264" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-3 p-3 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors group"
-                        >
-                          <div className="w-8 h-8 bg-accent/10 text-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
-                            <Phone size={14} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold dark:text-white">(89) 99986-1264</p>
-                            <p className="text-xs text-zinc-500">Lena</p>
-                          </div>
-                        </a>
-                      </div>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
+      <header className="w-full z-[70] bg-white dark:bg-zinc-950 shadow-md sticky top-0">
+        {/* Top Bar */}
+        <div className="bg-zinc-900 text-zinc-300 text-xs py-2 hidden md:block">
+          <div className="container mx-auto px-4 flex justify-between items-center">
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-2"><Phone size={14} className="text-accent" /> Televendas: (89) 99917-0800 | (89) 99986-1264</span>
             </div>
-            
-            <div className="w-px h-4 bg-zinc-300 dark:bg-white/10" />
-            
-            <button 
-              onClick={toggleTheme}
-              className="text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors"
-              title={theme === 'light' ? 'Ativar Modo Escuro' : theme === 'dark' ? 'Ativar Modo Sistema' : 'Ativar Modo Claro'}
-            >
-              {theme === 'light' ? <Moon size={16} /> : theme === 'dark' ? <Monitor size={16} /> : <Sun size={16} />}
-            </button>
+            <div className="flex items-center gap-4">
+              <Link to="/sobre" className="hover:text-white transition-colors">Institucional</Link>
+              <Link to="/assistencia" className="hover:text-white transition-colors">Assistência Técnica</Link>
+              <button onClick={toggleTheme} className="hover:text-white transition-colors flex items-center gap-1">
+                {theme === 'light' ? <><Moon size={12} /> Escuro</> : theme === 'dark' ? <><Monitor size={12} /> Sistema</> : <><Sun size={12} /> Claro</>}
+              </button>
+            </div>
           </div>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setIsCartOpen(true)}
-              className="relative p-2.5 text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors"
-            >
-              <ShoppingBag size={20} />
-              {cart.length > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-white text-[10px] font-bold flex items-center justify-center rounded-full">
-                  {cart.length}
-                </span>
-              )}
+        {/* Middle Bar */}
+        <div className="container mx-auto px-4 py-4 md:py-6 flex items-center justify-between gap-4 md:gap-8">
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden p-2 text-zinc-600 dark:text-zinc-300"
+            onClick={() => setIsOpen(true)}
+          >
+            <Menu size={24} />
+          </button>
+
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3 shrink-0">
+            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-white">
+              <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl md:text-3xl font-black tracking-tighter font-display leading-none">
+                <span className="text-accent">LIDER</span><span className="text-zinc-900 dark:text-white">MAQ</span>
+              </span>
+              <span className="text-[9px] md:text-[10px] font-medium font-sans text-zinc-900 dark:text-white tracking-[0.3em] leading-none mt-1">
+                EQUIPAMENTOS
+              </span>
+            </div>
+          </Link>
+
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl relative">
+            <input 
+              type="text" 
+              placeholder="O que você está procurando?" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full py-3 pl-6 pr-12 text-sm focus:outline-none focus:border-accent dark:focus:border-accent transition-colors dark:text-white"
+            />
+            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-accent transition-colors">
+              <Search size={20} />
             </button>
-            
+          </form>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 md:gap-6 shrink-0">
             {/* User Auth Menu */}
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <button 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/5 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:border-accent/50 transition-all"
+                className="flex items-center gap-3 text-left group"
               >
-                <User size={20} />
+                <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:text-accent transition-colors">
+                  <User size={20} />
+                </div>
+                <div className="hidden lg:block">
+                  <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Bem-vindo</p>
+                  <p className="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-accent transition-colors">
+                    {user ? 'Minha Conta' : 'Entre ou Cadastre-se'}
+                  </p>
+                </div>
               </button>
               
               <AnimatePresence>
@@ -188,7 +123,7 @@ export const Header = () => {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 top-14 w-64 glass-effect rounded-[1.5rem] shadow-2xl border border-zinc-200 dark:border-white/10 p-2 z-[60] overflow-hidden"
+                      className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-white/10 p-2 z-[60] overflow-hidden"
                     >
                     <div className="px-5 py-4 border-b border-zinc-100 dark:border-white/5 mb-2">
                       <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Conta Lidermaq</p>
@@ -198,138 +133,185 @@ export const Header = () => {
                     <div className="space-y-1">
                       {user ? (
                         <>
-                          {user.isAdmin && (
-                            <Link 
-                              to="/admin" 
-                              onClick={() => setIsUserMenuOpen(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
-                            >
-                              <LayoutDashboard size={18} className="text-accent" /> Painel Admin
-                            </Link>
-                          )}
-
                           <Link 
                             to="/perfil" 
                             onClick={() => setIsUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+                            className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
                           >
-                            <User size={18} className="text-accent" /> Meu Perfil
+                            <User size={16} /> Meu Perfil
                           </Link>
-                          
+                          {user.role === 'admin' && (
+                            <Link 
+                              to="/admin" 
+                              onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
+                            >
+                              <LayoutDashboard size={16} /> Painel Administrativo
+                            </Link>
+                          )}
                           <button 
-                            onClick={() => { logout(); setIsUserMenuOpen(false); }}
-                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
+                            onClick={() => {
+                              logout();
+                              setIsUserMenuOpen(false);
+                            }}
+                            className="w-full flex items-center gap-3 px-5 py-3 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
                           >
-                            <LogOut size={18} /> Sair
+                            <LogOut size={16} /> Sair da conta
                           </button>
                         </>
                       ) : (
                         <Link 
                           to="/login" 
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-bold bg-accent text-white rounded-xl hover:brightness-110 transition-all"
+                          className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
                         >
-                          <LogIn size={18} /> Entrar na Conta
+                          <LogIn size={16} /> Fazer Login
                         </Link>
                       )}
                     </div>
-                  </motion.div>
+                    </motion.div>
                   </>
                 )}
               </AnimatePresence>
             </div>
 
             <button 
-              className="lg:hidden p-2.5 bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white rounded-xl relative z-[60]"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setIsCartOpen(true)}
+              className="flex items-center gap-3 text-left group"
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
+              <div className="relative w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center group-hover:bg-accent/90 transition-colors">
+                <ShoppingBag size={20} />
+                {cart.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-zinc-900 border-2 border-white dark:border-zinc-950 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                    {cart.length}
+                  </span>
+                )}
+              </div>
+              <div className="hidden lg:block">
+                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Carrinho</p>
+                <p className="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-accent transition-colors">
+                  {cart.length} itens
+                </p>
+              </div>
             </button>
           </div>
         </div>
-      </div>
 
+        {/* Mobile Search Bar */}
+        <div className="md:hidden px-4 pb-4">
+          <form onSubmit={handleSearch} className="relative">
+            <input 
+              type="text" 
+              placeholder="O que você está procurando?" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full py-3 pl-6 pr-12 text-sm focus:outline-none focus:border-accent dark:focus:border-accent transition-colors dark:text-white"
+            />
+            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-accent transition-colors">
+              <Search size={20} />
+            </button>
+          </form>
+        </div>
+
+        {/* Bottom Bar - Categories */}
+        <div className="bg-accent text-white hidden md:block">
+          <div className="container mx-auto px-4">
+            <nav className="flex items-center gap-8">
+              <div className="relative group">
+                <button className="flex items-center gap-2 font-bold py-4 hover:text-white/80 transition-colors">
+                  <Menu size={20} /> TODAS AS CATEGORIAS <ChevronDown size={16} />
+                </button>
+                <div className="absolute top-full left-0 w-64 bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200 dark:border-zinc-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 flex flex-col py-2">
+                  {categories.map((cat, i) => (
+                    <Link key={i} to={cat.path} className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-accent dark:hover:text-accent transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-0">
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <Link to="/catalogo" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Catálogo Completo</Link>
+              <Link to="/catalogo?cat=Açougues" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Açougues</Link>
+              <Link to="/catalogo?cat=Padarias" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Padarias</Link>
+              <Link to="/catalogo?cat=Restaurantes" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Restaurantes</Link>
+            </nav>
+          </div>
+        </div>
       </header>
 
-      {/* Mobile Nav Overlay */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] lg:hidden"
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Mobile Nav Drawer */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl z-[100] lg:hidden flex flex-col shadow-2xl border-l border-white/20 dark:border-white/10"
-          >
-            <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/10">
-              <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden bg-white">
-                  <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-black tracking-tighter font-display leading-none">
-                    <span className="text-accent">LIDER</span><span className="text-zinc-900 dark:text-white">MAQ</span>
-                  </span>
-                  <span className="text-[8px] font-medium font-sans text-zinc-900 dark:text-white tracking-[0.3em] leading-none mt-1">
-                    EQUIPAMENTOS
-                  </span>
-                </div>
-              </Link>
-              <div className="flex items-center gap-2">
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80]"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[90] overflow-y-auto flex flex-col"
+            >
+              <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/5">
+                <span className="text-xl font-black font-display dark:text-white">MENU</span>
                 <button 
-                  onClick={toggleTheme}
-                  className="p-2 bg-zinc-100 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 rounded-xl"
-                  title={theme === 'light' ? 'Ativar Modo Escuro' : theme === 'dark' ? 'Ativar Modo Sistema' : 'Ativar Modo Claro'}
-                >
-                  {theme === 'light' ? <Moon size={20} /> : theme === 'dark' ? <Monitor size={20} /> : <Sun size={20} />}
-                </button>
-                <button onClick={() => setIsOpen(false)} className="p-2 bg-zinc-100 dark:bg-white/5 dark:text-white rounded-xl">
-                  <X size={24} />
-                </button>
-              </div>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
-              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-4">Navegação</p>
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`text-2xl font-black tracking-tighter py-3 flex items-center justify-between group ${
-                    location.pathname === link.path ? 'text-accent' : 'text-zinc-900 dark:text-white'
-                  }`}
+                  className="w-10 h-10 bg-zinc-100 dark:bg-white/5 rounded-full flex items-center justify-center text-zinc-500 hover:bg-accent hover:text-white transition-colors"
                 >
-                  {link.name.toUpperCase()}
-                  <div className={`w-2 h-2 rounded-full bg-accent transition-transform ${location.pathname === link.path ? 'scale-100' : 'scale-0'}`} />
-                </Link>
-              ))}
-              
-              <div className="mt-12 pt-12 border-t border-zinc-100 dark:border-white/10">
-                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-6">Atendimento</p>
-                <a 
-                  href="https://wa.me/5589999170800" 
-                  className="flex items-center justify-between p-6 bg-accent text-white rounded-3xl font-black tracking-tighter text-xl shadow-lg shadow-accent/20"
-                >
-                  FALAR NO WHATSAPP
-                  <Phone size={24} />
-                </a>
+                  <X size={20} />
+                </button>
               </div>
-            </div>
-          </motion.div>
+
+              <div className="p-4">
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Categorias</p>
+                  <div className="flex flex-col">
+                    {categories.map((cat, i) => (
+                      <Link 
+                        key={i} 
+                        to={cat.path} 
+                        onClick={() => setIsOpen(false)}
+                        className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
+                      >
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Navegação</p>
+                  <div className="flex flex-col">
+                    <Link to="/" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Início</Link>
+                    <Link to="/catalogo" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Catálogo Completo</Link>
+                    <Link to="/sobre" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Sobre a Lidermaq</Link>
+                    <Link to="/assistencia" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Assistência Técnica</Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-auto p-6 border-t border-zinc-100 dark:border-white/5 bg-zinc-50 dark:bg-zinc-900">
+                <div className="flex flex-col gap-4">
+                  <a href="https://wa.me/5589999170800" className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
+                    <Phone size={18} className="text-accent" /> (89) 99917-0800
+                  </a>
+                  {user ? (
+                    <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 font-medium">
+                      <LayoutDashboard size={18} className="text-accent" /> Painel Admin
+                    </Link>
+                  ) : (
+                    <Link to="/login" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 font-medium">
+                      <User size={18} className="text-accent" /> Entrar na Conta
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

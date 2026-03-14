@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send, Pencil } from 'lucide-react';
+import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send, Pencil, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import { db } from '../services/firebase';
 import { doc, getDoc, collection, addDoc, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import { calculateInstallments, formatCurrency } from '../utils/format';
 import { AttendantSelector } from '../components/AttendantSelector';
 
@@ -125,18 +124,18 @@ export const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="pt-40 pb-20 text-center animate-pulse">
-        <div className="w-20 h-20 bg-neutral-bg dark:bg-neutral-800 rounded-full mx-auto mb-4" />
-        <p className="text-primary/40 dark:text-white/40 font-bold">Carregando detalhes...</p>
+      <div className="pt-40 pb-20 text-center flex flex-col items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mb-4"></div>
+        <p className="text-zinc-500 dark:text-zinc-400 font-medium">Carregando detalhes do produto...</p>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="pt-40 pb-20 text-center">
-        <h1 className="text-2xl font-bold mb-4">Produto não encontrado</h1>
-        <Link to="/catalogo" className="btn-primary inline-flex">Voltar ao Catálogo</Link>
+      <div className="pt-40 pb-20 text-center min-h-[60vh] flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold mb-4 text-zinc-900 dark:text-white">Produto não encontrado</h1>
+        <Link to="/catalogo" className="px-6 py-3 bg-accent text-white rounded-lg font-bold hover:bg-accent/90 transition-colors">Voltar ao Catálogo</Link>
       </div>
     );
   }
@@ -148,382 +147,336 @@ export const ProductDetail = () => {
   const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${productName} - Lidermaq`)}`;
 
   return (
-    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
+    <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 pb-20">
       <SEO 
         title={product.name || 'Produto Lidermaq'}
         description={product.description?.substring(0, 160) || 'Confira este produto na Lidermaq.'}
         image={productImage}
       />
+
+      {/* Breadcrumb */}
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 py-3 px-4 mb-8">
+        <div className="container mx-auto flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+          <Link to="/" className="hover:text-accent transition-colors">Início</Link>
+          <ChevronRightIcon size={14} className="mx-2" />
+          <Link to="/catalogo" className="hover:text-accent transition-colors">Catálogo</Link>
+          {product.category && (
+            <>
+              <ChevronRightIcon size={14} className="mx-2" />
+              <Link to={`/catalogo?cat=${product.category}`} className="hover:text-accent transition-colors">{product.category}</Link>
+            </>
+          )}
+          <ChevronRightIcon size={14} className="mx-2" />
+          <span className="text-zinc-900 dark:text-white font-medium truncate max-w-[200px] sm:max-w-none">{product.name}</span>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4">
-        <Link to="/catalogo" className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-accent font-bold mb-8 transition-colors group">
-          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" /> Voltar ao catálogo
-        </Link>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Gallery */}
-          <div className="space-y-4">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="aspect-square rounded-[2rem] overflow-hidden bg-white border border-zinc-200 shadow-sm relative group"
-            >
-              {/* Adaptive Background */}
-              <div 
-                className="absolute inset-0 w-full h-full"
-                style={{
-                  backgroundImage: `url(${productImage})`,
-                  backgroundSize: '5000% 5000%',
-                  backgroundPosition: '2% 2%',
-                  backgroundRepeat: 'no-repeat'
-                }}
-              />
-              <img src={productImage} alt={product.name} className="relative w-full h-full object-contain" referrerPolicy="no-referrer" />
-              
-              {product.images?.length > 1 && (
-                <>
-                  <button 
-                    onClick={handlePrevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
-                  >
-                    <ChevronLeft size={24} />
-                  </button>
-                  <button 
-                    onClick={handleNextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white opacity-100 transition-opacity hover:bg-white dark:hover:bg-black shadow-lg"
-                  >
-                    <ChevronRight size={24} />
-                  </button>
-                </>
-              )}
-            </motion.div>
-            {product.images?.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
-                {product.images.map((img: string, i: number) => (
-                  <div 
-                    key={i} 
-                    onClick={() => setMainImage(img)}
-                    className={`aspect-square rounded-2xl overflow-hidden bg-white border-2 cursor-pointer transition-all relative ${mainImage === img ? 'border-accent shadow-md shadow-accent/20' : 'border-zinc-200 hover:border-accent/30'}`}
-                  >
-                    {/* Adaptive Background */}
-                    <div 
-                      className="absolute inset-0 w-full h-full"
-                      style={{
-                        backgroundImage: `url(${img})`,
-                        backgroundSize: '5000% 5000%',
-                        backgroundPosition: '2% 2%',
-                        backgroundRepeat: 'no-repeat'
-                      }}
-                    />
-                    <img src={img} alt="Thumb" className="relative w-full h-full object-contain hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Info */}
-          <div className="flex flex-col">
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-accent font-bold uppercase tracking-widest text-[10px] bg-accent/10 px-3 py-1 rounded-full">{product.category || 'Geral'}</span>
-                <span className="w-1 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full" />
-                <span className="text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest text-[10px]">{product.brand || 'Lidermaq'}</span>
-              </div>
-              <div className="flex items-center justify-between mb-6">
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter dark:text-white font-display">{product.name || 'Produto sem nome'}</h1>
-                {user?.isAdmin && (
-                  <Link 
-                    to={`/admin/editar-produto/${product.id}`}
-                    className="p-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-accent dark:hover:text-accent hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shrink-0"
-                    title="Editar Produto"
-                  >
-                    <Pencil size={24} />
-                  </Link>
-                )}
-              </div>
-              
-              {product.variants && product.variants.length > 0 && (
-                <div className="mb-8">
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-3">Selecione o Modelo</label>
-                  <div className="flex flex-wrap gap-2">
-                    <button 
-                      onClick={() => setSelectedVariant(null)}
-                      className={`px-5 py-2.5 rounded-xl border-2 transition-all font-bold text-sm ${!selectedVariant ? 'border-accent bg-accent/5 text-accent shadow-sm' : 'border-zinc-200 dark:border-white/10 hover:border-accent/30 text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900'}`}
-                    >
-                      {!selectedVariant || product.name.length <= 20 
-                        ? product.name 
-                        : `${product.name.substring(0, 20)}...`}
-                    </button>
-                    {product.variants.map((v: any, i: number) => {
-                      const isActive = selectedVariant === v;
-                      return (
-                        <button 
-                          key={i}
-                          onClick={() => setSelectedVariant(v)}
-                          className={`px-5 py-2.5 rounded-xl border-2 transition-all font-bold text-sm ${isActive ? 'border-accent bg-accent/5 text-accent shadow-sm' : 'border-zinc-200 dark:border-white/10 hover:border-accent/30 text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900'}`}
-                        >
-                          {isActive || v.name.length <= 20 
-                            ? v.name 
-                            : `${v.name.substring(0, 20)}...`}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex flex-col mb-8">
-                <div className="flex items-center gap-4 mb-2">
-                  <span className="text-4xl font-black text-zinc-900 dark:text-white font-display">
-                    {formatCurrency(productPrice)}
-                  </span>
-                  <span className="bg-emerald-100/50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-emerald-200 dark:border-emerald-800/50">
-                    <Check size={14} /> Em estoque
-                  </span>
-                </div>
-                <span className="text-accent font-bold text-sm">
-                  {calculateInstallments(productPrice)}
-                </span>
-              </div>
-              
-              {selectedVariant?.description ? (
-                <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
-                  <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
-                    <span className="w-2 h-2 bg-accent rounded-full" />
-                    Descrição do Modelo
-                  </h3>
-                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
-                    {selectedVariant.description}
-                  </p>
-                </div>
-              ) : product.descriptions && product.descriptions.length > 0 ? (
-                product.descriptions.map((desc: any, index: number) => (
-                  <div key={index} className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
-                    {desc.title && (
-                      <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
-                        <span className="w-2 h-2 bg-accent rounded-full" />
-                        {desc.title}
-                      </h3>
-                    )}
-                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
-                      {desc.text}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <div className="p-8 bg-white dark:bg-zinc-900 rounded-[2rem] mb-8 transition-colors duration-300 border border-zinc-200 dark:border-white/5 shadow-sm">
-                  <h3 className="font-bold mb-4 flex items-center gap-2 dark:text-white font-display text-lg">
-                    <span className="w-2 h-2 bg-accent rounded-full" />
-                    {product.descriptionTitle || 'Descrição do Produto'}
-                  </h3>
-                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
-                    {productDescription}
-                  </p>
-                </div>
-              )}
-
-              <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                {product.available === false ? (
-                  <div className="flex-1 py-4 px-6 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 font-bold rounded-2xl text-center text-lg flex items-center justify-center">
-                    Produto Esgotado
-                  </div>
-                ) : (
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 p-6 lg:p-10 mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Gallery */}
+            <div className="space-y-4">
+              <div className="aspect-square rounded-xl overflow-hidden bg-white border border-zinc-100 dark:border-zinc-800 relative group">
+                <img src={productImage} alt={product.name} className="w-full h-full object-contain p-8" referrerPolicy="no-referrer" />
+                
+                {product.images?.length > 1 && (
                   <>
                     <button 
-                      onClick={handleAddToCart}
-                      className="btn-primary flex-1 text-lg py-4 shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
+                      onClick={handlePrevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 shadow-md rounded-full flex items-center justify-center text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
                     >
-                      <ShoppingBag size={24} /> Adicionar ao Carrinho
+                      <ChevronLeft size={20} />
                     </button>
                     <button 
-                      onClick={() => setShowAttendantSelector(!showAttendantSelector)}
-                      className="btn-secondary flex-1 text-lg py-4 flex items-center justify-center gap-2"
+                      onClick={handleNextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 shadow-md rounded-full flex items-center justify-center text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
                     >
-                      <MessageCircle size={24} /> Falar com Atendente
+                      <ChevronRight size={20} />
                     </button>
                   </>
                 )}
-                <button 
-                  onClick={() => {
-                    navigator.share?.({
-                      title: product.name,
-                      text: product.description,
-                      url: window.location.href
-                    }).catch(() => {
-                      navigator.clipboard.writeText(window.location.href);
-                      alert('Link copiado para a área de transferência!');
-                    });
-                  }}
-                  className="btn-secondary px-6 flex items-center justify-center"
-                >
-                  <Share2 size={20} />
-                </button>
+              </div>
+              {product.images?.length > 1 && (
+                <div className="grid grid-cols-5 gap-3">
+                  {product.images.map((img: string, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => setMainImage(img)}
+                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all bg-white ${
+                        mainImage === img ? 'border-accent' : 'border-zinc-200 dark:border-zinc-800 hover:border-accent/50'
+                      }`}
+                    >
+                      <img src={img} alt={`${product.name} - Imagem ${idx + 1}`} className="w-full h-full object-contain p-2" referrerPolicy="no-referrer" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Product Info */}
+            <div className="flex flex-col">
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-bold text-accent uppercase tracking-wider bg-accent/10 px-3 py-1 rounded-full">{product.brand}</span>
+                  <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full">Ref: {product.id.substring(0, 8)}</span>
+                </div>
+                <h1 className="text-3xl lg:text-4xl font-black text-zinc-900 dark:text-white leading-tight mb-4 font-display">
+                  {productName}
+                </h1>
+                
+                {/* Rating Summary */}
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="flex text-yellow-400">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} size={16} fill="currentColor" />
+                    ))}
+                  </div>
+                  <span className="text-sm text-zinc-500 dark:text-zinc-400">({comments.length} avaliações)</span>
+                </div>
               </div>
 
-              {showAttendantSelector && (
-                <div className="mb-10 p-6 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10">
-                  <AttendantSelector message={`Olá, tenho interesse no produto: ${productName} - Lidermaq`} />
+              {/* Price Section */}
+              <div className="bg-zinc-50 dark:bg-zinc-950 rounded-xl p-6 mb-8 border border-zinc-100 dark:border-zinc-800">
+                <div className="flex flex-col mb-4">
+                  <span className="text-sm text-zinc-500 dark:text-zinc-400 line-through mb-1">
+                    De: {formatCurrency(productPrice * 1.15)}
+                  </span>
+                  <div className="flex items-end gap-3">
+                    <span className="text-4xl font-black text-accent font-display leading-none">
+                      {formatCurrency(productPrice)}
+                    </span>
+                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-1 rounded mb-1">
+                      15% OFF no PIX
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                  <CreditCardIcon size={16} />
+                  <span>ou em até <strong className="text-zinc-900 dark:text-white">10x de {formatCurrency(productPrice / 10)}</strong> sem juros</span>
+                </div>
+              </div>
+
+              {/* Variants */}
+              {product.variants && product.variants.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider mb-3">Opções Disponíveis</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {product.variants.map((variant: any, idx: number) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedVariant(variant)}
+                        className={`px-4 py-3 rounded-lg border text-sm font-medium transition-all ${
+                          selectedVariant?.name === variant.name
+                            ? 'border-accent bg-accent/5 text-accent shadow-sm'
+                            : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-accent/50 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                        }`}
+                      >
+                        {variant.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {/* Badges */}
-              <div className="grid grid-cols-2 gap-6 pt-8 border-t border-zinc-200 dark:border-white/10">
-                <div className="flex items-center gap-3 text-sm font-bold text-zinc-600 dark:text-zinc-400">
-                  <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center text-accent shrink-0">
-                    <Shield size={20} />
-                  </div>
-                  Garantia de 1 Ano
-                </div>
-                <div className="flex items-center gap-3 text-sm font-bold text-zinc-600 dark:text-zinc-400">
-                  <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center text-accent shrink-0">
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <button 
+                  onClick={handleAddToCart}
+                  className="flex-1 flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-4 px-8 rounded-xl font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors shadow-lg shadow-zinc-900/20 dark:shadow-white/10"
+                >
+                  <ShoppingBag size={20} />
+                  Adicionar ao Carrinho
+                </button>
+                <button 
+                  onClick={() => setShowAttendantSelector(true)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 text-white py-4 px-8 rounded-xl font-bold hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20"
+                >
+                  <MessageCircle size={20} />
+                  Comprar pelo WhatsApp
+                </button>
+              </div>
+
+              {/* Features/Trust Badges */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-zinc-100 dark:border-zinc-800 pt-8 mt-auto">
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                     <Truck size={20} />
                   </div>
-                  Entrega em Picos/PI
+                  <div>
+                    <p className="text-xs font-bold text-zinc-900 dark:text-white">Entrega Rápida</p>
+                    <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Para Picos e Região</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 text-sm font-bold text-zinc-600 dark:text-zinc-400">
-                  <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center text-accent shrink-0">
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                    <Shield size={20} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-zinc-900 dark:text-white">Compra Segura</p>
+                    <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Ambiente 100% protegido</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                     <Tool size={20} />
                   </div>
-                  Montagem Inclusa
-                </div>
-                <div className="flex items-center gap-3 text-sm font-bold text-zinc-600 dark:text-zinc-400">
-                  <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center text-accent shrink-0">
-                    <Check size={20} />
+                  <div>
+                    <p className="text-xs font-bold text-zinc-900 dark:text-white">Garantia Lidermaq</p>
+                    <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Assistência Especializada</p>
                   </div>
-                  Selo de Qualidade
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Specs Table */}
-        {product.specs && (
-          <div className="mt-24">
-            <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 dark:text-white font-display">ESPECIFICAÇÕES TÉCNICAS</h2>
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-[2rem] overflow-hidden transition-colors duration-300 shadow-sm">
-              <table className="w-full text-left border-collapse">
-                <tbody>
-                  {product.specs.dimensions && (
-                    <tr className="border-b border-zinc-200 dark:border-white/5">
-                      <th className="p-6 bg-zinc-50 dark:bg-zinc-800/50 font-bold w-1/3 dark:text-white">Medidas (LxPxA)</th>
-                      <td className="p-6 text-zinc-600 dark:text-zinc-400">{product.specs.dimensions}</td>
-                    </tr>
-                  )}
-                  {product.specs.weight && (
-                    <tr className="border-b border-zinc-200 dark:border-white/5">
-                      <th className="p-6 bg-zinc-50 dark:bg-zinc-800/50 font-bold dark:text-white">Peso Aproximado</th>
-                      <td className="p-6 text-zinc-600 dark:text-zinc-400">{product.specs.weight}</td>
-                    </tr>
-                  )}
-                  {product.specs.material && (
-                    <tr className="border-b border-zinc-200 dark:border-white/5">
-                      <th className="p-6 bg-zinc-50 dark:bg-zinc-800/50 font-bold dark:text-white">Material da Estrutura</th>
-                      <td className="p-6 text-zinc-600 dark:text-zinc-400">{product.specs.material}</td>
-                    </tr>
-                  )}
-                  {product.specs.finish && (
-                    <tr>
-                      <th className="p-6 bg-zinc-50 dark:bg-zinc-800/50 font-bold dark:text-white">Acabamento</th>
-                      <td className="p-6 text-zinc-600 dark:text-zinc-400">{product.specs.finish}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+        {/* Description & Details Tabs */}
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 p-6 lg:p-10 mb-12">
+          <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 font-display">Descrição do Produto</h2>
+          <div className="prose prose-zinc dark:prose-invert max-w-none">
+            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-line">
+              {productDescription}
+            </p>
+          </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 p-6 lg:p-10">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white font-display">Avaliações de Clientes</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-zinc-900 dark:text-white">5.0</span>
+              <div className="flex text-yellow-400">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} size={20} fill="currentColor" />
+                ))}
+              </div>
+              <span className="text-sm text-zinc-500 dark:text-zinc-400 ml-2">({comments.length})</span>
             </div>
           </div>
-        )}
 
-        {/* Comments Section */}
-        <div className="mt-24">
-          <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 dark:text-white font-display">AVALIAÇÕES DO PRODUTO</h2>
-          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Comment Form */}
+            {/* Add Review Form */}
             <div className="lg:col-span-1">
-              <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
-                <h3 className="font-bold mb-6 dark:text-white font-display">Deixe sua avaliação</h3>
-                
+              <div className="bg-zinc-50 dark:bg-zinc-950 p-6 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-4">Deixe sua avaliação</h3>
                 {user ? (
-                  <form onSubmit={handleSubmitComment} className="space-y-6">
+                  <form onSubmit={handleSubmitComment} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">Sua Nota</label>
-                      <div className="flex gap-2">
+                      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Sua nota</label>
+                      <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <button
                             key={star}
                             type="button"
                             onClick={() => setRating(star)}
-                            className={`p-2 rounded-xl transition-all ${rating >= star ? 'text-yellow-400 bg-yellow-400/10' : 'text-zinc-300 dark:text-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
+                            className={`p-1 transition-colors ${rating >= star ? 'text-yellow-400' : 'text-zinc-300 dark:text-zinc-700'}`}
                           >
-                            <Star size={24} fill={rating >= star ? "currentColor" : "none"} />
+                            <Star size={24} fill={rating >= star ? 'currentColor' : 'none'} />
                           </button>
                         ))}
                       </div>
                     </div>
-                    
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">Seu Comentário</label>
-                      <textarea 
+                      <label htmlFor="comment" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Seu comentário</label>
+                      <textarea
+                        id="comment"
+                        rows={4}
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
+                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white resize-none"
                         placeholder="O que você achou deste produto?"
-                        rows={4}
-                        className="w-full px-4 py-4 bg-zinc-50 dark:bg-zinc-800 dark:text-white border border-zinc-200 dark:border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none"
                         required
                       />
                     </div>
-                    
-                    <button 
+                    <button
                       type="submit"
-                      disabled={isSubmittingComment}
-                      className="w-full btn-primary py-4 flex justify-center items-center gap-2 disabled:opacity-50"
+                      disabled={isSubmittingComment || !newComment.trim()}
+                      className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-3 px-4 rounded-lg font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Send size={20} />
                       {isSubmittingComment ? 'Enviando...' : 'Enviar Avaliação'}
                     </button>
                   </form>
                 ) : (
-                  <div className="text-center py-8">
-                    <p className="text-zinc-500 dark:text-zinc-400 mb-4">Faça login para avaliar este produto.</p>
-                    <Link to="/login" className="btn-primary inline-block">Fazer Login</Link>
+                  <div className="text-center py-6">
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">Faça login para avaliar este produto.</p>
+                    <Link to="/login" className="inline-flex items-center justify-center px-6 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-bold text-sm hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors">
+                      Fazer Login
+                    </Link>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Comments List */}
-            <div className="lg:col-span-2 space-y-6">
-              {comments.length === 0 ? (
-                <div className="bg-white dark:bg-zinc-900 p-12 rounded-[2rem] text-center border border-zinc-200 dark:border-white/5 transition-colors duration-300">
-                  <MessageCircle size={48} className="mx-auto text-zinc-300 dark:text-zinc-700 mb-4" />
-                  <p className="text-xl font-bold text-zinc-500 dark:text-zinc-400">Nenhuma avaliação ainda.</p>
-                  <p className="text-zinc-400 dark:text-zinc-500 mt-2">Seja o primeiro a avaliar este produto!</p>
+            {/* Reviews List */}
+            <div className="lg:col-span-2">
+              {comments.length > 0 ? (
+                <div className="space-y-6">
+                  {comments.map((comment) => (
+                    <div key={comment.id} className="border-b border-zinc-100 dark:border-zinc-800 pb-6 last:border-0 last:pb-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 font-bold uppercase">
+                            {comment.userName.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-bold text-zinc-900 dark:text-white text-sm">{comment.userName}</p>
+                            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                              {new Date(comment.createdAt).toLocaleDateString('pt-BR')}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex text-yellow-400">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star key={star} size={14} fill={comment.rating >= star ? 'currentColor' : 'none'} className={comment.rating >= star ? '' : 'text-zinc-300 dark:text-zinc-700'} />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mt-3">
+                        {comment.text}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               ) : (
-                comments.map((comment) => (
-                  <div key={comment.id} className="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] shadow-sm border border-zinc-200 dark:border-white/5 transition-colors duration-300">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <p className="font-bold dark:text-white">{comment.userName}</p>
-                        <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                          {new Date(comment.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
-                        </p>
-                      </div>
-                      <div className="flex gap-1 text-yellow-400">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} size={16} fill={i < comment.rating ? "currentColor" : "none"} className={i >= comment.rating ? "text-zinc-300 dark:text-zinc-700" : ""} />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">{comment.text}</p>
-                  </div>
-                ))
+                <div className="text-center py-12 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                  <MessageCircle size={32} className="mx-auto text-zinc-300 dark:text-zinc-700 mb-3" />
+                  <p className="text-zinc-500 dark:text-zinc-400 font-medium">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
+                </div>
               )}
             </div>
           </div>
         </div>
       </div>
+
+      {showAttendantSelector && (
+        <AttendantSelector 
+          onClose={() => setShowAttendantSelector(false)} 
+          productName={productName}
+        />
+      )}
     </div>
   );
 };
+
+// Helper component for CreditCard icon since it wasn't imported
+function CreditCardIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="14" x="2" y="5" rx="2" />
+      <line x1="2" x2="22" y1="10" y2="10" />
+    </svg>
+  )
+}

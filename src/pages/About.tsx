@@ -1,64 +1,84 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Users, Award, History, ExternalLink } from 'lucide-react';
+import { Shield, Users, Award, History, ExternalLink, ChevronRight } from 'lucide-react';
 import { SEO } from '../components/SEO';
+import { Link } from 'react-router-dom';
 
 export const About = () => {
   return (
-    <div className="pt-32 pb-20 bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">
+    <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 pb-20">
       <SEO 
         title="Nossa História"
         description="Conheça a trajetória da Lidermaq Equipamentos em Picos-PI. Mais de 10 anos de tradição e compromisso com o empreendedor."
       />
+
+      {/* Breadcrumb */}
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 py-3 px-4 mb-12">
+        <div className="container mx-auto flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+          <Link to="/" className="hover:text-accent transition-colors">Início</Link>
+          <ChevronRight size={14} className="mx-2" />
+          <span className="text-zinc-900 dark:text-white font-medium">Institucional</span>
+          <ChevronRight size={14} className="mx-2" />
+          <span className="text-zinc-900 dark:text-white font-medium">Nossa História</span>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center mb-20">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 dark:text-white font-display">NOSSA HISTÓRIA</h1>
-          <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
+        <div className="max-w-4xl mx-auto text-center mb-16">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 dark:text-white font-display">NOSSA HISTÓRIA</h1>
+          <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
             Com uma década de atuação, a Lidermaq se posiciona como uma empresa sólida no mercado piauiense, sendo reconhecida pela variedade de produtos e pelo atendimento próximo ao cliente.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5"
+            className="rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4"
           >
-            <img src="https://i.imgur.com/ZCcSD1Y.png" alt="Família Lidermaq" className="w-full h-full object-cover" />
+            <div className="rounded-xl overflow-hidden aspect-[4/3]">
+              <img src="https://i.imgur.com/ZCcSD1Y.png" alt="Família Lidermaq" className="w-full h-full object-cover" />
+            </div>
           </motion.div>
+          
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <h2 className="text-3xl md:text-5xl font-black tracking-tighter dark:text-white font-display">A VISÃO DE ORTENÍCIO NUNES</h2>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              A história da Lidermaq Equipamentos se confunde com a trajetória de dedicação e empreendedorismo de seu fundador, <strong>Ortenício Nunes</strong>. Há mais de 10 anos, ele identificou a necessidade de oferecer à região de Picos-PI e cidades vizinhas uma empresa especializada que fornecesse não apenas máquinas, mas soluções completas para pequenos e grandes negócios.
-            </p>
-            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Com muito trabalho e focado no atendimento humanizado, Ortenício construiu uma marca que se tornou sinônimo de confiança. Hoje, a Lidermaq é referência no fornecimento de equipamentos para padarias, açougues, supermercados e restaurantes, ajudando milhares de empreendedores a realizarem o sonho de montar ou expandir seus próprios negócios com maquinário de ponta e assistência técnica especializada.
-            </p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tighter dark:text-white font-display">A VISÃO DE ORTENÍCIO NUNES</h2>
+            <div className="prose prose-zinc dark:prose-invert max-w-none">
+              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                A história da Lidermaq Equipamentos se confunde com a trajetória de dedicação e empreendedorismo de seu fundador, <strong>Ortenício Nunes</strong>. Há mais de 10 anos, ele identificou a necessidade de oferecer à região de Picos-PI e cidades vizinhas uma empresa especializada que fornecesse não apenas máquinas, mas soluções completas para pequenos e grandes negócios.
+              </p>
+              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Com muito trabalho e focado no atendimento humanizado, Ortenício construiu uma marca que se tornou sinônimo de confiança. Hoje, a Lidermaq é referência no fornecimento de equipamentos para padarias, açougues, supermercados e restaurantes, ajudando milhares de empreendedores a realizarem o sonho de montar ou expandir seus próprios negócios com maquinário de ponta e assistência técnica especializada.
+              </p>
+            </div>
+            
             <div className="pt-4">
               <a 
                 href="https://cidadesnanet.com/news/municipios/picos/picos-conheca-a-lidermaq-que-atua-ha-10-anos-com-maquinas-e-equipamentos/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-accent font-bold hover:underline group"
+                className="inline-flex items-center gap-2 text-accent font-bold hover:text-accent/80 transition-colors group bg-accent/10 px-6 py-3 rounded-xl"
               >
                 Leia a matéria completa no Cidades na Net <ExternalLink size={18} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
-            <div className="grid grid-cols-2 gap-6 pt-6 border-t border-zinc-200 dark:border-white/5 mt-6">
+            
+            <div className="grid grid-cols-2 gap-6 pt-8 border-t border-zinc-200 dark:border-zinc-800 mt-8">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center text-accent">
+                <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 rounded-xl flex items-center justify-center text-accent">
                   <Shield size={24} />
                 </div>
                 <span className="font-bold text-zinc-900 dark:text-white">Confiança</span>
               </div>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center text-accent">
+                <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 rounded-xl flex items-center justify-center text-accent">
                   <Award size={24} />
                 </div>
                 <span className="font-bold text-zinc-900 dark:text-white">Excelência</span>
@@ -67,35 +87,37 @@ export const About = () => {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <motion.div 
             whileHover={{ y: -5 }}
-            className="card-premium p-10 text-center bg-white dark:bg-zinc-900"
+            className="p-8 text-center bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm"
           >
-            <div className="w-20 h-20 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6">
-              <History size={40} />
+            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6">
+              <History size={32} />
             </div>
-            <h3 className="text-5xl font-black mb-2 dark:text-white font-display">10+</h3>
+            <h3 className="text-4xl font-black mb-2 dark:text-white font-display">10+</h3>
             <p className="text-zinc-500 dark:text-zinc-400 font-bold uppercase text-[10px] tracking-[0.2em]">Anos de Mercado</p>
           </motion.div>
+          
           <motion.div 
             whileHover={{ y: -5 }}
-            className="card-premium p-10 text-center bg-white dark:bg-zinc-900"
+            className="p-8 text-center bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm"
           >
-            <div className="w-20 h-20 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6">
-              <Users size={40} />
+            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6">
+              <Users size={32} />
             </div>
-            <h3 className="text-5xl font-black mb-2 dark:text-white font-display">15k+</h3>
+            <h3 className="text-4xl font-black mb-2 dark:text-white font-display">15k+</h3>
             <p className="text-zinc-500 dark:text-zinc-400 font-bold uppercase text-[10px] tracking-[0.2em]">Clientes Satisfeitos</p>
           </motion.div>
+          
           <motion.div 
             whileHover={{ y: -5 }}
-            className="card-premium p-10 text-center bg-white dark:bg-zinc-900"
+            className="p-8 text-center bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm"
           >
-            <div className="w-20 h-20 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6">
-              <Award size={40} />
+            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6">
+              <Award size={32} />
             </div>
-            <h3 className="text-5xl font-black mb-2 dark:text-white font-display">100%</h3>
+            <h3 className="text-4xl font-black mb-2 dark:text-white font-display">100%</h3>
             <p className="text-zinc-500 dark:text-zinc-400 font-bold uppercase text-[10px] tracking-[0.2em]">Garantia de Qualidade</p>
           </motion.div>
         </div>
