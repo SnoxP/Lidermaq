@@ -11,7 +11,13 @@ import { SEO } from '../components/SEO';
 export const Profile = () => {
   const { user, logout, deleteAccount } = useAuth();
   const [name, setName] = useState(user?.name || '');
+  const [phone, setPhone] = useState(user?.phone || '');
   const [cep, setCep] = useState(user?.cep || '');
+  const [street, setStreet] = useState(user?.street || '');
+  const [number, setNumber] = useState(user?.number || '');
+  const [neighborhood, setNeighborhood] = useState(user?.neighborhood || '');
+  const [city, setCity] = useState(user?.city || '');
+  const [state, setState] = useState(user?.state || '');
   const [birthDate, setBirthDate] = useState(user?.birthDate || '');
   const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +77,13 @@ export const Profile = () => {
         
         await updateDoc(doc(db, 'users', user.id), {
           name,
+          phone,
           cep,
+          street,
+          number,
+          neighborhood,
+          city,
+          state,
           birthDate,
           photoURL
         });
@@ -236,6 +248,20 @@ export const Profile = () => {
 
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                      <Hash size={16} className="text-zinc-400" />
+                      Telefone (WhatsApp)
+                    </label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="(00) 00000-0000"
+                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
                       <MapPin size={16} className="text-zinc-400" />
                       CEP
                     </label>
@@ -244,6 +270,76 @@ export const Profile = () => {
                       value={cep}
                       onChange={(e) => setCep(e.target.value)}
                       placeholder="00000-000"
+                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                      <MapPin size={16} className="text-zinc-400" />
+                      Rua
+                    </label>
+                    <input
+                      type="text"
+                      value={street}
+                      onChange={(e) => setStreet(e.target.value)}
+                      placeholder="Nome da rua"
+                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                      <Hash size={16} className="text-zinc-400" />
+                      Número
+                    </label>
+                    <input
+                      type="text"
+                      value={number}
+                      onChange={(e) => setNumber(e.target.value)}
+                      placeholder="Número"
+                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                      <MapPin size={16} className="text-zinc-400" />
+                      Bairro
+                    </label>
+                    <input
+                      type="text"
+                      value={neighborhood}
+                      onChange={(e) => setNeighborhood(e.target.value)}
+                      placeholder="Bairro"
+                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                      <MapPin size={16} className="text-zinc-400" />
+                      Cidade
+                    </label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="Cidade"
+                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                      <MapPin size={16} className="text-zinc-400" />
+                      Estado
+                    </label>
+                    <input
+                      type="text"
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      placeholder="Estado (UF)"
                       className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
                     />
                   </div>

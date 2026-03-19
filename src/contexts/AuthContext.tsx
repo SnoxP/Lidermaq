@@ -19,7 +19,13 @@ interface User {
   isAdmin: boolean;
   tag?: string;
   createdAt?: any;
+  phone?: string;
   cep?: string;
+  street?: string;
+  number?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
   birthDate?: string;
   photoURL?: string;
   totalOrders?: number;

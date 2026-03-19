@@ -14,12 +14,12 @@ export const CartDrawer = () => {
   const [showAttendantSelector, setShowAttendantSelector] = React.useState(false);
 
   const handleCheckout = () => {
+    setIsCartOpen(false);
     if (!user) {
-      setIsCartOpen(false);
-      navigate('/login', { state: { from: 'cart' } });
+      navigate('/login?redirect=/checkout');
       return;
     }
-    setShowAttendantSelector(!showAttendantSelector);
+    navigate('/checkout');
   };
 
   const message = `Olá, gostaria de finalizar meu pedido:\n\n${cart.map(item => `${item.quantity}x ${item.name} - ${formatCurrency(item.price)}`).join('\n')}\n\nTotal: ${formatCurrency(total)}`;
@@ -131,14 +131,8 @@ export const CartDrawer = () => {
                     onClick={handleCheckout}
                     className="w-full py-4 bg-accent text-white rounded-xl font-black tracking-wide hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
                   >
-                    <MessageCircle size={20} /> FINALIZAR PEDIDO
+                    <ShoppingBag size={20} /> FINALIZAR PEDIDO
                   </button>
-                  
-                  {showAttendantSelector && (
-                    <div className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-white/10">
-                      <AttendantSelector message={message} />
-                    </div>
-                  )}
                 </div>
                 {!user && (
                   <p className="text-center text-xs text-zinc-400 mt-3">

@@ -15,7 +15,6 @@ export const Catalog = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('featured');
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>(['Todos']);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -155,14 +154,8 @@ export const Catalog = () => {
       result = result.filter(p => p.available);
     }
 
-    if (sortBy === 'price-asc') {
-      result = [...result].sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-desc') {
-      result = [...result].sort((a, b) => b.price - a.price);
-    }
-
     return result;
-  }, [activeCategory, searchTerm, searchQuery, sortBy, products, selectedBrands, inStockOnly]);
+  }, [activeCategory, searchTerm, searchQuery, products, selectedBrands, inStockOnly]);
 
   const itemsPerPage = columnsCount * 7;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -286,19 +279,6 @@ export const Catalog = () => {
               </div>
 
               <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-zinc-500 dark:text-zinc-400 hidden sm:inline">Ordenar por:</span>
-                  <select 
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-zinc-100 dark:bg-zinc-800 border-none text-zinc-900 dark:text-white text-sm rounded-lg py-2 pl-3 pr-8 focus:ring-0 cursor-pointer"
-                  >
-                    <option value="featured">Destaques</option>
-                    <option value="price-asc">Menor Preço</option>
-                    <option value="price-desc">Maior Preço</option>
-                  </select>
-                </div>
-
                 {/* Mobile Grid Controls */}
                 <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg sm:hidden">
                   <button onClick={() => handleGridChange(1)} className={`p-1.5 rounded ${mobileGridCols === 1 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500'}`}><Square size={16} /></button>
@@ -423,14 +403,14 @@ export const Catalog = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowMobileFilters(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] lg:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] lg:hidden"
             />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[90] overflow-y-auto flex flex-col lg:hidden"
+              className="fixed top-0 right-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[130] overflow-y-auto flex flex-col lg:hidden"
             >
               <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/5 sticky top-0 bg-white dark:bg-zinc-950 z-10">
                 <span className="text-xl font-black font-display dark:text-white">FILTROS</span>

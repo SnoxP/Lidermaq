@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trash2, Plus, Minus, ArrowLeft, MessageCircle, ShoppingBag, X, ChevronRight } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, X, ChevronRight } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { SEO } from '../components/SEO';
-import { AttendantSelector } from '../components/AttendantSelector';
 
 import { formatCurrency } from '../utils/format';
 
@@ -13,55 +12,16 @@ export const Cart = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'form' | 'attendant'>('cart');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    cep: '',
-    street: '',
-    number: '',
-    complement: '',
-    paymentMethod: 'Pix'
-  });
-
-  useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        name: prev.name || user.name || '',
-        email: prev.email || user.email || ''
-      }));
-    }
-  }, [user]);
 
   const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-  const cartDetails = cart
-    .map(
-      (item) =>
-        `• ${item.name}${item.variant ? ` (${item.variant})` : ''} x${item.quantity} - R$ ${(
-          item.price * item.quantity
-        ).toLocaleString('pt-BR')}`
-    )
-    .join('\n');
-
-  const message = `Olá Lidermaq! Gostaria de solicitar um pedido para os seguintes itens:\n\n${cartDetails}\n\nTotal: R$ ${totalPrice.toLocaleString(
-    'pt-BR'
-  )}\n\n*Dados do Cliente:*\nNome: ${formData.name}\nEmail: ${formData.email}\nTelefone: ${formData.phone}\n\n*Endereço de Entrega:*\nCEP: ${formData.cep}\nRua: ${formData.street}, Nº ${formData.number}\nComplemento: ${formData.complement || 'Nenhum'}\n\n*Método de Pagamento:* ${formData.paymentMethod}`;
-
   const handleCheckout = () => {
     if (!user) {
-      navigate('/login?redirect=/carrinho');
+      navigate('/login?redirect=/checkout');
       return;
     }
-    setCheckoutStep('form');
-  };
-
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setCheckoutStep('attendant');
+    navigate('/checkout');
   };
 
   if (cart.length === 0) {
@@ -193,117 +153,16 @@ export const Cart = () => {
                 </div>
               </div>
 
-              {checkoutStep === 'cart' && (
-                <button
-                  onClick={handleCheckout}
-                  className="w-full bg-accent text-white py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20 flex items-center justify-center gap-2"
-                >
-                  Finalizar Compra
-                </button>
-              )}
-
-              {checkoutStep === 'form' && (
-                <form onSubmit={handleFormSubmit} className="space-y-4 mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800">
-                  <h3 className="font-bold text-zinc-900 dark:text-white mb-4">Dados para Entrega</h3>
-                  <input
-                    type="text"
-                    placeholder="Nome Completo"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                    required
-                  />
-                  <input
-                    type="email"
-                    placeholder="E-mail"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                    required
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Telefone / WhatsApp"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                    required
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="CEP"
-                      value={formData.cep}
-                      onChange={(e) => setFormData({ ...formData, cep: e.target.value })}
-                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="Número"
-                      value={formData.number}
-                      onChange={(e) => setFormData({ ...formData, number: e.target.value })}
-                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                      required
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Rua / Avenida"
-                    value={formData.street}
-                    onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Complemento (Opcional)"
-                    value={formData.complement}
-                    onChange={(e) => setFormData({ ...formData, complement: e.target.value })}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                  />
-                  
-                  <div className="pt-4">
-                    <h3 className="font-bold text-zinc-900 dark:text-white mb-3 text-sm">Forma de Pagamento</h3>
-                    <select
-                      value={formData.paymentMethod}
-                      onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                      className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3 text-sm focus:ring-2 focus:ring-accent focus:border-transparent dark:text-white"
-                    >
-                      <option value="Pix">Pix (15% de desconto)</option>
-                      <option value="Cartão de Crédito">Cartão de Crédito (até 10x sem juros)</option>
-                      <option value="Boleto">Boleto Bancário</option>
-                    </select>
-                  </div>
-
-                  <div className="flex gap-3 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutStep('cart')}
-                      className="flex-1 py-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-                    >
-                      Voltar
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 py-3 bg-accent text-white rounded-lg font-bold text-sm hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20"
-                    >
-                      Continuar
-                    </button>
-                  </div>
-                </form>
-              )}
+              <button
+                onClick={handleCheckout}
+                className="w-full bg-accent text-white py-4 rounded-xl font-bold text-lg hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20 flex items-center justify-center gap-2 mt-8"
+              >
+                Finalizar Compra
+              </button>
             </div>
           </div>
         </div>
       </div>
-
-      {checkoutStep === 'attendant' && (
-        <AttendantSelector 
-          onClose={() => setCheckoutStep('form')} 
-          message={message}
-        />
-      )}
     </div>
   );
 };

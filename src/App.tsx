@@ -18,6 +18,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
 import { Cart } from './pages/Cart';
+import { Checkout } from './pages/Checkout';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { NewProduct } from './pages/admin/NewProduct';
 import { EditProduct } from './pages/admin/EditProduct';
@@ -57,6 +58,14 @@ export default function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/cadastro" element={<Register />} />
                     <Route path="/carrinho" element={<Cart />} />
+                    <Route 
+                      path="/checkout" 
+                      element={
+                        <ProtectedRoute>
+                          <Checkout />
+                        </ProtectedRoute>
+                      } 
+                    />
                     <Route 
                       path="/perfil" 
                       element={
