@@ -247,14 +247,14 @@ export const Header = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120]"
             />
             <motion.div
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[90] overflow-y-auto flex flex-col"
+              className="fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[130] overflow-y-auto flex flex-col"
             >
               <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/5">
                 <span className="text-xl font-black font-display dark:text-white">MENU</span>

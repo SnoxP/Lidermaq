@@ -34,7 +34,7 @@ export const Home = () => {
   }, []);
 
   return (
-    <div className="pt-20">
+    <div>
       <SEO />
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
@@ -42,12 +42,12 @@ export const Home = () => {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white dark:via-zinc-950/20 dark:to-zinc-950 z-10" />
           <motion.img 
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            initial={{ scale: 1.2, opacity: 0 }}
+            animate={{ scale: 1.1, opacity: 1 }}
             transition={{ duration: 1.5 }}
             src="https://i.imgur.com/cU4baTN.png" 
             alt="Lidermaq Empresa" 
-            className="md:hidden w-full h-full object-cover"
+            className="md:hidden w-full h-full object-cover object-bottom origin-bottom"
             referrerPolicy="no-referrer"
           />
           <motion.img 
@@ -163,7 +163,7 @@ export const Home = () => {
           <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">SEGMENTOS</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { name: 'Açougues', icon: Flame, img: 'https://images.unsplash.com/photo-1607623814075-e51df1bd638f?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Açougues', icon: Flame, img: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=400&h=400&auto=format&fit=crop' },
               { name: 'Lanchonetes', icon: Coffee, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400&h=400&auto=format&fit=crop' },
               { name: 'Padarias', icon: Utensils, img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=400&h=400&auto=format&fit=crop' },
               { name: 'Restaurantes', icon: Utensils, img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=400&h=400&auto=format&fit=crop' },
