@@ -238,22 +238,16 @@ export const ProductDetail = () => {
               {/* Price Section */}
               <div className="bg-zinc-50 dark:bg-zinc-950 rounded-xl p-6 mb-8 border border-zinc-100 dark:border-zinc-800">
                 <div className="flex flex-col mb-4">
-                  <span className="text-sm text-zinc-500 dark:text-zinc-400 line-through mb-1">
-                    De: {formatCurrency(productPrice * 1.15)}
-                  </span>
                   <div className="flex items-end gap-3">
                     <span className="text-4xl font-black text-accent font-display leading-none">
                       {formatCurrency(productPrice)}
-                    </span>
-                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-1 rounded mb-1">
-                      15% OFF no PIX
                     </span>
                   </div>
                 </div>
                 
                 <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
                   <CreditCardIcon size={16} />
-                  <span>ou em até <strong className="text-zinc-900 dark:text-white">10x de {formatCurrency(productPrice / 10)}</strong> sem juros</span>
+                  <span>em até <strong className="text-zinc-900 dark:text-white">10x de {formatCurrency(productPrice / 10)}</strong> sem juros</span>
                 </div>
               </div>
 

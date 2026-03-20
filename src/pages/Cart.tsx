@@ -136,18 +136,14 @@ export const Cart = () => {
                   <span>Subtotal ({totalItems} itens)</span>
                   <span>{formatCurrency(totalPrice)}</span>
                 </div>
-                <div className="flex justify-between text-zinc-600 dark:text-zinc-400 text-sm">
-                  <span>Desconto PIX (15%)</span>
-                  <span className="text-emerald-500 font-medium">- {formatCurrency(totalPrice * 0.15)}</span>
-                </div>
                 <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 flex justify-between items-end">
-                  <span className="font-bold text-zinc-900 dark:text-white">Total no PIX</span>
+                  <span className="font-bold text-zinc-900 dark:text-white">Total</span>
                   <div className="text-right">
                     <span className="text-3xl font-black text-accent font-display leading-none block">
-                      {formatCurrency(totalPrice * 0.85)}
+                      {formatCurrency(totalPrice)}
                     </span>
                     <span className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 block">
-                      ou {formatCurrency(totalPrice)} em até 10x
+                      em até 10x sem juros
                     </span>
                   </div>
                 </div>

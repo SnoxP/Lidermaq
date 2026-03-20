@@ -24,7 +24,7 @@ export const Checkout = () => {
     state: '',
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'pix' | 'boleto'>('credit_card');
+  const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'pix'>('credit_card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   
@@ -276,7 +276,7 @@ export const Checkout = () => {
                   PAGAMENTO
                 </h2>
 
-                <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-2 gap-4 mb-8">
                   <button
                     onClick={() => setPaymentMethod('credit_card')}
                     className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
@@ -298,17 +298,6 @@ export const Checkout = () => {
                   >
                     <QrCode size={24} />
                     <span className="text-sm font-bold text-center">Pix</span>
-                  </button>
-                  <button
-                    onClick={() => setPaymentMethod('boleto')}
-                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${
-                      paymentMethod === 'boleto'
-                        ? 'border-zinc-900 dark:border-white bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-                        : 'border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:border-zinc-900/50 dark:hover:border-white/50 dark:text-zinc-400'
-                    }`}
-                  >
-                    <Barcode size={24} />
-                    <span className="text-sm font-bold text-center">Boleto</span>
                   </button>
                 </div>
 
@@ -366,21 +355,23 @@ export const Checkout = () => {
                   <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl p-6 text-center animate-in fade-in slide-in-from-bottom-4">
                     <QrCode size={48} className="mx-auto text-emerald-600 dark:text-emerald-400 mb-4" />
                     <h3 className="font-bold text-emerald-800 dark:text-emerald-300 mb-2">Pagamento via Pix</h3>
-                    <p className="text-sm text-emerald-700 dark:text-emerald-400/80 mb-4">
-                      O código Pix será gerado após a finalização do pedido. Você terá 30 minutos para realizar o pagamento.
+                    <img 
+                      src="https://i.ibb.co/BHDxCTqj/qrcode-pix.png" 
+                      alt="QR Code Pix" 
+                      className="mx-auto w-48 h-48 mb-4 rounded-lg border border-emerald-200"
+                      referrerPolicy="no-referrer"
+                    />
+                    <p className="text-sm text-emerald-800 dark:text-emerald-300 font-bold mb-2">Chave Pix:</p>
+                    <div className="bg-white dark:bg-zinc-950 p-3 rounded-lg border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono break-all text-emerald-900 dark:text-emerald-200 mb-4">
+                      00020126580014BR.GOV.BCB.PIX013695b230e1-a1bb-4ef1-9151-546f45879d055204000053039865802BR5901N6001C62070503***63047CF0
+                    </div>
+                    <p className="text-xs text-emerald-700 dark:text-emerald-400/80">
+                      Copie a chave ou escaneie o QR Code acima para realizar o pagamento.
                     </p>
                   </div>
                 )}
 
-                {paymentMethod === 'boleto' && (
-                  <div className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-xl p-6 text-center animate-in fade-in slide-in-from-bottom-4">
-                    <Barcode size={48} className="mx-auto text-zinc-600 dark:text-zinc-400 mb-4" />
-                    <h3 className="font-bold text-zinc-900 dark:text-white mb-2">Boleto Bancário</h3>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                      O boleto será gerado após a finalização do pedido. O prazo de compensação é de até 3 dias úteis após o pagamento.
-                    </p>
-                  </div>
-                )}
+
               </div>
             )}
           </div>
