@@ -25,6 +25,7 @@ import { EditProduct } from './pages/admin/EditProduct';
 import { ProductList } from './pages/admin/ProductList';
 import { UserList } from './pages/admin/UserList';
 import { Categories } from './pages/admin/Categories';
+import { Coupons } from './pages/admin/Coupons';
 import { NewPost } from './pages/admin/NewPost';
 import { Settings } from './pages/admin/Settings';
 import { AdminManagement } from './pages/admin/AdminManagement';
@@ -113,6 +114,14 @@ export default function App() {
                       element={
                         <ProtectedRoute adminOnly>
                           <Categories />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/cupons" 
+                      element={
+                        <ProtectedRoute adminOnly>
+                          <Coupons />
                         </ProtectedRoute>
                       } 
                     />

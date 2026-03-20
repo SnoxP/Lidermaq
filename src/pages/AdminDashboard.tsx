@@ -130,6 +130,13 @@ export const AdminDashboard = () => {
                 <p className="font-bold mb-1 text-zinc-900 dark:text-white group-hover:text-accent">Usuários</p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">Ver clientes cadastrados</p>
               </button>
+              <button 
+                onClick={() => navigate('/admin/cupons')}
+                className="p-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-left hover:border-accent hover:bg-accent/5 transition-all group"
+              >
+                <p className="font-bold mb-1 text-zinc-900 dark:text-white group-hover:text-accent">Cupons</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">Gerenciar descontos</p>
+              </button>
             </div>
           </div>
         </div>

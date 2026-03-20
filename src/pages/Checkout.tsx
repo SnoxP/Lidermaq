@@ -3,11 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { SEO } from '../components/SEO';
-import { ChevronRight, AlertTriangle, CreditCard, MapPin, User, Mail, Hash, QrCode, Barcode, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, AlertTriangle, CreditCard, MapPin, User, Mail, Hash, QrCode, Barcode, CheckCircle2, Tag, X } from 'lucide-react';
+import { db } from '../services/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const Checkout = () => {
   const { user } = useAuth();
-  const { cart, totalPrice, clearCart } = useCart();
+  const { cart, total, clearCart } = useCart();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -25,6 +27,12 @@ export const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'pix' | 'boleto'>('credit_card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  
+  // Coupon states
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string, discountPercentage: number } | null>(null);
+  const [couponError, setCouponError] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -80,6 +88,41 @@ export const Checkout = () => {
     );
   }
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    
+    setIsApplyingCoupon(true);
+    setCouponError('');
+    
+    try {
+      const code = couponCode.toUpperCase().trim();
+      const couponRef = doc(db, 'coupons', code);
+      const couponSnap = await getDoc(couponRef);
+      
+      if (couponSnap.exists()) {
+        const data = couponSnap.data();
+        if (data.active) {
+          setAppliedCoupon({ code: data.code, discountPercentage: data.discountPercentage });
+          setCouponCode('');
+        } else {
+          setCouponError('Este cupom não está mais ativo.');
+        }
+      } else {
+        setCouponError('Cupom inválido.');
+      }
+    } catch (error) {
+      console.error('Erro ao aplicar cupom:', error);
+      setCouponError('Erro ao verificar cupom.');
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError('');
+  };
+
   const handleCheckout = async () => {
     setIsProcessing(true);
     // Simulate API call
@@ -89,6 +132,9 @@ export const Checkout = () => {
       clearCart();
     }, 2000);
   };
+
+  const discountAmount = appliedCoupon ? (total * (appliedCoupon.discountPercentage / 100)) : 0;
+  const finalTotal = total - discountAmount;
 
   return (
     <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 pb-20">
@@ -305,12 +351,12 @@ export const Checkout = () => {
                     <div className="space-y-2 pt-2">
                       <label className="text-sm font-bold text-zinc-900 dark:text-white">Parcelamento</label>
                       <select className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all">
-                        <option>1x de R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>2x de R$ {(totalPrice / 2).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>3x de R$ {(totalPrice / 3).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>4x de R$ {(totalPrice / 4).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>5x de R$ {(totalPrice / 5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>6x de R$ {(totalPrice / 6).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>1x de R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>2x de R$ {(total / 2).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>3x de R$ {(total / 3).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>4x de R$ {(total / 4).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>5x de R$ {(total / 5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>6x de R$ {(total / 6).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
                       </select>
                     </div>
                   </div>
@@ -323,9 +369,6 @@ export const Checkout = () => {
                     <p className="text-sm text-emerald-700 dark:text-emerald-400/80 mb-4">
                       O código Pix será gerado após a finalização do pedido. Você terá 30 minutos para realizar o pagamento.
                     </p>
-                    <div className="inline-block bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 px-4 py-2 rounded-lg font-bold text-sm">
-                      Desconto de 5% aplicado
-                    </div>
                   </div>
                 )}
 
@@ -362,22 +405,66 @@ export const Checkout = () => {
               <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500 dark:text-zinc-400">Subtotal</span>
-                  <span className="font-medium dark:text-white">R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-medium dark:text-white">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500 dark:text-zinc-400">Frete</span>
                   <span className="text-emerald-500 font-medium">Grátis</span>
                 </div>
-                {paymentMethod === 'pix' && user.isAdmin && (
-                  <div className="flex justify-between text-sm text-emerald-600 dark:text-emerald-400">
-                    <span>Desconto Pix (5%)</span>
-                    <span className="font-medium">- R$ {(totalPrice * 0.05).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+
+                {user.isAdmin && (
+                  <div className="pt-2 pb-2">
+                    {!appliedCoupon ? (
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                          <Tag size={16} /> Cupom de Desconto
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={couponCode}
+                            onChange={(e) => setCouponCode(e.target.value)}
+                            placeholder="Digite seu cupom"
+                            className="flex-1 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all uppercase"
+                          />
+                          <button
+                            onClick={handleApplyCoupon}
+                            disabled={isApplyingCoupon || !couponCode.trim()}
+                            className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-4 py-2 rounded-xl text-sm font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
+                          >
+                            {isApplyingCoupon ? '...' : 'Aplicar'}
+                          </button>
+                        </div>
+                        {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
+                      </div>
+                    ) : (
+                      <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl p-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                          <Tag size={16} />
+                          <div>
+                            <p className="text-sm font-bold uppercase">{appliedCoupon.code}</p>
+                            <p className="text-xs">{appliedCoupon.discountPercentage}% de desconto</p>
+                          </div>
+                        </div>
+                        <button onClick={removeCoupon} className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300">
+                          <X size={16} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
+
+                {appliedCoupon && (
+                  <div className="flex justify-between text-sm text-emerald-600 dark:text-emerald-400">
+                    <span>Desconto ({appliedCoupon.discountPercentage}%)</span>
+                    <span className="font-medium">- R$ {discountAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                )}
+
                 <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 flex justify-between items-end">
                   <span className="font-bold text-zinc-900 dark:text-white">Total</span>
                   <span className="text-2xl font-black text-accent font-display leading-none">
-                    R$ {(paymentMethod === 'pix' && user.isAdmin ? totalPrice * 0.95 : totalPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    R$ {finalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </span>
                 </div>
               </div>
