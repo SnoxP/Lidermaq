@@ -54,7 +54,7 @@ app.post("/api/verify-recaptcha", async (req, res) => {
   }
 
   try {
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY || "6LdP84AsAAAAALJ0X1mXBK3E_ojXMWjWil9MXopc";
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     if (!secretKey) {
       return res.status(500).json({ success: false, message: "Chave secreta não configurada" });
     }
@@ -80,11 +80,36 @@ app.post("/api/verify-recaptcha", async (req, res) => {
 // API route to delete user from Firebase Auth
 app.delete("/api/delete-user/:uid", async (req, res) => {
   const { uid } = req.params;
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ success: false, message: "Não autorizado: Token ausente" });
+  }
+
+  const idToken = authHeader.split('Bearer ')[1];
+
   if (!adminAuth) {
     console.warn("Firebase Admin não inicializado. Não foi possível deletar do Auth, mas prosseguindo com a limpeza no Firestore.");
     return res.json({ success: true, message: "Firebase Admin não inicializado. Removendo apenas do Firestore." });
   }
+  
   try {
+    const decodedToken = await adminAuth.verifyIdToken(idToken);
+    const email = decodedToken.email;
+    
+    let isAdmin = false;
+    if (email === "pedronobreneto27@gmail.com") {
+      isAdmin = true;
+    } else {
+      const db = admin.firestore();
+      const adminDoc = await db.collection('admins').doc(email || '').get();
+      isAdmin = adminDoc.exists;
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ success: false, message: "Acesso negado: Apenas administradores podem excluir usuários" });
+    }
+
     await adminAuth.deleteUser(uid);
     res.json({ success: true });
   } catch (error: any) {

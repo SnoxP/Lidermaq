@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Mail, Eye, EyeOff, Shield, Search, X, Clock, Circle, ShieldAlert, ShieldCheck, Trash2, Ban, ChevronRight } from 'lucide-react';
-import { db } from '../../services/firebase';
+import { auth, db } from '../../services/firebase';
 import { collection, onSnapshot, query, orderBy, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -85,8 +85,19 @@ export const UserList = () => {
     if (!confirm(`Tem certeza que deseja remover o usuário ${email} do banco de dados e da autenticação? Esta ação não pode ser desfeita.`)) return;
 
     try {
+      const idToken = await auth.currentUser?.getIdToken();
+      if (!idToken) {
+        alert("Erro de autenticação. Por favor, faça login novamente.");
+        return;
+      }
+
       // Remove do Firebase Auth via backend
-      const response = await fetch(`/api/delete-user/${userId}`, { method: 'DELETE' });
+      const response = await fetch(`/api/delete-user/${userId}`, { 
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
       const data = await response.json();
       
       if (!data.success) {

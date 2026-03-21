@@ -355,6 +355,9 @@ export const Checkout = () => {
                   <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl p-6 text-center animate-in fade-in slide-in-from-bottom-4">
                     <QrCode size={48} className="mx-auto text-emerald-600 dark:text-emerald-400 mb-4" />
                     <h3 className="font-bold text-emerald-800 dark:text-emerald-300 mb-2">Pagamento via Pix</h3>
+                    <div className="text-2xl font-black text-emerald-900 dark:text-emerald-200 mb-4">
+                      R$ {finalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </div>
                     <img 
                       src="https://i.ibb.co/BHDxCTqj/qrcode-pix.png" 
                       alt="QR Code Pix" 
