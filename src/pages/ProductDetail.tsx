@@ -17,7 +17,7 @@ export const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [mainImage, setMainImage] = useState<string>('');
   const [showAttendantSelector, setShowAttendantSelector] = useState(false);
-  const { addToCart } = useCart();
+  const { addToCart, setIsCartOpen } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -34,6 +34,17 @@ export const ProductDetail = () => {
     }
     const productToAdd = selectedVariant ? { ...product, price: selectedVariant.price, image: selectedVariant.image || product.image } : product;
     addToCart(productToAdd, selectedVariant?.name);
+  };
+
+  const handleBuyNow = () => {
+    if (!user) {
+      navigate('/login?redirect=/checkout');
+      return;
+    }
+    const productToAdd = selectedVariant ? { ...product, price: selectedVariant.price, image: selectedVariant.image || product.image } : product;
+    addToCart(productToAdd, selectedVariant?.name);
+    setIsCartOpen(false);
+    navigate('/checkout');
   };
 
   const handlePrevImage = () => {
@@ -283,11 +294,11 @@ export const ProductDetail = () => {
                   Adicionar ao Carrinho
                 </button>
                 <button 
-                  onClick={() => setShowAttendantSelector(true)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 text-white py-4 px-8 rounded-xl font-bold hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20"
+                  onClick={handleBuyNow}
+                  className="flex-1 flex items-center justify-center gap-2 bg-accent text-white py-4 px-8 rounded-xl font-bold hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20"
                 >
-                  <MessageCircle size={20} />
-                  Comprar pelo WhatsApp
+                  <ShoppingBag size={20} />
+                  Comprar Agora
                 </button>
               </div>
 

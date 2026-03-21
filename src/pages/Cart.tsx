@@ -85,13 +85,15 @@ export const Cart = () => {
                 exit={{ opacity: 0, scale: 0.9 }}
                 className="bg-white dark:bg-zinc-900 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-6 border border-zinc-200 dark:border-zinc-800 shadow-sm"
               >
-                <div className="w-24 h-24 bg-zinc-50 dark:bg-zinc-950 rounded-xl overflow-hidden shrink-0 border border-zinc-100 dark:border-zinc-800 p-2">
+                <Link to={`/produto/${item.id}`} className="w-24 h-24 bg-zinc-50 dark:bg-zinc-950 rounded-xl overflow-hidden shrink-0 border border-zinc-100 dark:border-zinc-800 p-2 hover:border-accent transition-colors block">
                   <img src={item.image} alt={item.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
-                </div>
+                </Link>
                 <div className="flex-1 w-full">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="font-bold text-zinc-900 dark:text-white text-lg leading-tight mb-1">{item.name}</h3>
+                      <Link to={`/produto/${item.id}`}>
+                        <h3 className="font-bold text-zinc-900 dark:text-white text-lg leading-tight mb-1 hover:text-accent transition-colors">{item.name}</h3>
+                      </Link>
                       {item.variant && <p className="text-sm text-zinc-500 dark:text-zinc-400">Opção: {item.variant}</p>}
                     </div>
                     <button
