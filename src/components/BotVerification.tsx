@@ -16,8 +16,8 @@ export const BotVerification: React.FC<BotVerificationProps> = ({ onVerify }) =>
     }
 
     try {
-      // Use window.location.origin to ensure the request goes to the correct Vercel domain
-      const apiUrl = `${window.location.origin}/api/verify-recaptcha`;
+      const apiUrl = `/api/verify-recaptcha`;
+      console.log("Calling reCAPTCHA API:", apiUrl);
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -28,14 +28,20 @@ export const BotVerification: React.FC<BotVerificationProps> = ({ onVerify }) =>
       console.log("reCAPTCHA server response:", data);
       
       if (data.success) {
+        console.log("reCAPTCHA success, calling onVerify(true)");
         onVerify(true);
       } else {
+        console.log("reCAPTCHA failed, calling onVerify(false)");
         onVerify(false);
         setErrorMsg(`Erro de verificação: ${data.message} ${data.errors ? JSON.stringify(data.errors) : ''}`);
       }
     } catch (error: any) {
       console.error('Erro na requisição de verificação do reCAPTCHA:', error);
-      onVerify(false);
+      try {
+        onVerify(false);
+      } catch (e) {
+        console.error("Erro ao chamar onVerify:", e);
+      }
       setErrorMsg(`Erro de conexão: ${error.message}`);
     }
   };
