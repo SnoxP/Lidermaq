@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 interface BotVerificationProps {
-  onVerificationChange: (isValid: boolean) => void;
+  onVerify: (isValid: boolean) => void;
 }
 
-export const BotVerification: React.FC<BotVerificationProps> = ({ onVerificationChange }) => {
+export const BotVerification: React.FC<BotVerificationProps> = ({ onVerify }) => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleVerify = async (token: string | null) => {
     setErrorMsg(null);
     if (!token) {
-      onVerificationChange(false);
+      onVerify(false);
       return;
     }
 
@@ -28,14 +28,14 @@ export const BotVerification: React.FC<BotVerificationProps> = ({ onVerification
       console.log("reCAPTCHA server response:", data);
       
       if (data.success) {
-        onVerificationChange(true);
+        onVerify(true);
       } else {
-        onVerificationChange(false);
+        onVerify(false);
         setErrorMsg(`Erro de verificação: ${data.message} ${data.errors ? JSON.stringify(data.errors) : ''}`);
       }
     } catch (error: any) {
       console.error('Erro na requisição de verificação do reCAPTCHA:', error);
-      onVerificationChange(false);
+      onVerify(false);
       setErrorMsg(`Erro de conexão: ${error.message}`);
     }
   };
