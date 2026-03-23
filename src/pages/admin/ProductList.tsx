@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X, Database, Filter, ArrowUpDown, Calendar, Tag, DollarSign, ChevronRight } from 'lucide-react';
 import { db } from '../../services/firebase';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { useNavigate, Link } from 'react-router-dom';
+import { useProducts } from '../../hooks/useProducts';
 
 import { formatCurrency } from '../../utils/format';
 
 export const ProductList = () => {
+  const { products: contextProducts, loading: contextLoading } = useProducts();
   const [products, setProducts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -21,30 +23,12 @@ export const ProductList = () => {
   const brands = Array.from(new Set(products.map(p => p.brand).filter(Boolean)));
   const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
 
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    const timeout = setTimeout(() => {
-      if (isLoading) {
-        setIsLoading(false);
-        console.warn("Busca de produtos excedeu o tempo limite.");
-      }
-    }, 10000); // 10 segundos de timeout
-
-    try {
-      const querySnapshot = await getDocs(collection(db, 'products'));
-      const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setProducts(productList);
-    } catch (error) {
-      console.error("Erro ao buscar produtos:", error);
-    } finally {
-      clearTimeout(timeout);
+  useEffect(() => {
+    if (!contextLoading) {
+      setProducts(contextProducts);
       setIsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  }, [contextProducts, contextLoading]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Tem certeza que deseja excluir este produto?')) return;

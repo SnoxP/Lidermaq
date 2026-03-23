@@ -107,7 +107,7 @@ export const Home = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Star size={24} /></div>
-              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">+ DE 40 ANOS DE TRADIÇÃO</span>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">+ DE 10 ANOS DE TRADIÇÃO</span>
             </div>
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Shield size={24} /></div>

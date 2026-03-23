@@ -163,64 +163,80 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (firebaseUser && firebaseUser.email) {
         setLoading(true); // Prevent redirects while fetching user data
         try {
-          let ip = '';
-          try {
-            const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            ip = data.ip;
-          } catch (e) {
-            console.error("Erro ao buscar IP:", e);
-          }
-
-          const isBanned = await checkBanStatus(firebaseUser.uid, ip, firebaseUser.email);
+          // 1. Inicia a verificação de admin (rápida)
+          let isAdmin = firebaseUser.email === MASTER_ADMIN;
           
-          if (isBanned) {
-            await signOut(auth);
-            setUser(null);
-            alert("Sua conta ou IP foi banido do sistema.");
-            setLoading(false);
-          } else {
-            const isAdmin = await checkAdminStatus(firebaseUser.email);
+          checkAdminStatus(firebaseUser.email).then(status => {
+            if (status !== isAdmin) {
+              isAdmin = status;
+              setUser(prev => prev ? { ...prev, isAdmin } : null);
+            }
+          });
+          
+          // 2. Configura o listener do usuário imediatamente
+          unsubscribeSnapshot = onSnapshot(doc(db, 'users', firebaseUser.uid), (userDoc) => {
+            const userData = userDoc.exists() ? userDoc.data() : {};
             
-            unsubscribeSnapshot = onSnapshot(doc(db, 'users', firebaseUser.uid), (userDoc) => {
-              const userData = userDoc.exists() ? userDoc.data() : {};
+            setUser(prev => {
+              const fetchedName = userData.name || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário';
+              // Preserve the name if it was already set by register() and is not just the email prefix
+              const finalName = (prev && prev.name && prev.name !== firebaseUser.email?.split('@')[0]) ? prev.name : fetchedName;
               
-              setUser(prev => {
-                const fetchedName = userData.name || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário';
-                // Preserve the name if it was already set by register() and is not just the email prefix
-                const finalName = (prev && prev.name && prev.name !== firebaseUser.email?.split('@')[0]) ? prev.name : fetchedName;
-                
-                return {
-                  id: firebaseUser.uid,
-                  email: firebaseUser.email!,
-                  name: finalName,
-                  isAdmin: isAdmin,
-                  tag: userData.tag,
-                  createdAt: userData.createdAt,
-                  phone: userData.phone,
-                  cep: userData.cep,
-                  street: userData.street,
-                  number: userData.number,
-                  neighborhood: userData.neighborhood,
-                  city: userData.city,
-                  state: userData.state,
-                  birthDate: userData.birthDate,
-                  photoURL: userData.photoURL || firebaseUser.photoURL,
-                  totalOrders: userData.totalOrders || 0,
-                  totalSpent: userData.totalSpent || 0
-                };
-              });
-              setLoading(false);
-            }, (error) => {
-              console.error("Erro ao ouvir documento do usuário:", error);
-              setLoading(false);
+              return {
+                id: firebaseUser.uid,
+                email: firebaseUser.email!,
+                name: finalName,
+                isAdmin: isAdmin,
+                tag: userData.tag,
+                createdAt: userData.createdAt,
+                phone: userData.phone,
+                cep: userData.cep,
+                street: userData.street,
+                number: userData.number,
+                neighborhood: userData.neighborhood,
+                city: userData.city,
+                state: userData.state,
+                birthDate: userData.birthDate,
+                photoURL: userData.photoURL || firebaseUser.photoURL,
+                totalOrders: userData.totalOrders || 0,
+                totalSpent: userData.totalSpent || 0
+              };
             });
-            
-            // Atualiza o status online sem travar a UI
-            syncUserToFirestore(firebaseUser);
-          }
+            setLoading(false);
+          }, (error) => {
+            console.error("Erro ao ouvir documento do usuário:", error);
+            setLoading(false);
+          });
+
+          // 3. Executa a verificação de IP e banimento em background (não trava a UI)
+          (async () => {
+            try {
+              let ip = '';
+              try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                ip = data.ip;
+              } catch (e) {
+                console.error("Erro ao buscar IP:", e);
+              }
+
+              const isBanned = await checkBanStatus(firebaseUser.uid, ip, firebaseUser.email!);
+              
+              if (isBanned) {
+                await signOut(auth);
+                setUser(null);
+                alert("Sua conta ou IP foi banido do sistema.");
+              } else {
+                // Atualiza o status online sem travar a UI
+                syncUserToFirestore(firebaseUser);
+              }
+            } catch (e) {
+              console.error("Erro na verificação de background:", e);
+            }
+          })();
+
         } catch (e) {
-          console.error("Erro ao sincronizar usuário:", e);
+          console.error("Erro ao configurar usuário:", e);
           setLoading(false);
         }
       } else {

@@ -29,6 +29,24 @@ export const Profile = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
+  const hasInitialized = useRef(false);
+
+  React.useEffect(() => {
+    if (user && !hasInitialized.current) {
+      setName(user.name || '');
+      setPhone(user.phone || '');
+      setCep(user.cep || '');
+      setStreet(user.street || '');
+      setNumber(user.number || '');
+      setNeighborhood(user.neighborhood || '');
+      setCity(user.city || '');
+      setState(user.state || '');
+      setBirthDate(user.birthDate || '');
+      setPhotoURL(user.photoURL || '');
+      hasInitialized.current = true;
+    }
+  }, [user]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;

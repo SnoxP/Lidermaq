@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useProducts } from '../hooks/useProducts';
 import { SeedData } from '../components/admin/SeedData';
 import { db } from '../services/firebase';
-import { collection, getDocs, doc, getDoc, setDoc, increment } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, setDoc, increment, getCountFromServer } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
 
 import { formatCurrency } from '../utils/format';
@@ -22,9 +22,10 @@ export const AdminDashboard = () => {
     const fetchStats = async () => {
       if (!db) return;
       try {
-        // Fetch User Count
-        const usersSnap = await getDocs(collection(db, 'users'));
-        setUserCount(usersSnap.size);
+        // Fetch User Count using getCountFromServer for speed
+        const usersColl = collection(db, 'users');
+        const usersSnap = await getCountFromServer(usersColl);
+        setUserCount(usersSnap.data().count);
 
         // Fetch View Count (from a dedicated stats document)
         const statsRef = doc(db, 'settings', 'stats');
