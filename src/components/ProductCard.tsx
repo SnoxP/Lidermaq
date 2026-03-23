@@ -22,7 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation to product detail
     if (!user) {
-      navigate('/login');
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
     addToCart(product);

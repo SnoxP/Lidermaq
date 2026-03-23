@@ -29,7 +29,7 @@ export const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!user) {
-      navigate('/login');
+      navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
       return;
     }
     const productToAdd = selectedVariant ? { ...product, price: selectedVariant.price, image: selectedVariant.image || product.image } : product;
@@ -107,7 +107,7 @@ export const ProductDetail = () => {
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      navigate('/login');
+      navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
       return;
     }
     if (!newComment.trim()) return;
@@ -406,7 +406,7 @@ export const ProductDetail = () => {
                 ) : (
                   <div className="text-center py-6">
                     <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">Faça login para avaliar este produto.</p>
-                    <Link to="/login" className="inline-flex items-center justify-center px-6 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-bold text-sm hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors">
+                    <Link to={`/login?redirect=${encodeURIComponent(location.pathname)}`} className="inline-flex items-center justify-center px-6 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg font-bold text-sm hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors">
                       Fazer Login
                     </Link>
                   </div>

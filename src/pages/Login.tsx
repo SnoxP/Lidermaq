@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, LogIn, AlertCircle, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -17,8 +17,10 @@ export const Login = () => {
   const { login, resetPassword } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
-  const from = location.state?.from?.pathname || "/";
+  const redirectParam = searchParams.get('redirect');
+  const from = redirectParam || location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,11 +34,7 @@ export const Login = () => {
 
     try {
       await login(email, password);
-      if (location.state?.from) {
-        navigate(from, { replace: true });
-      } else {
-        navigate(-1);
-      }
+      navigate(from, { replace: true });
     } catch (err: any) {
       console.error("Erro no login:", err);
       if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
@@ -172,7 +170,7 @@ export const Login = () => {
           <div className="mt-8 text-center">
             <p className="text-zinc-500 dark:text-zinc-400 text-sm">
               Ainda não tem uma conta?{' '}
-              <Link to="/cadastro" className="text-accent font-bold hover:underline">
+              <Link to={`/cadastro${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`} className="text-accent font-bold hover:underline">
                 Cadastre-se
               </Link>
             </p>

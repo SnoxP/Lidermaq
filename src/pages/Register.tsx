@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, UserPlus, AlertCircle, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -16,6 +16,11 @@ export const Register = () => {
   
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+
+  const redirectParam = searchParams.get('redirect');
+  const from = redirectParam || location.state?.from?.pathname || "/perfil";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +33,7 @@ export const Register = () => {
 
     try {
       await register(email, password, name);
-      navigate('/perfil');
+      navigate(from, { replace: true });
     } catch (err: any) {
       console.error("Erro no cadastro:", err);
       if (err.code === 'auth/email-already-in-use') {
@@ -141,7 +146,7 @@ export const Register = () => {
           <div className="mt-8 text-center">
             <p className="text-zinc-500 dark:text-zinc-400 text-sm">
               Já tem uma conta?{' '}
-              <Link to="/login" className="text-accent font-bold hover:underline">
+              <Link to={`/login${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`} className="text-accent font-bold hover:underline">
                 Faça Login
               </Link>
             </p>

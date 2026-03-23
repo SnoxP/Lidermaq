@@ -161,7 +161,7 @@ export const Header = () => {
                         </>
                       ) : (
                         <Link 
-                          to="/login" 
+                          to={`/login?redirect=${encodeURIComponent(location.pathname)}`}
                           onClick={() => setIsUserMenuOpen(false)}
                           className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
                         >
@@ -304,7 +304,7 @@ export const Header = () => {
                       <LayoutDashboard size={18} className="text-accent" /> Painel Admin
                     </Link>
                   ) : (
-                    <Link to="/login" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 font-medium">
+                    <Link to={`/login?redirect=${encodeURIComponent(location.pathname)}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 font-medium">
                       <User size={18} className="text-accent" /> Entrar na Conta
                     </Link>
                   )}
