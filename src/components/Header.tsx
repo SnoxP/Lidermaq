@@ -140,7 +140,7 @@ export const Header = () => {
                           >
                             <User size={16} /> Meu Perfil
                           </Link>
-                          {user.role === 'admin' && (
+                          {user.isAdmin && (
                             <Link 
                               to="/admin" 
                               onClick={() => setIsUserMenuOpen(false)}

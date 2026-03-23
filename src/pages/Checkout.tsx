@@ -22,6 +22,7 @@ export const Checkout = () => {
     neighborhood: '',
     city: '',
     state: '',
+    birthDate: '',
   });
 
   const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'pix'>('credit_card');
@@ -48,6 +49,7 @@ export const Checkout = () => {
         neighborhood: user.neighborhood || '',
         city: user.city || '',
         state: user.state || '',
+        birthDate: user.birthDate || '',
       });
     }
   }, [user, navigate]);
@@ -123,7 +125,81 @@ export const Checkout = () => {
     setCouponError('');
   };
 
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let newCep = e.target.value.replace(/\D/g, '');
+    if (newCep.length > 8) newCep = newCep.slice(0, 8);
+    
+    let formattedCep = newCep;
+    if (newCep.length > 5) {
+      formattedCep = `${newCep.slice(0, 5)}-${newCep.slice(5)}`;
+    }
+    
+    setFormData(prev => ({ ...prev, cep: formattedCep }));
+
+    if (newCep.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${newCep}/json/`);
+        const data = await response.json();
+        if (!data.erro) {
+          setFormData(prev => ({
+            ...prev,
+            street: data.logradouro || prev.street,
+            neighborhood: data.bairro || prev.neighborhood,
+            city: data.localidade || prev.city,
+            state: data.uf || prev.state,
+          }));
+        }
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+      }
+    }
+  };
+
+  const handleBirthDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 8) value = value.slice(0, 8);
+    
+    let formatted = value;
+    if (value.length > 4) {
+      formatted = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+    } else if (value.length > 2) {
+      formatted = `${value.slice(0, 2)}/${value.slice(2)}`;
+    }
+    
+    setFormData(prev => ({ ...prev, birthDate: formatted }));
+  };
+
+  const validateAge = (dateString: string) => {
+    if (dateString.length !== 10) return false;
+    const [day, month, year] = dateString.split('/');
+    
+    const d = Number(day);
+    const m = Number(month);
+    const y = Number(year);
+    
+    if (m < 1 || m > 12 || d < 1 || d > 31 || y < 1900 || y > new Date().getFullYear()) {
+      return false;
+    }
+    
+    const birth = new Date(y, m - 1, d);
+    if (birth.getDate() !== d || birth.getMonth() !== m - 1 || birth.getFullYear() !== y) {
+      return false;
+    }
+
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age >= 18;
+  };
+
   const handleCheckout = async () => {
+    if (!formData.birthDate || formData.birthDate.length !== 10 || !validateAge(formData.birthDate)) {
+      alert('Você precisa ter pelo menos 18 anos e informar uma data de nascimento válida para finalizar a compra.');
+      return;
+    }
     setIsProcessing(true);
     // Simulate API call
     setTimeout(() => {
@@ -202,6 +278,17 @@ export const Checkout = () => {
                     className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
                   />
                 </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-bold text-zinc-900 dark:text-white">Data de Nascimento</label>
+                  <input
+                    type="text"
+                    value={formData.birthDate}
+                    onChange={handleBirthDateChange}
+                    placeholder="DD/MM/AAAA"
+                    maxLength={10}
+                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                  />
+                </div>
               </div>
             </div>
 
@@ -217,7 +304,8 @@ export const Checkout = () => {
                   <input
                     type="text"
                     value={formData.cep}
-                    onChange={(e) => setFormData({ ...formData, cep: e.target.value })}
+                    onChange={handleCepChange}
+                    placeholder="00000-000"
                     className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
                   />
                 </div>

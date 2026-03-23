@@ -67,8 +67,81 @@ export const Profile = () => {
     }
   };
 
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let newCep = e.target.value.replace(/\D/g, '');
+    if (newCep.length > 8) newCep = newCep.slice(0, 8);
+    
+    let formattedCep = newCep;
+    if (newCep.length > 5) {
+      formattedCep = `${newCep.slice(0, 5)}-${newCep.slice(5)}`;
+    }
+    
+    setCep(formattedCep);
+
+    if (newCep.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${newCep}/json/`);
+        const data = await response.json();
+        if (!data.erro) {
+          setStreet(data.logradouro || '');
+          setNeighborhood(data.bairro || '');
+          setCity(data.localidade || '');
+          setState(data.uf || '');
+        }
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+      }
+    }
+  };
+
+  const handleBirthDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 8) value = value.slice(0, 8);
+    
+    let formatted = value;
+    if (value.length > 4) {
+      formatted = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+    } else if (value.length > 2) {
+      formatted = `${value.slice(0, 2)}/${value.slice(2)}`;
+    }
+    
+    setBirthDate(formatted);
+  };
+
+  const validateAge = (dateString: string) => {
+    if (dateString.length !== 10) return false;
+    const [day, month, year] = dateString.split('/');
+    
+    const d = Number(day);
+    const m = Number(month);
+    const y = Number(year);
+    
+    if (m < 1 || m > 12 || d < 1 || d > 31 || y < 1900 || y > new Date().getFullYear()) {
+      return false;
+    }
+    
+    const birth = new Date(y, m - 1, d);
+    if (birth.getDate() !== d || birth.getMonth() !== m - 1 || birth.getFullYear() !== y) {
+      return false;
+    }
+
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age >= 18;
+  };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (birthDate && (birthDate.length !== 10 || !validateAge(birthDate))) {
+      setMessage({ type: 'error', text: 'Você precisa ter pelo menos 18 anos e informar uma data válida.' });
+      return;
+    }
+
     setIsLoading(true);
     setMessage({ type: '', text: '' });
     try {
@@ -176,7 +249,7 @@ export const Profile = () => {
               <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full">
                   <Shield size={12} />
-                  {user.role === 'admin' ? 'Administrador' : 'Cliente'}
+                  {user.isAdmin ? 'Administrador' : 'Cliente'}
                 </span>
               </div>
             </div>
@@ -268,7 +341,7 @@ export const Profile = () => {
                     <input
                       type="text"
                       value={cep}
-                      onChange={(e) => setCep(e.target.value)}
+                      onChange={handleCepChange}
                       placeholder="00000-000"
                       className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
                     />
@@ -350,9 +423,11 @@ export const Profile = () => {
                       Data de Nascimento
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       value={birthDate}
-                      onChange={(e) => setBirthDate(e.target.value)}
+                      onChange={handleBirthDateChange}
+                      placeholder="DD/MM/AAAA"
+                      maxLength={10}
                       className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
                     />
                   </div>

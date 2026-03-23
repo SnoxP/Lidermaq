@@ -30,6 +30,7 @@ interface User {
   photoURL?: string;
   totalOrders?: number;
   totalSpent?: number;
+  role?: string;
 }
 
 interface AuthContextType {
@@ -187,7 +188,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 isAdmin: isAdmin,
                 tag: userData.tag,
                 createdAt: userData.createdAt,
+                phone: userData.phone,
                 cep: userData.cep,
+                street: userData.street,
+                number: userData.number,
+                neighborhood: userData.neighborhood,
+                city: userData.city,
+                state: userData.state,
                 birthDate: userData.birthDate,
                 photoURL: userData.photoURL || firebaseUser.photoURL,
                 totalOrders: userData.totalOrders || 0,

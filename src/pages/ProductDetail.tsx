@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send, Pencil, ChevronRight as ChevronRightIcon } from 'lucide-react';
+import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send, Pencil, ChevronRight as ChevronRightIcon, X } from 'lucide-react';
 import { db } from '../services/firebase';
 import { doc, getDoc, collection, addDoc, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
@@ -456,10 +456,20 @@ export const ProductDetail = () => {
       </div>
 
       {showAttendantSelector && (
-        <AttendantSelector 
-          onClose={() => setShowAttendantSelector(false)} 
-          productName={productName}
-        />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 max-w-md w-full relative">
+            <button 
+              onClick={() => setShowAttendantSelector(false)}
+              className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
+            <h3 className="text-xl font-bold mb-4 dark:text-white">Falar com Atendente</h3>
+            <AttendantSelector 
+              message={`Olá, tenho interesse no produto: ${productName} - Lidermaq`}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
