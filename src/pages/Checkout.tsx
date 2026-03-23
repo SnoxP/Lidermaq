@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -34,11 +34,12 @@ export const Checkout = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string, discountPercentage: number } | null>(null);
   const [couponError, setCouponError] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
     if (!user) {
       navigate('/login?redirect=/checkout');
-    } else {
+    } else if (!hasInitialized.current) {
       setFormData({
         name: user.name || '',
         email: user.email || '',
@@ -51,6 +52,7 @@ export const Checkout = () => {
         state: user.state || '',
         birthDate: user.birthDate || '',
       });
+      hasInitialized.current = true;
     }
   }, [user, navigate]);
 

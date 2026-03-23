@@ -10,7 +10,7 @@ import {
   User as FirebaseUser 
 } from 'firebase/auth';
 import { auth, db } from '../services/firebase';
-import { doc, getDoc, setDoc, deleteDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, serverTimestamp, runTransaction, onSnapshot } from 'firebase/firestore';
 
 interface User {
   id: string;
@@ -151,8 +151,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
+    let unsubscribeSnapshot: (() => void) | null = null;
+
     // Escuta mudanças no estado de autenticação do Firebase
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
       if (firebaseUser && firebaseUser.email) {
         setLoading(true); // Prevent redirects while fetching user data
         try {
@@ -171,49 +178,63 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             await signOut(auth);
             setUser(null);
             alert("Sua conta ou IP foi banido do sistema.");
+            setLoading(false);
           } else {
             const isAdmin = await checkAdminStatus(firebaseUser.email);
-            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-            const userData = userDoc.exists() ? userDoc.data() : {};
             
-            setUser(prev => {
-              const fetchedName = userData.name || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário';
-              // Preserve the name if it was already set by register() and is not just the email prefix
-              const finalName = (prev && prev.name && prev.name !== firebaseUser.email?.split('@')[0]) ? prev.name : fetchedName;
+            unsubscribeSnapshot = onSnapshot(doc(db, 'users', firebaseUser.uid), (userDoc) => {
+              const userData = userDoc.exists() ? userDoc.data() : {};
               
-              return {
-                id: firebaseUser.uid,
-                email: firebaseUser.email!,
-                name: finalName,
-                isAdmin: isAdmin,
-                tag: userData.tag,
-                createdAt: userData.createdAt,
-                phone: userData.phone,
-                cep: userData.cep,
-                street: userData.street,
-                number: userData.number,
-                neighborhood: userData.neighborhood,
-                city: userData.city,
-                state: userData.state,
-                birthDate: userData.birthDate,
-                photoURL: userData.photoURL || firebaseUser.photoURL,
-                totalOrders: userData.totalOrders || 0,
-                totalSpent: userData.totalSpent || 0
-              };
+              setUser(prev => {
+                const fetchedName = userData.name || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário';
+                // Preserve the name if it was already set by register() and is not just the email prefix
+                const finalName = (prev && prev.name && prev.name !== firebaseUser.email?.split('@')[0]) ? prev.name : fetchedName;
+                
+                return {
+                  id: firebaseUser.uid,
+                  email: firebaseUser.email!,
+                  name: finalName,
+                  isAdmin: isAdmin,
+                  tag: userData.tag,
+                  createdAt: userData.createdAt,
+                  phone: userData.phone,
+                  cep: userData.cep,
+                  street: userData.street,
+                  number: userData.number,
+                  neighborhood: userData.neighborhood,
+                  city: userData.city,
+                  state: userData.state,
+                  birthDate: userData.birthDate,
+                  photoURL: userData.photoURL || firebaseUser.photoURL,
+                  totalOrders: userData.totalOrders || 0,
+                  totalSpent: userData.totalSpent || 0
+                };
+              });
+              setLoading(false);
+            }, (error) => {
+              console.error("Erro ao ouvir documento do usuário:", error);
+              setLoading(false);
             });
+            
             // Atualiza o status online sem travar a UI
             syncUserToFirestore(firebaseUser);
           }
         } catch (e) {
           console.error("Erro ao sincronizar usuário:", e);
+          setLoading(false);
         }
       } else {
         setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+      }
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
