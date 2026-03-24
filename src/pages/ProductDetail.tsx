@@ -16,6 +16,7 @@ export const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [mainImage, setMainImage] = useState<string>('');
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [showAttendantSelector, setShowAttendantSelector] = useState(false);
   const { addToCart, setIsCartOpen } = useCart();
   const { user } = useAuth();
@@ -188,7 +189,18 @@ export const ProductDetail = () => {
             {/* Gallery */}
             <div className="space-y-4">
               <div className="aspect-square rounded-xl overflow-hidden bg-white border border-zinc-100 dark:border-zinc-800 relative group">
-                <img src={productImage} alt={product.name} className="w-full h-full object-contain p-8" referrerPolicy="no-referrer" />
+                {!isImageLoaded && (
+                  <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
+                )}
+                <img 
+                  src={productImage} 
+                  alt={product.name} 
+                  className={`w-full h-full object-contain p-8 transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`} 
+                  fetchPriority="high" 
+                  loading="eager" 
+                  referrerPolicy="no-referrer" 
+                  onLoad={() => setIsImageLoaded(true)}
+                />
                 
                 {product.images?.length > 1 && (
                   <>

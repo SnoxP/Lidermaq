@@ -17,6 +17,7 @@ import { Terms } from './pages/Terms';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
+import { Favorites } from './pages/Favorites';
 import { Cart } from './pages/Cart';
 import { Checkout } from './pages/Checkout';
 import { AdminDashboard } from './pages/AdminDashboard';
@@ -33,6 +34,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProductProvider } from './contexts/ProductContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { CartProvider } from './contexts/CartContext';
+import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -41,9 +43,10 @@ export default function App() {
     <ThemeProvider>
       <AuthProvider>
         <ProductProvider>
-          <CartProvider>
-            <Router>
-              <ScrollToTop />
+          <FavoritesProvider>
+            <CartProvider>
+              <Router>
+                <ScrollToTop />
               <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-500 pb-20 lg:pb-0">
                 <Header />
                 <CartDrawer />
@@ -59,6 +62,7 @@ export default function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/cadastro" element={<Register />} />
                     <Route path="/carrinho" element={<Cart />} />
+                    <Route path="/favoritos" element={<Favorites />} />
                     <Route 
                       path="/checkout" 
                       element={
@@ -160,6 +164,7 @@ export default function App() {
               </div>
             </Router>
           </CartProvider>
+          </FavoritesProvider>
         </ProductProvider>
       </AuthProvider>
     </ThemeProvider>

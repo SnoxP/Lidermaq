@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, MapPin, Phone, Mail, ShieldCheck, CreditCard } from 'lucide-react';
+import { Facebook, Instagram, MapPin, Phone, Mail, ShieldCheck, CreditCard, Store } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -10,8 +10,8 @@ export const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2 space-y-6">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-white">
-                <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-accent text-white">
+                <Store size={24} className="w-7 h-7" />
               </div>
               <div className="flex flex-col">
                 <span className="text-3xl font-black tracking-tighter font-display leading-none">

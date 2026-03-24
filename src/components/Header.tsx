@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag, Search, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag, Search, ChevronDown, Store, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -39,8 +39,8 @@ export const Header = () => {
         <div className="container mx-auto px-4 py-4 md:py-6 flex items-center justify-between gap-4 md:gap-8">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-white">
-              <img src="https://i.imgur.com/vgZATEv.png" alt="Lidermaq Logo" className="w-full h-full object-cover" />
+            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-accent text-white">
+              <Store size={24} className="md:w-7 md:h-7" />
             </div>
             <div className="flex flex-col">
               <span className="text-2xl md:text-3xl font-black tracking-tighter font-display leading-none">
@@ -234,11 +234,11 @@ export const Header = () => {
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120]"
             />
             <motion.div
-              initial={{ x: '-100%' }}
+              initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
+              exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[130] overflow-y-auto flex flex-col"
+              className="fixed top-0 right-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[130] overflow-y-auto flex flex-col"
             >
               <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/5">
                 <span className="text-xl font-black font-display dark:text-white">MENU</span>
@@ -251,6 +251,22 @@ export const Header = () => {
               </div>
 
               <div className="p-4">
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Configurações</p>
+                  <div className="flex flex-col px-4">
+                    <button 
+                      onClick={() => toggleTheme()}
+                      className="flex items-center justify-between py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors w-full text-left"
+                    >
+                      <span className="flex items-center gap-3">
+                        {theme === 'dark' ? <Moon size={18} className="text-accent" /> : theme === 'light' ? <Sun size={18} className="text-accent" /> : <Monitor size={18} className="text-accent" />}
+                        Tema do Site
+                      </span>
+                      <span className="text-xs text-zinc-400 capitalize">{theme === 'system' ? 'Sistema' : theme === 'dark' ? 'Escuro' : 'Claro'}</span>
+                    </button>
+                  </div>
+                </div>
+
                 <div className="mb-6">
                   <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Categorias</p>
                   <div className="flex flex-col">
@@ -270,10 +286,11 @@ export const Header = () => {
                 <div className="mb-6">
                   <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Navegação</p>
                   <div className="flex flex-col">
-                    <Link to="/" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Início</Link>
-                    <Link to="/catalogo" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Catálogo Completo</Link>
-                    <Link to="/sobre" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Sobre a Lidermaq</Link>
-                    <Link to="/assistencia" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors">Assistência Técnica</Link>
+                    <Link to="/" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Início</Link>
+                    <Link to="/catalogo" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Catálogo Completo</Link>
+                    <Link to="/favoritos" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3"><Heart size={18} className="text-accent" /> Meus Favoritos</Link>
+                    <Link to="/sobre" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Sobre a Lidermaq</Link>
+                    <Link to="/assistencia" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Assistência Técnica</Link>
                   </div>
                 </div>
               </div>

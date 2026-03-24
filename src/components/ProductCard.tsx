@@ -1,10 +1,11 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Edit2, ShoppingBag } from 'lucide-react';
+import { ArrowRight, Edit2, ShoppingBag, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 import { formatCurrency } from '../utils/format';
 
@@ -16,8 +17,12 @@ export interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols = 1 }) => {
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const navigate = useNavigate();
   const isAdmin = user?.isAdmin;
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  
+  const isFav = isFavorite(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation to product detail
@@ -28,27 +33,35 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
     addToCart(product);
   };
 
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    if (isFav) {
+      removeFromFavorites(product.id);
+    } else {
+      addToFavorites(product);
+    }
+  };
+
   return (
     <motion.div 
       whileHover={{ y: -10 }}
       className="card-premium group product-card-item"
     >
       <Link to={`/produto/${product.id}`} className="block relative aspect-square overflow-hidden bg-white">
-        {/* Adaptive Background */}
-        <div 
-          className="absolute inset-0 w-full h-full"
-          style={{
-            backgroundImage: `url(${product.image || 'https://picsum.photos/seed/lidermaq-placeholder/800/600'})`,
-            backgroundSize: '5000% 5000%',
-            backgroundPosition: '2% 2%',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
+        {!isImageLoaded && (
+          <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
+        )}
         <img 
-          src={product.image || 'https://picsum.photos/seed/lidermaq-placeholder/800/600'} 
+          src={product.image || 'https://picsum.photos/seed/lidermaq-placeholder/400/300'} 
           alt={product.name}
-          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''}`}
+          onLoad={() => setIsImageLoaded(true)}
+          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''} ${!isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
           loading="lazy"
+          decoding="async"
           referrerPolicy="no-referrer"
         />
         {product.available === false && (
@@ -61,6 +74,13 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
             {product.category || 'Geral'}
           </span>
         </div>
+        <button
+          onClick={handleToggleFavorite}
+          className={`absolute ${gridCols >= 3 ? 'top-2 right-2 sm:top-4 sm:right-4' : 'top-4 right-4'} w-8 h-8 sm:w-10 sm:h-10 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white shadow-sm border border-white/20 hover:bg-white dark:hover:bg-zinc-800 transition-colors z-20`}
+          title={isFav ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+        >
+          <Heart size={gridCols >= 3 ? 14 : 18} className={`transition-colors ${isFav ? 'fill-accent text-accent' : 'text-zinc-600 dark:text-zinc-400'}`} />
+        </button>
       </Link>
       
       <div className={`${gridCols >= 3 ? 'p-2 sm:p-6' : gridCols === 2 ? 'p-3 sm:p-6' : 'p-6'}`}>

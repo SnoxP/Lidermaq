@@ -48,6 +48,8 @@ export const Home = () => {
             src="https://i.imgur.com/cU4baTN.png" 
             alt="Lidermaq Empresa" 
             className="md:hidden w-full h-full object-cover object-bottom origin-bottom"
+            fetchPriority="high"
+            loading="eager"
             referrerPolicy="no-referrer"
           />
           <motion.img 
@@ -57,6 +59,8 @@ export const Home = () => {
             src="https://i.imgur.com/519GNtq.png" 
             alt="Lidermaq Empresa" 
             className="hidden md:block w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
             referrerPolicy="no-referrer"
           />
         </div>
@@ -148,7 +152,7 @@ export const Home = () => {
             ].map((seg, i) => (
               <Link key={i} to={`/catalogo?cat=${seg.name}`} className="relative overflow-hidden rounded-2xl aspect-square group">
                 <div className="absolute inset-0 bg-zinc-900/60 group-hover:bg-zinc-900/40 transition-colors z-10" />
-                <img src={seg.img} alt={seg.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img src={seg.img} alt={seg.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white p-4 text-center">
                   <seg.icon size={32} className="mb-3 opacity-80" />
                   <span className="font-bold text-lg leading-tight">{seg.name}</span>
@@ -211,29 +215,31 @@ export const Home = () => {
       </section>
 
       {/* Marcas */}
-      <section className="py-16 bg-zinc-50 dark:bg-zinc-950">
+      <section className="py-8 md:py-12 bg-zinc-50 dark:bg-zinc-950">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-black mb-12 dark:text-white font-display">TRABALHAMOS COM AS MELHORES MARCAS</h2>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+          <h2 className="text-xl md:text-2xl font-black mb-6 md:mb-8 dark:text-white font-display">TRABALHAMOS COM AS MELHORES MARCAS</h2>
+          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
             {['GELOPAR', 'VENÂNCIO', 'METVISA', 'SKYSEN', 'PROGÁS', 'BRAESI'].map((brand, i) => (
-              <span key={i} className="text-2xl md:text-4xl font-black text-zinc-800 dark:text-zinc-200 tracking-widest">{brand}</span>
+              <span key={i} className="text-lg md:text-xl font-black text-zinc-800 dark:text-zinc-200 tracking-widest">{brand}</span>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="pt-20 pb-20 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
+      <section className="pt-10 pb-10 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative block rounded-[2rem] overflow-hidden shadow-2xl border border-zinc-200 dark:border-white/5 bg-zinc-900 max-w-5xl mx-auto"
+            className="relative block rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-white/5 bg-zinc-900 max-w-3xl mx-auto"
           >
             <Link to="/produto/1QEP7nmIfy8w5WfhApeA" className="block w-full h-full">
               <img 
                 src="https://i.ibb.co/q2j76FQ/Cn-P-13032026-203914.png" 
                 alt="Assistência Técnica Lidermaq" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
               />
             </Link>
