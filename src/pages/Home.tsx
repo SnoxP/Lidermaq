@@ -139,30 +139,6 @@ export const Home = () => {
           <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">CATEGORIAS</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { name: 'Refrigeração Comercial', icon: Snowflake, query: 'refrigeracao' },
-              { name: 'Maquinário de Produção', icon: Settings, query: 'maquina' },
-              { name: 'Expositores de Alimentos', icon: Store, query: 'expositor' },
-              { name: 'Equipamentos para Cocção', icon: Flame, query: 'fogao' },
-              { name: 'Portáteis Industriais', icon: Zap, query: 'liquidificador' },
-              { name: 'Mobiliário Comercial', icon: Briefcase, query: 'mesa' }
-            ].map((cat, i) => (
-              <Link key={i} to={`/catalogo?q=${cat.query}`} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl p-6 flex flex-col items-center text-center gap-4 hover:border-accent hover:shadow-lg hover:-translate-y-1 transition-all group">
-                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:bg-accent group-hover:text-white transition-colors">
-                  <cat.icon size={32} />
-                </div>
-                <span className="font-bold text-sm dark:text-white">{cat.name}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Segmentos */}
-      <section className="py-16 bg-white dark:bg-zinc-900 border-y border-zinc-200 dark:border-white/5">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">SEGMENTOS</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
               { name: 'Açougues', icon: Flame, img: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=400&h=400&auto=format&fit=crop' },
               { name: 'Lanchonetes', icon: Coffee, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400&h=400&auto=format&fit=crop' },
               { name: 'Padarias', icon: Utensils, img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=400&h=400&auto=format&fit=crop' },
@@ -177,6 +153,30 @@ export const Home = () => {
                   <seg.icon size={32} className="mb-3 opacity-80" />
                   <span className="font-bold text-lg leading-tight">{seg.name}</span>
                 </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Segmentos */}
+      <section className="py-16 bg-white dark:bg-zinc-900 border-y border-zinc-200 dark:border-white/5">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">SEGMENTOS</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: 'Refrigeração Comercial', icon: Snowflake, query: 'refrigeracao' },
+              { name: 'Maquinário de Produção', icon: Settings, query: 'maquina' },
+              { name: 'Expositores de Alimentos', icon: Store, query: 'expositor' },
+              { name: 'Equipamentos para Cocção', icon: Flame, query: 'fogao' },
+              { name: 'Portáteis Industriais', icon: Zap, query: 'liquidificador' },
+              { name: 'Mobiliário Comercial', icon: Briefcase, query: 'mesa' }
+            ].map((cat, i) => (
+              <Link key={i} to={`/catalogo?q=${cat.query}`} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl p-6 flex flex-col items-center text-center gap-4 hover:border-accent hover:shadow-lg hover:-translate-y-1 transition-all group">
+                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:bg-accent group-hover:text-white transition-colors">
+                  <cat.icon size={32} />
+                </div>
+                <span className="font-bold text-sm dark:text-white">{cat.name}</span>
               </Link>
             ))}
           </div>

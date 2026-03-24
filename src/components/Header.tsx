@@ -35,32 +35,8 @@ export const Header = () => {
   return (
     <>
       <header className="w-full z-[70] bg-white dark:bg-zinc-950 shadow-md sticky top-0">
-        {/* Top Bar */}
-        <div className="bg-zinc-900 text-zinc-300 text-xs py-2 hidden md:block">
-          <div className="container mx-auto px-4 flex justify-between items-center">
-            <div className="flex items-center gap-6">
-              <span className="flex items-center gap-2"><Phone size={14} className="text-accent" /> Televendas: (89) 99917-0800 | (89) 99986-1264</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link to="/sobre" className="hover:text-white transition-colors">Institucional</Link>
-              <Link to="/assistencia" className="hover:text-white transition-colors">Assistência Técnica</Link>
-              <button onClick={toggleTheme} className="hover:text-white transition-colors flex items-center gap-1">
-                {theme === 'light' ? <><Moon size={12} /> Escuro</> : theme === 'dark' ? <><Monitor size={12} /> Sistema</> : <><Sun size={12} /> Claro</>}
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Middle Bar */}
         <div className="container mx-auto px-4 py-4 md:py-6 flex items-center justify-between gap-4 md:gap-8">
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 text-zinc-600 dark:text-zinc-300"
-            onClick={() => setIsOpen(true)}
-          >
-            <Menu size={24} />
-          </button>
-
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0">
             <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-white">
@@ -194,6 +170,14 @@ export const Header = () => {
                 </p>
               </div>
             </button>
+
+            {/* Hamburger Menu */}
+            <button 
+              className="p-2 text-zinc-600 dark:text-zinc-300 hover:text-accent transition-colors"
+              onClick={() => setIsOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
           </div>
         </div>
 
@@ -216,12 +200,12 @@ export const Header = () => {
         {/* Bottom Bar - Categories */}
         <div className="bg-accent text-white hidden md:block">
           <div className="container mx-auto px-4">
-            <nav className="flex items-center gap-8">
+            <nav className="flex items-center gap-4 py-3">
               <div className="relative group">
-                <button className="flex items-center gap-2 font-bold py-4 hover:text-white/80 transition-colors">
-                  <Menu size={20} /> TODAS AS CATEGORIAS <ChevronDown size={16} />
+                <button className="flex items-center gap-2 font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors">
+                  TODAS AS CATEGORIAS <ChevronDown size={16} />
                 </button>
-                <div className="absolute top-full left-0 w-64 bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200 dark:border-zinc-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 flex flex-col py-2">
+                <div className="absolute top-full left-0 w-64 bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200 dark:border-zinc-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 flex flex-col py-2 mt-3 rounded-xl">
                   {categories.map((cat, i) => (
                     <Link key={i} to={cat.path} className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-accent dark:hover:text-accent transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-0">
                       {cat.name}
@@ -229,10 +213,10 @@ export const Header = () => {
                   ))}
                 </div>
               </div>
-              <Link to="/catalogo" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Catálogo Completo</Link>
-              <Link to="/catalogo?cat=Açougues" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Açougues</Link>
-              <Link to="/catalogo?cat=Padarias" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Padarias</Link>
-              <Link to="/catalogo?cat=Restaurantes" className="font-bold py-4 hover:text-white/80 transition-colors text-sm uppercase tracking-wider">Restaurantes</Link>
+              <Link to="/catalogo" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Catálogo Completo</Link>
+              <Link to="/catalogo?cat=Açougues" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Açougues</Link>
+              <Link to="/catalogo?cat=Padarias" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Padarias</Link>
+              <Link to="/catalogo?cat=Restaurantes" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Restaurantes</Link>
             </nav>
           </div>
         </div>
