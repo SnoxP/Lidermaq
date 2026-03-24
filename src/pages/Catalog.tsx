@@ -25,6 +25,31 @@ export const Catalog = () => {
     return saved ? (parseInt(saved, 10) as 1 | 2 | 3 | 4) : 1;
   });
 
+  const [categoriesExpanded, setCategoriesExpanded] = useState(() => {
+    const saved = localStorage.getItem('lidermaq_categoriesExpanded');
+    return saved ? JSON.parse(saved) : true;
+  });
+  const [brandsExpanded, setBrandsExpanded] = useState(() => {
+    const saved = localStorage.getItem('lidermaq_brandsExpanded');
+    return saved ? JSON.parse(saved) : true;
+  });
+  const [availabilityExpanded, setAvailabilityExpanded] = useState(() => {
+    const saved = localStorage.getItem('lidermaq_availabilityExpanded');
+    return saved ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('lidermaq_categoriesExpanded', JSON.stringify(categoriesExpanded));
+  }, [categoriesExpanded]);
+
+  useEffect(() => {
+    localStorage.setItem('lidermaq_brandsExpanded', JSON.stringify(brandsExpanded));
+  }, [brandsExpanded]);
+
+  useEffect(() => {
+    localStorage.setItem('lidermaq_availabilityExpanded', JSON.stringify(availabilityExpanded));
+  }, [availabilityExpanded]);
+
   const activeCategory = searchParams.get('cat') || 'Todos';
   const searchQuery = searchParams.get('q') || '';
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
@@ -199,65 +224,133 @@ export const Catalog = () => {
               <h2 className="text-lg font-bold text-zinc-900 dark:text-white mb-6 uppercase tracking-wider">Filtros</h2>
               
               {/* Categories */}
-              <div className="mb-8">
-                <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-4 uppercase tracking-wider">Categorias</h3>
-                <div className="space-y-2">
-                  {categories.map(category => (
-                    <button
-                      key={category}
-                      onClick={() => {
-                        updateParams({ cat: category === 'Todos' ? null : category, page: '1' });
-                      }}
-                      className={`block w-full text-left text-sm py-1 transition-colors ${
-                        activeCategory === category 
-                          ? 'text-accent font-bold' 
-                          : 'text-zinc-600 dark:text-zinc-400 hover:text-accent dark:hover:text-accent'
-                      }`}
+              <div className="mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-6">
+                <button 
+                  onClick={() => setCategoriesExpanded(!categoriesExpanded)}
+                  className="w-full flex items-center justify-between text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider group"
+                >
+                  Categorias
+                  <ChevronDown size={16} className={`text-zinc-400 transition-transform duration-300 ${categoriesExpanded ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {categoriesExpanded && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
                     >
-                      {category}
-                    </button>
-                  ))}
-                </div>
+                      <div className="space-y-2 pt-4">
+                        {categories.map(category => (
+                          <button
+                            key={category}
+                            onClick={() => {
+                              updateParams({ cat: category === 'Todos' ? null : category, page: '1' });
+                            }}
+                            className={`block w-full text-left text-sm py-1 transition-colors ${
+                              activeCategory === category 
+                                ? 'text-accent font-bold' 
+                                : 'text-zinc-600 dark:text-zinc-400 hover:text-accent dark:hover:text-accent'
+                            }`}
+                          >
+                            {category}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Brands */}
               {brands.length > 0 && (
-                <div className="mb-8">
-                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-4 uppercase tracking-wider">Marcas</h3>
-                  <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                    {brands.map(brand => (
-                      <label key={brand} className="flex items-center gap-3 cursor-pointer group">
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                          selectedBrands.includes(brand) 
-                            ? 'bg-accent border-accent text-white' 
-                            : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 group-hover:border-accent'
-                        }`}>
-                          {selectedBrands.includes(brand) && <Square className="w-3 h-3 fill-current" />}
+                <div className="mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-6">
+                  <button 
+                    onClick={() => setBrandsExpanded(!brandsExpanded)}
+                    className="w-full flex items-center justify-between text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider group"
+                  >
+                    Marcas
+                    <ChevronDown size={16} className={`text-zinc-400 transition-transform duration-300 ${brandsExpanded ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {brandsExpanded && (
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar pt-4">
+                          {brands.map(brand => (
+                            <label key={brand} className="flex items-center gap-3 cursor-pointer group">
+                              <input 
+                                type="checkbox" 
+                                className="hidden"
+                                checked={selectedBrands.includes(brand)}
+                                onChange={() => toggleBrand(brand)}
+                              />
+                              <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                                selectedBrands.includes(brand) 
+                                  ? 'bg-accent border-accent text-white' 
+                                  : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 group-hover:border-accent'
+                              }`}>
+                                {selectedBrands.includes(brand) && <Square className="w-3 h-3 fill-current" />}
+                              </div>
+                              <span className="text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+                                {brand}
+                              </span>
+                            </label>
+                          ))}
                         </div>
-                        <span className="text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
-                          {brand}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
 
               {/* Availability */}
               <div>
-                <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-4 uppercase tracking-wider">Disponibilidade</h3>
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                    inStockOnly 
-                      ? 'bg-accent border-accent text-white' 
-                      : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 group-hover:border-accent'
-                  }`}>
-                    {inStockOnly && <Square className="w-3 h-3 fill-current" />}
-                  </div>
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
-                    Apenas em estoque
-                  </span>
-                </label>
+                <button 
+                  onClick={() => setAvailabilityExpanded(!availabilityExpanded)}
+                  className="w-full flex items-center justify-between text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider group"
+                >
+                  Disponibilidade
+                  <ChevronDown size={16} className={`text-zinc-400 transition-transform duration-300 ${availabilityExpanded ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {availabilityExpanded && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <input 
+                            type="checkbox" 
+                            className="hidden"
+                            checked={inStockOnly}
+                            onChange={(e) => {
+                              setInStockOnly(e.target.checked);
+                              updateParams({ page: '1' });
+                            }}
+                          />
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                            inStockOnly 
+                              ? 'bg-accent border-accent text-white' 
+                              : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 group-hover:border-accent'
+                          }`}>
+                            {inStockOnly && <Square className="w-3 h-3 fill-current" />}
+                          </div>
+                          <span className="text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+                            Apenas em estoque
+                          </span>
+                        </label>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
