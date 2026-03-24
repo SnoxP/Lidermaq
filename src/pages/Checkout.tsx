@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { SEO } from '../components/SEO';
-import { ChevronRight, AlertTriangle, CreditCard, MapPin, User, Mail, Hash, QrCode, Barcode, CheckCircle2, Tag, X } from 'lucide-react';
+import { ChevronRight, AlertTriangle, CreditCard, MapPin, User, Mail, Hash, QrCode, Barcode, CheckCircle2, Tag, X, Copy } from 'lucide-react';
 import { db } from '../services/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { QRCodeSVG } from 'qrcode.react';
+import { generatePixPayload } from '../utils/pix';
 
 export const Checkout = () => {
   const { user } = useAuth();
@@ -213,6 +215,16 @@ export const Checkout = () => {
 
   const discountAmount = appliedCoupon ? (total * (appliedCoupon.discountPercentage / 100)) : 0;
   const finalTotal = total - discountAmount;
+
+  const pixKey = "95b230e1-a1bb-4ef1-9151-546f45879d05";
+  const pixName = "LIDERMAQ";
+  const pixCity = "SAO RAIMUNDO";
+  const pixPayload = generatePixPayload(pixKey, pixName, pixCity, finalTotal);
+
+  const handleCopyPix = () => {
+    navigator.clipboard.writeText(pixPayload);
+    alert('Código Pix copiado com sucesso!');
+  };
 
   return (
     <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500 pb-20">
@@ -448,18 +460,22 @@ export const Checkout = () => {
                     <div className="text-2xl font-black text-emerald-900 dark:text-emerald-200 mb-4">
                       R$ {finalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
-                    <img 
-                      src="https://i.ibb.co/BHDxCTqj/qrcode-pix.png" 
-                      alt="QR Code Pix" 
-                      className="mx-auto w-48 h-48 mb-4 rounded-lg border border-emerald-200"
-                      referrerPolicy="no-referrer"
-                    />
-                    <p className="text-sm text-emerald-800 dark:text-emerald-300 font-bold mb-2">Chave Pix:</p>
-                    <div className="bg-white dark:bg-zinc-950 p-3 rounded-lg border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono break-all text-emerald-900 dark:text-emerald-200 mb-4">
-                      00020126580014BR.GOV.BCB.PIX013695b230e1-a1bb-4ef1-9151-546f45879d055204000053039865802BR5901N6001C62070503***63047CF0
+                    <div className="bg-white p-4 rounded-xl inline-block mb-4 border border-emerald-200 shadow-sm">
+                      <QRCodeSVG value={pixPayload} size={192} />
+                    </div>
+                    <p className="text-sm text-emerald-800 dark:text-emerald-300 font-bold mb-2">Pix Copia e Cola:</p>
+                    <div 
+                      onClick={handleCopyPix}
+                      className="bg-white dark:bg-zinc-950 p-3 rounded-lg border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono break-all text-emerald-900 dark:text-emerald-200 mb-4 cursor-pointer hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors relative group"
+                      title="Clique para copiar"
+                    >
+                      {pixPayload}
+                      <div className="absolute inset-0 flex items-center justify-center bg-emerald-900/80 text-white opacity-0 group-hover:opacity-100 transition-opacity rounded-lg font-bold gap-2">
+                        <Copy size={16} /> Copiar Código
+                      </div>
                     </div>
                     <p className="text-xs text-emerald-700 dark:text-emerald-400/80">
-                      Copie a chave ou escaneie o QR Code acima para realizar o pagamento.
+                      Escaneie o QR Code ou copie o código acima para realizar o pagamento. O valor exato já está configurado.
                     </p>
                   </div>
                 )}
