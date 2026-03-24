@@ -440,14 +440,18 @@ export const Checkout = () => {
                       </div>
                     </div>
                     <div className="space-y-2 pt-2">
+                      <div className="flex justify-between items-center mb-4 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <span className="text-sm font-bold text-zinc-900 dark:text-white">Valor a Pagar:</span>
+                        <span className="text-xl font-black text-accent">R$ {finalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      </div>
                       <label className="text-sm font-bold text-zinc-900 dark:text-white">Parcelamento</label>
                       <select className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent transition-all">
-                        <option>1x de R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>2x de R$ {(total / 2).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>3x de R$ {(total / 3).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>4x de R$ {(total / 4).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>5x de R$ {(total / 5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
-                        <option>6x de R$ {(total / 6).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>1x de R$ {finalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>2x de R$ {(finalTotal / 2).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>3x de R$ {(finalTotal / 3).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>4x de R$ {(finalTotal / 4).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>5x de R$ {(finalTotal / 5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
+                        <option>6x de R$ {(finalTotal / 6).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} sem juros</option>
                       </select>
                     </div>
                   </div>
