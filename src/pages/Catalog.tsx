@@ -370,16 +370,6 @@ export const Catalog = () => {
                   <span>{filteredProducts.length} produtos encontrados</span>
                 </div>
               </div>
-
-              <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                {/* Mobile Grid Controls */}
-                <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg sm:hidden">
-                  <button onClick={() => handleGridChange(1)} className={`p-1.5 rounded ${mobileGridCols === 1 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500'}`}><Square size={16} /></button>
-                  <button onClick={() => handleGridChange(2)} className={`p-1.5 rounded ${mobileGridCols === 2 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500'}`}><LayoutGrid size={16} /></button>
-                  <button onClick={() => handleGridChange(3)} className={`p-1.5 rounded ${mobileGridCols === 3 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500'}`}><Grid3X3 size={16} /></button>
-                  <button onClick={() => handleGridChange(4)} className={`p-1.5 rounded ${mobileGridCols === 4 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500'}`}><Grid2X2 size={16} /></button>
-                </div>
-              </div>
             </div>
 
             {/* Active Filters Tags */}
@@ -516,6 +506,17 @@ export const Catalog = () => {
               </div>
 
               <div className="p-6 flex-1">
+                {/* Mobile Grid Controls */}
+                <div className="mb-8">
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-4 uppercase tracking-wider">Visualização</h3>
+                  <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-xl">
+                    <button onClick={() => handleGridChange(1)} className={`flex-1 flex justify-center p-2 rounded-lg transition-all ${mobileGridCols === 1 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}><Square size={20} /></button>
+                    <button onClick={() => handleGridChange(2)} className={`flex-1 flex justify-center p-2 rounded-lg transition-all ${mobileGridCols === 2 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}><LayoutGrid size={20} /></button>
+                    <button onClick={() => handleGridChange(3)} className={`flex-1 flex justify-center p-2 rounded-lg transition-all ${mobileGridCols === 3 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}><Grid3X3 size={20} /></button>
+                    <button onClick={() => handleGridChange(4)} className={`flex-1 flex justify-center p-2 rounded-lg transition-all ${mobileGridCols === 4 ? 'bg-white dark:bg-zinc-700 shadow-sm text-accent' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}><Grid2X2 size={20} /></button>
+                  </div>
+                </div>
+
                 {/* Categories */}
                 <div className="mb-8">
                   <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-4 uppercase tracking-wider">Categorias</h3>
