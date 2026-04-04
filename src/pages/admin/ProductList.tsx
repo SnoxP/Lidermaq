@@ -34,7 +34,6 @@ export const ProductList = () => {
     if (!confirm('Tem certeza que deseja excluir este produto?')) return;
     try {
       await deleteDoc(doc(db, 'products', id));
-      fetchProducts();
     } catch (error) {
       console.error("Erro ao excluir produto:", error);
     }

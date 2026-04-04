@@ -37,6 +37,7 @@ import { CartProvider } from './contexts/CartContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { SEOManager } from './components/SEOManager';
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
           <FavoritesProvider>
             <CartProvider>
               <Router>
+                <SEOManager />
                 <ScrollToTop />
               <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-500 pb-20 lg:pb-0">
                 <Header />

@@ -21,7 +21,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const loadFavorites = async () => {
       if (user) {
         try {
-          const docRef = doc(db, 'users', user.uid);
+          const docRef = doc(db, 'users', user.id);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists() && docSnap.data().favorites) {
             setFavorites(docSnap.data().favorites);
@@ -46,7 +46,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setFavorites(newFavorites);
     if (user) {
       try {
-        const docRef = doc(db, 'users', user.uid);
+        const docRef = doc(db, 'users', user.id);
         await setDoc(docRef, { favorites: newFavorites }, { merge: true });
       } catch (error) {
         console.error("Error saving favorites:", error);

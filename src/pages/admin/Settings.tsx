@@ -11,6 +11,7 @@ export const Settings = () => {
   const [siteName, setSiteName] = useState('Lidermaq Equipamentos');
   const [contactEmail, setContactEmail] = useState('contato@lidermaq.com');
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [allowIndexing, setAllowIndexing] = useState(true);
   const [activeTab, setActiveTab] = useState('geral');
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -26,6 +27,7 @@ export const Settings = () => {
           setSiteName(data.siteName || 'Lidermaq Equipamentos');
           setContactEmail(data.contactEmail || 'contato@lidermaq.com');
           setMaintenanceMode(data.maintenanceMode || false);
+          setAllowIndexing(data.allowIndexing !== false);
         }
       } catch (error) {
         console.error("Erro ao carregar configurações:", error);
@@ -42,7 +44,8 @@ export const Settings = () => {
       await setDoc(doc(db, 'settings', 'general'), {
         siteName,
         contactEmail,
-        maintenanceMode
+        maintenanceMode,
+        allowIndexing
       }, { merge: true });
       alert('Configurações salvas com sucesso!');
     } catch (error) {
@@ -144,6 +147,19 @@ export const Settings = () => {
                           className={`w-14 h-8 rounded-full transition-all relative ${maintenanceMode ? 'bg-accent' : 'bg-neutral-bg dark:bg-zinc-700'}`}
                         >
                           <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${maintenanceMode ? 'right-1' : 'left-1'}`} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-neutral-bg dark:border-white/10">
+                        <div>
+                          <p className="font-bold dark:text-white">Indexação no Google (SEO)</p>
+                          <p className="text-xs text-primary/60 dark:text-zinc-400">Permite que o site apareça nos resultados de busca do Google.</p>
+                        </div>
+                        <button 
+                          onClick={() => setAllowIndexing(!allowIndexing)}
+                          className={`w-14 h-8 rounded-full transition-all relative ${allowIndexing ? 'bg-accent' : 'bg-neutral-bg dark:bg-zinc-700'}`}
+                        >
+                          <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${allowIndexing ? 'right-1' : 'left-1'}`} />
                         </button>
                       </div>
                     </div>

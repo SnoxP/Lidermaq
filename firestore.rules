@@ -82,6 +82,14 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
+    // Permitir que qualquer um incremente as visualizações
+    match /settings/stats {
+      allow read: if true;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['totalViews']) &&
+                       request.resource.data.totalViews == resource.data.totalViews + 1;
+      allow create: if request.resource.data.keys().hasOnly(['totalViews']) && request.resource.data.totalViews == 1;
+    }
+    
     match /metadata/{document=**} {
       allow read: if true;
       allow write: if true; // Necessário para o contador de tags de usuário, mas idealmente deveria ser restrito
