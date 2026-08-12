@@ -43,10 +43,14 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
           <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
         )}
         <img 
-          src={product.image || 'https://picsum.photos/seed/lidermaq-placeholder/400/300'} 
+          src={product.images?.[0] || product.image || 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem'} 
           alt={product.name}
           onLoad={() => setIsImageLoaded(true)}
-          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''} ${!isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem';
+            setIsImageLoaded(true);
+          }}
+          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''}`}
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"

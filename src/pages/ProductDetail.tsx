@@ -171,11 +171,15 @@ export const ProductDetail = () => {
                 <img 
                   src={productImage} 
                   alt={product.name} 
-                  className={`w-full h-full object-contain p-8 transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`} 
+                  className="w-full h-full object-contain p-8 transition-opacity duration-300" 
                   fetchPriority="high" 
                   loading="eager" 
                   referrerPolicy="no-referrer" 
                   onLoad={() => setIsImageLoaded(true)}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://placehold.co/800x800/e2e8f0/64748b?text=Sem+Imagem';
+                    setIsImageLoaded(true);
+                  }}
                 />
                 
                 {product.images?.length > 1 && (
@@ -205,7 +209,15 @@ export const ProductDetail = () => {
                         mainImage === img ? 'border-accent' : 'border-zinc-200 dark:border-zinc-800 hover:border-accent/50'
                       }`}
                     >
-                      <img src={img} alt={`${product.name} - Imagem ${idx + 1}`} className="w-full h-full object-contain p-2" referrerPolicy="no-referrer" />
+                      <img 
+                        src={img} 
+                        alt={`${product.name} - Imagem ${idx + 1}`} 
+                        className="w-full h-full object-contain p-2" 
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/e2e8f0/64748b?text=Sem+Imagem';
+                        }}
+                      />
                     </button>
                   ))}
                 </div>

@@ -4,6 +4,7 @@ export interface Product {
   category: string;
   brand: string;
   image: string;
+  images?: string[];
   description: string;
   specs: {
     dimensions: string;
