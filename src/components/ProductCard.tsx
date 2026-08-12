@@ -1,13 +1,10 @@
 import React, { memo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Edit2, ShoppingBag, Heart } from 'lucide-react';
+import { ArrowRight, Edit2, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
-import { useCart } from '../contexts/CartContext';
 import { useFavorites } from '../contexts/FavoritesContext';
-
-import { formatCurrency } from '../utils/format';
 
 export interface ProductCardProps {
   product: Product;
@@ -16,22 +13,12 @@ export interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols = 1 }) => {
   const { user } = useAuth();
-  const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const navigate = useNavigate();
   const isAdmin = user?.isAdmin;
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   
   const isFav = isFavorite(product.id);
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation to product detail
-    if (!user) {
-      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
-      return;
-    }
-    addToCart(product);
-  };
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -98,27 +85,8 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
           </p>
         </div>
         
-        <div className={`flex ${gridCols >= 3 ? 'flex-col items-start gap-2 sm:flex-row sm:items-end sm:justify-between' : gridCols === 2 ? 'flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between' : 'items-end justify-between'} pt-3 sm:pt-4 border-t border-zinc-100 dark:border-white/5`}>
-          <div>
-            <span className={`block ${gridCols >= 4 ? 'text-[7px] sm:text-[10px]' : gridCols === 3 ? 'text-[8px] sm:text-[10px]' : 'text-[10px]'} text-zinc-400 dark:text-zinc-500 uppercase font-bold tracking-widest mb-0.5 sm:mb-1`}>A partir de</span>
-            <span className={`${gridCols >= 4 ? 'text-xs sm:text-xl' : gridCols === 3 ? 'text-sm sm:text-xl' : gridCols === 2 ? 'text-lg sm:text-xl' : 'text-xl'} font-black text-zinc-900 dark:text-white font-display whitespace-nowrap`}>
-              {formatCurrency(product.price || 0)}
-            </span>
-            <span className={`${gridCols >= 4 ? 'text-[7px] sm:text-xs' : gridCols === 3 ? 'text-[9px] sm:text-xs' : 'text-xs'} text-accent font-semibold mt-0.5 sm:mt-1 line-clamp-1`}>
-              {product.installments || 'Consulte condições'}
-            </span>
-          </div>
-          
+        <div className={`flex ${gridCols >= 3 ? 'flex-col items-start gap-2 sm:flex-row sm:items-end sm:justify-end' : gridCols === 2 ? 'flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-end' : 'items-end justify-end'} pt-3 sm:pt-4 border-t border-zinc-100 dark:border-white/5`}>
             <div className={`flex items-center ${gridCols >= 4 ? 'gap-1 sm:gap-2' : gridCols === 3 ? 'gap-1 sm:gap-2' : 'gap-2'} w-full sm:w-auto justify-end mt-2 sm:mt-0`}>
-              {product.available !== false && (
-                <button 
-                  onClick={handleAddToCart}
-                  className={`${gridCols >= 4 ? 'w-7 h-7 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : gridCols === 3 ? 'w-8 h-8 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : 'w-10 h-10 rounded-xl'} bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all`}
-                  title="Adicionar ao Carrinho"
-                >
-                  <ShoppingBag className={`${gridCols >= 4 ? 'w-3 h-3 sm:w-[18px] sm:h-[18px]' : gridCols === 3 ? 'w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]' : 'w-[18px] h-[18px]'}`} />
-                </button>
-              )}
               {isAdmin && (
                 <Link 
                   to={`/admin/editar-produto/${product.id}`}

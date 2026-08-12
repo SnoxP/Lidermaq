@@ -5,7 +5,6 @@ import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { CookieBanner } from './components/CookieBanner';
 import { MobileHUD } from './components/MobileHUD';
-import { CartDrawer } from './components/CartDrawer';
 import { Home } from './pages/Home';
 import { Catalog } from './pages/Catalog';
 import { ProductDetail } from './pages/ProductDetail';
@@ -18,8 +17,6 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
 import { Favorites } from './pages/Favorites';
-import { Cart } from './pages/Cart';
-import { Checkout } from './pages/Checkout';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { NewProduct } from './pages/admin/NewProduct';
 import { EditProduct } from './pages/admin/EditProduct';
@@ -33,7 +30,6 @@ import { AdminManagement } from './pages/admin/AdminManagement';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProductProvider } from './contexts/ProductContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { CartProvider } from './contexts/CartContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -45,13 +41,11 @@ export default function App() {
       <AuthProvider>
         <ProductProvider>
           <FavoritesProvider>
-            <CartProvider>
               <Router>
                 <SEOManager />
                 <ScrollToTop />
               <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-500 pb-20 lg:pb-0">
                 <Header />
-                <CartDrawer />
                 <main className="flex-grow">
                   <Routes>
                     <Route path="/" element={<Home />} />
@@ -63,16 +57,7 @@ export default function App() {
                     <Route path="/termos" element={<Terms />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/cadastro" element={<Register />} />
-                    <Route path="/carrinho" element={<Cart />} />
                     <Route path="/favoritos" element={<Favorites />} />
-                    <Route 
-                      path="/checkout" 
-                      element={
-                        <ProtectedRoute>
-                          <Checkout />
-                        </ProtectedRoute>
-                      } 
-                    />
                     <Route 
                       path="/perfil" 
                       element={
@@ -165,7 +150,6 @@ export default function App() {
                 <CookieBanner />
               </div>
             </Router>
-          </CartProvider>
           </FavoritesProvider>
         </ProductProvider>
       </AuthProvider>

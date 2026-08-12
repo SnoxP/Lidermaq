@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { db } from '../services/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { calculateInstallments } from '../utils/format';
 
 interface ProductContextType {
   products: any[];
@@ -30,8 +29,7 @@ export const ProductProvider: React.FC<{ children: ReactNode }> = ({ children })
         const data = doc.data();
         return { 
           id: doc.id, 
-          ...data,
-          installments: calculateInstallments(data.price)
+          ...data
         };
       });
       setProducts(productList);

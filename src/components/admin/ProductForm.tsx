@@ -4,8 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 
-import { calculateInstallments } from '../../utils/format';
-
 interface ProductFormProps {
   productId?: string;
   isEdit?: boolean;
@@ -13,13 +11,12 @@ interface ProductFormProps {
 
 export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) => {
   const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
   const [brand, setBrand] = useState('');
   const [descriptions, setDescriptions] = useState<{title: string, text: string}[]>([{title: '', text: ''}]);
   const [category, setCategory] = useState('');
   const [available, setAvailable] = useState(true);
   const [images, setImages] = useState<string[]>(['']);
-  const [variants, setVariants] = useState<{ name: string; price: string; image?: string; description?: string }[]>([]);
+  const [variants, setVariants] = useState<{ name: string; image?: string; description?: string }[]>([]);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState<string | null>(null);
@@ -55,7 +52,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         if (productDoc.exists()) {
           const data = productDoc.data();
           setName(data.name || '');
-          setPrice(data.price ? Number(data.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '');
           setBrand(data.brand || '');
           if (data.descriptions && data.descriptions.length > 0) {
             setDescriptions(data.descriptions);
@@ -68,8 +64,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
           setAvailable(data.available !== false);
           setImages(data.images || ['']);
           setVariants(data.variants?.map((v: any) => ({
-            ...v,
-            price: v.price ? Number(v.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''
+            ...v
           })) || []);
         }
       }
@@ -327,7 +322,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     setImages(newImages);
   };
 
-  const handleAddVariant = () => setVariants([...variants, { name: '', price: '', description: '' }]);
+  const handleAddVariant = () => setVariants([...variants, { name: '', description: '' }]);
   const handleRemoveVariant = (index: number) => setVariants(variants.filter((_, i) => i !== index));
   const moveVariantUp = (index: number) => {
     if (index === 0) return;
@@ -345,20 +340,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
     newVariants[index + 1] = temp;
     setVariants(newVariants);
   };
-  const handleVariantChange = (index: number, field: 'name' | 'price' | 'image' | 'description', value: string) => {
+  const handleVariantChange = (index: number, field: 'name' | 'image' | 'description', value: string) => {
     const newVariants = [...variants];
     newVariants[index] = { ...newVariants[index], [field]: value };
     setVariants(newVariants);
-  };
-
-  const parsePriceInput = (val: string) => {
-    if (!val) return 0;
-    // If it contains both dot and comma (e.g., 1.050,50), or just comma (e.g., 1050,50)
-    if (val.includes(',') || (val.includes('.') && val.indexOf('.') < val.length - 3)) {
-      return parseFloat(val.replace(/\./g, '').replace(',', '.'));
-    }
-    // If it contains only a dot and it's near the end (e.g., 1050.50)
-    return parseFloat(val);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -383,14 +368,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
       const processedVariants = await Promise.all(
         variants.filter(v => v.name !== '').map(async v => ({
           ...v,
-          price: parsePriceInput(v.price),
           image: v.image ? await ensureImgBBMirror(v.image) : ''
         }))
       );
 
       const productData = {
         name,
-        price: parsePriceInput(price),
         brand,
         description: descriptions[0]?.text || '',
         descriptionTitle: descriptions[0]?.title || '',
@@ -399,7 +382,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
         image: processedImages[0] || '',
         images: processedImages,
         variants: processedVariants,
-        installments: calculateInstallments(parsePriceInput(price)),
         available,
         updatedAt: new Date().toISOString()
       };
@@ -485,14 +467,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2">Preço (R$)</label>
-                <input 
-                  type="text" inputMode="decimal" required value={price} onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-4 py-4 bg-neutral-bg dark:bg-zinc-800 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
-                  placeholder="0,00"
-                />
-              </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-2">Categoria</label>
                 <select 
@@ -636,14 +610,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
                         type="text" value={variant.name} onChange={(e) => handleVariantChange(index, 'name', e.target.value)}
                         className="w-full px-4 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
                         placeholder="Ex: Modelo 50 Litros"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-primary/40 dark:text-zinc-500 mb-1">Preço da Variação (R$)</label>
-                      <input 
-                        type="text" inputMode="decimal" value={variant.price} onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
-                        className="w-full px-4 py-3 bg-white dark:bg-zinc-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20"
-                        placeholder="0,00"
                       />
                     </div>
                   </div>

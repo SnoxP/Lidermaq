@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, ShoppingBag, Star, Send, Pencil, ChevronRight as ChevronRightIcon, X } from 'lucide-react';
+import { MessageCircle, Shield, Truck, PenTool as Tool, ArrowLeft, Check, Share2, ChevronLeft, ChevronRight, Star, Send, Pencil, ChevronRight as ChevronRightIcon, X } from 'lucide-react';
 import { db } from '../services/firebase';
 import { doc, getDoc, collection, addDoc, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { SEO } from '../components/SEO';
-import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import { calculateInstallments, formatCurrency } from '../utils/format';
 import { AttendantSelector } from '../components/AttendantSelector';
 
 export const ProductDetail = () => {
@@ -18,7 +16,6 @@ export const ProductDetail = () => {
   const [mainImage, setMainImage] = useState<string>('');
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [showAttendantSelector, setShowAttendantSelector] = useState(false);
-  const { addToCart, setIsCartOpen } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -27,26 +24,6 @@ export const ProductDetail = () => {
   const [newComment, setNewComment] = useState('');
   const [rating, setRating] = useState(5);
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-
-  const handleAddToCart = () => {
-    if (!user) {
-      navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
-      return;
-    }
-    const productToAdd = selectedVariant ? { ...product, price: selectedVariant.price, image: selectedVariant.image || product.image } : product;
-    addToCart(productToAdd, selectedVariant?.name);
-  };
-
-  const handleBuyNow = () => {
-    if (!user) {
-      navigate('/login?redirect=/checkout');
-      return;
-    }
-    const productToAdd = selectedVariant ? { ...product, price: selectedVariant.price, image: selectedVariant.image || product.image } : product;
-    addToCart(productToAdd, selectedVariant?.name);
-    setIsCartOpen(false);
-    navigate('/checkout');
-  };
 
   const handlePrevImage = () => {
     if (!product.images || product.images.length <= 1) return;
@@ -153,7 +130,6 @@ export const ProductDetail = () => {
   }
 
   const productImage = mainImage || product.images?.[0] || product.image || 'https://picsum.photos/seed/lidermaq/800/800';
-  const productPrice = selectedVariant?.price || product.price || 0;
   const productName = selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name;
   const productDescription = selectedVariant?.description || product.description || 'Sem descrição disponível para este produto.';
   const whatsappUrl = `https://wa.me/5589999170800?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${productName} - Lidermaq`)}`;
@@ -258,22 +234,6 @@ export const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Price Section */}
-              <div className="bg-zinc-50 dark:bg-zinc-950 rounded-xl p-6 mb-8 border border-zinc-100 dark:border-zinc-800">
-                <div className="flex flex-col mb-4">
-                  <div className="flex items-end gap-3">
-                    <span className="text-4xl font-black text-accent font-display leading-none">
-                      {formatCurrency(productPrice)}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
-                  <CreditCardIcon size={16} />
-                  <span>em até <strong className="text-zinc-900 dark:text-white">10x de {formatCurrency(productPrice / 10)}</strong> sem juros</span>
-                </div>
-              </div>
-
               {/* Variants */}
               {product.variants && product.variants.length > 0 && (
                 <div className="mb-8">
@@ -299,18 +259,11 @@ export const ProductDetail = () => {
               {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <button 
-                  onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-4 px-8 rounded-xl font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors shadow-lg shadow-zinc-900/20 dark:shadow-white/10"
-                >
-                  <ShoppingBag size={20} />
-                  Adicionar ao Carrinho
-                </button>
-                <button 
-                  onClick={handleBuyNow}
+                  onClick={() => setShowAttendantSelector(true)}
                   className="flex-1 flex items-center justify-center gap-2 bg-accent text-white py-4 px-8 rounded-xl font-bold hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20"
                 >
-                  <ShoppingBag size={20} />
-                  Comprar Agora
+                  <MessageCircle size={20} />
+                  Solicitar Orçamento
                 </button>
               </div>
 
@@ -487,23 +440,3 @@ export const ProductDetail = () => {
   );
 };
 
-// Helper component for CreditCard icon since it wasn't imported
-function CreditCardIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="20" height="14" x="2" y="5" rx="2" />
-      <line x1="2" x2="22" y1="10" y2="10" />
-    </svg>
-  )
-}

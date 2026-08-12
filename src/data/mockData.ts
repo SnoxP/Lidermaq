@@ -3,8 +3,6 @@ export interface Product {
   name: string;
   category: string;
   brand: string;
-  price: number;
-  installments: string;
   image: string;
   description: string;
   specs: {

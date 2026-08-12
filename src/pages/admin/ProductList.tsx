@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X, Database, Filter, ArrowUpDown, Calendar, Tag, DollarSign, ChevronRight } from 'lucide-react';
+import { Package, Search, Edit2, Trash2, Plus, ExternalLink, X, Database, Filter, ArrowUpDown, Calendar, Tag, ChevronRight } from 'lucide-react';
 import { db } from '../../services/firebase';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { useNavigate, Link } from 'react-router-dom';
@@ -13,7 +13,7 @@ export const ProductList = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'createdAt'>('createdAt');
+  const [sortBy, setSortBy] = useState<'name' | 'createdAt'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [brandFilter, setBrandFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -55,20 +55,12 @@ export const ProductList = () => {
       let valA = a[sortBy];
       let valB = b[sortBy];
 
-      if (sortBy === 'price') {
-        valA = Number(valA) || 0;
-        valB = Number(valB) || 0;
-      } else {
-        valA = String(valA || '').toLowerCase();
-        valB = String(valB || '').toLowerCase();
-      }
-
       if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
       if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
 
-  const toggleSort = (field: 'name' | 'price' | 'createdAt') => {
+  const toggleSort = (field: 'name' | 'createdAt') => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
@@ -171,12 +163,6 @@ export const ProductList = () => {
                     Nome
                   </button>
                   <button 
-                    onClick={() => toggleSort('price')}
-                    className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'price' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg dark:bg-zinc-800 border-transparent text-primary/60 dark:text-zinc-400'}`}
-                  >
-                    Preço
-                  </button>
-                  <button 
                     onClick={() => toggleSort('createdAt')}
                     className={`flex-1 py-3 px-2 rounded-xl text-xs font-bold border transition-all ${sortBy === 'createdAt' ? 'bg-accent/10 border-accent text-accent' : 'bg-neutral-bg dark:bg-zinc-800 border-transparent text-primary/60 dark:text-zinc-400'}`}
                   >
@@ -231,18 +217,17 @@ export const ProductList = () => {
                   <th className="px-6 py-4">Produto</th>
                   <th className="px-6 py-4">Categoria</th>
                   <th className="px-6 py-4">Marca</th>
-                  <th className="px-6 py-4">Preço</th>
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-bg dark:divide-white/5">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-primary/40 dark:text-zinc-500 animate-pulse">Carregando produtos...</td>
+                    <td colSpan={4} className="px-6 py-12 text-center text-primary/40 dark:text-zinc-500 animate-pulse">Carregando produtos...</td>
                   </tr>
                 ) : filteredProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
+                    <td colSpan={4} className="px-6 py-12 text-center">
                       <p className="text-primary/40 dark:text-zinc-500 italic mb-4">Nenhum produto encontrado no banco de dados.</p>
                       <button 
                         onClick={() => navigate('/admin')}
@@ -269,9 +254,6 @@ export const ProductList = () => {
                       </td>
                       <td className="px-6 py-4 text-sm dark:text-zinc-400">{product.category}</td>
                       <td className="px-6 py-4 text-sm dark:text-zinc-400">{product.brand}</td>
-                      <td className="px-6 py-4 text-sm font-bold text-accent">
-                        {formatCurrency(product.price)}
-                      </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button 

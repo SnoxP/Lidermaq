@@ -12,7 +12,7 @@ export const WhatsAppButton = () => {
   const message = encodeURIComponent("Olá, tenho interesse nos equipamentos da Lidermaq!");
 
   return (
-    <div className="fixed bottom-28 right-6 lg:bottom-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-24 right-4 lg:bottom-6 lg:right-6 z-[80] flex flex-col items-end gap-3">
       {isOpen && (
         <div className="flex flex-col gap-2 mb-2 animate-in fade-in slide-in-from-bottom-4 duration-300">
           {contacts.map((contact) => (

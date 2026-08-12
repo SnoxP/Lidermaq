@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, ShoppingBag, Search, ChevronDown, Store, Heart } from 'lucide-react';
+import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, Search, ChevronDown, Store, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { useCart } from '../contexts/CartContext';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +13,6 @@ export const Header = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { cart, setIsCartOpen } = useCart();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,26 +148,6 @@ export const Header = () => {
                 )}
               </AnimatePresence>
             </div>
-
-            <button 
-              onClick={() => setIsCartOpen(true)}
-              className="flex items-center gap-3 text-left group"
-            >
-              <div className="relative w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center group-hover:bg-accent/90 transition-colors">
-                <ShoppingBag size={20} />
-                {cart.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-zinc-900 border-2 border-white dark:border-zinc-950 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
-                    {cart.length}
-                  </span>
-                )}
-              </div>
-              <div className="hidden lg:block">
-                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Carrinho</p>
-                <p className="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-accent transition-colors">
-                  {cart.length} itens
-                </p>
-              </div>
-            </button>
 
             {/* Hamburger Menu */}
             <button 
