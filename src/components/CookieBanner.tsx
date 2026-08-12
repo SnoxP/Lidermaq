@@ -24,7 +24,7 @@ export const CookieBanner = () => {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 left-0 w-full z-[60] p-4"
+          className="fixed bottom-0 left-0 w-full z-[110] p-4 pb-28 lg:pb-4"
         >
           <div className="container mx-auto max-w-4xl bg-white dark:bg-zinc-900 shadow-2xl border border-neutral-bg dark:border-white/5 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6">
             <div className="flex-1">
