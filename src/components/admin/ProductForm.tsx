@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PackagePlus, Image as ImageIcon, Save, X, Plus, AlertCircle, Upload, Loader2, Link as LinkIcon, Sparkles, ArrowUp, ArrowDown, FileText, ChevronRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 import { auth, db } from '../../services/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 
@@ -82,8 +83,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
     setIsUploading(uploadId);
     try {
+      // Comprime a imagem antes de subir
+      const options = {
+        maxSizeMB: 0.2, // ~200kb
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      };
+      
+      const compressedFile = await imageCompression(file, options);
+
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('image', compressedFile, compressedFile.name);
 
       const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
         method: 'POST',
