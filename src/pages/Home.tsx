@@ -45,7 +45,7 @@ export const Home = () => {
             initial={{ scale: 1.2, opacity: 0 }}
             animate={{ scale: 1.1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="/assets/hero-mobile.png" 
+            src="https://i.ibb.co/XZ4RD5j4/hero-desktop.png" 
             alt="Lidermaq Empresa" 
             className="md:hidden w-full h-full object-cover object-bottom origin-bottom"
             fetchPriority="high"
@@ -56,7 +56,7 @@ export const Home = () => {
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="/assets/hero-desktop.png" 
+            src="https://i.ibb.co/XZ4RD5j4/hero-desktop.png" 
             alt="Lidermaq Empresa" 
             className="hidden md:block w-full h-full object-cover"
             fetchPriority="high"
