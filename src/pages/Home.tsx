@@ -26,7 +26,7 @@ export const Home = () => {
           await setDoc(statsRef, { totalViews: 1 });
         }
       } catch (error) {
-        console.error("Erro ao incrementar visualizações:", error);
+        // Ignorando erro de permissão silenciosamente para não poluir o console
       }
     };
 
@@ -45,7 +45,7 @@ export const Home = () => {
             initial={{ scale: 1.2, opacity: 0 }}
             animate={{ scale: 1.1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="https://i.imgur.com/cU4baTN.png" 
+            src="/assets/hero-mobile.png" 
             alt="Lidermaq Empresa" 
             className="md:hidden w-full h-full object-cover object-bottom origin-bottom"
             fetchPriority="high"
@@ -56,7 +56,7 @@ export const Home = () => {
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="https://i.imgur.com/519GNtq.png" 
+            src="/assets/hero-desktop.png" 
             alt="Lidermaq Empresa" 
             className="hidden md:block w-full h-full object-cover"
             fetchPriority="high"

@@ -39,7 +39,7 @@ export const About = () => {
             className="rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4"
           >
             <div className="rounded-xl overflow-hidden aspect-[4/3]">
-              <img src="https://i.imgur.com/ZCcSD1Y.png" alt="Família Lidermaq" className="w-full h-full object-cover" />
+              <img src="/assets/about-family.png" alt="Família Lidermaq" className="w-full h-full object-cover" />
             </div>
           </motion.div>
           
