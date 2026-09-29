@@ -445,10 +445,14 @@ export const Catalog = () => {
                       key={product.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.05 }}
+                      transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
                       className="product-card-item"
                     >
-                      <ProductCard product={product} />
+                      <ProductCard 
+                        product={product} 
+                        gridCols={columnsCount} 
+                        priority={index < 4} 
+                      />
                     </motion.div>
                   ))}
                 </div>

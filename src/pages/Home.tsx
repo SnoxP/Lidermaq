@@ -50,6 +50,7 @@ export const Home = () => {
             className="md:hidden w-full h-full object-cover object-bottom origin-bottom"
             fetchPriority="high"
             loading="eager"
+            decoding="async"
             referrerPolicy="no-referrer"
           />
           <motion.img 
@@ -61,6 +62,7 @@ export const Home = () => {
             className="hidden md:block w-full h-full object-cover"
             fetchPriority="high"
             loading="eager"
+            decoding="async"
             referrerPolicy="no-referrer"
           />
         </div>
@@ -152,7 +154,13 @@ export const Home = () => {
             ].map((seg, i) => (
               <Link key={i} to={`/catalogo?cat=${seg.name}`} className="relative overflow-hidden rounded-2xl aspect-square group">
                 <div className="absolute inset-0 bg-zinc-900/60 group-hover:bg-zinc-900/40 transition-colors z-10" />
-                <img src={seg.img} alt={seg.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img 
+                  src={seg.img} 
+                  alt={seg.name} 
+                  loading="lazy" 
+                  decoding="async" 
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                />
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white p-4 text-center">
                   <seg.icon size={32} className="mb-3 opacity-80" />
                   <span className="font-bold text-lg leading-tight">{seg.name}</span>
@@ -207,7 +215,7 @@ export const Home = () => {
               ))
             ) : (
               featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} gridCols={2} />
+                <ProductCard key={product.id} product={product} gridCols={2} priority={true} />
               ))
             )}
           </div>

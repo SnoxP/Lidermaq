@@ -5,6 +5,7 @@ export interface Product {
   brand: string;
   image: string;
   images?: string[];
+  bgColor?: string;
   description: string;
   specs: {
     dimensions: string;

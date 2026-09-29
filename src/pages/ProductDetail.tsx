@@ -164,35 +164,34 @@ export const ProductDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Gallery */}
             <div className="space-y-4">
-              <div className="aspect-square rounded-xl overflow-hidden bg-white border border-zinc-100 dark:border-zinc-800 relative group">
-                {!isImageLoaded && (
-                  <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
-                )}
+              <div 
+                style={{ backgroundColor: product?.bgColor || '#ffffff' }}
+                className="aspect-square rounded-xl overflow-hidden border border-zinc-100 dark:border-zinc-800 relative group"
+              >
                 <img 
                   src={productImage} 
                   alt={product.name} 
-                  className="w-full h-full object-contain p-8 transition-opacity duration-300" 
                   fetchPriority="high" 
                   loading="eager" 
+                  decoding="async"
                   referrerPolicy="no-referrer" 
-                  onLoad={() => setIsImageLoaded(true)}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = 'https://placehold.co/800x800/e2e8f0/64748b?text=Sem+Imagem';
-                    setIsImageLoaded(true);
                   }}
+                  className="w-full h-full object-contain p-8" 
                 />
                 
                 {product.images?.length > 1 && (
                   <>
                     <button 
                       onClick={handlePrevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 shadow-md rounded-full flex items-center justify-center text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 shadow-md rounded-full flex items-center justify-center text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white z-10"
                     >
                       <ChevronLeft size={20} />
                     </button>
                     <button 
                       onClick={handleNextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 shadow-md rounded-full flex items-center justify-center text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 shadow-md rounded-full flex items-center justify-center text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white z-10"
                     >
                       <ChevronRight size={20} />
                     </button>
@@ -205,18 +204,20 @@ export const ProductDetail = () => {
                     <button
                       key={idx}
                       onClick={() => setMainImage(img)}
-                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all bg-white ${
-                        mainImage === img ? 'border-accent' : 'border-zinc-200 dark:border-zinc-800 hover:border-accent/50'
+                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all bg-white relative ${
+                        mainImage === img ? 'border-accent ring-2 ring-accent/30' : 'border-zinc-200 dark:border-zinc-800 hover:border-accent/50'
                       }`}
                     >
                       <img 
                         src={img} 
-                        alt={`${product.name} - Imagem ${idx + 1}`} 
-                        className="w-full h-full object-contain p-2" 
+                        alt={`${product.name} - Miniatura ${idx + 1}`} 
+                        loading="lazy"
+                        decoding="async"
                         referrerPolicy="no-referrer"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/e2e8f0/64748b?text=Sem+Imagem';
                         }}
+                        className="w-full h-full object-contain p-1.5" 
                       />
                     </button>
                   ))}

@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Edit2, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -9,16 +9,28 @@ import { useFavorites } from '../contexts/FavoritesContext';
 export interface ProductCardProps {
   product: Product;
   gridCols?: number;
+  priority?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols = 1 }) => {
+const FALLBACK_IMG = 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem';
+
+export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols = 1, priority = false }) => {
   const { user } = useAuth();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const navigate = useNavigate();
   const isAdmin = user?.isAdmin;
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
   
   const isFav = isFavorite(product.id);
+  const rawImage = product.images?.[0] || product.image || FALLBACK_IMG;
+  const [imgSrc, setImgSrc] = useState<string>(rawImage);
+
+  // Background color is pre-computed directly from product data
+  const containerBg = product.bgColor || '#ffffff';
+
+  useEffect(() => {
+    const nextImg = product.images?.[0] || product.image || FALLBACK_IMG;
+    setImgSrc(nextImg);
+  }, [product.id, product.image, product.images]);
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -38,22 +50,22 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
       whileHover={{ y: -10 }}
       className="card-premium group product-card-item"
     >
-      <Link to={`/produto/${product.id}`} className="block relative aspect-square overflow-hidden bg-white">
-        {!isImageLoaded && (
-          <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
-        )}
-        <img 
-          src={product.images?.[0] || product.image || 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem'} 
-          alt={product.name}
-          onLoad={() => setIsImageLoaded(true)}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem';
-            setIsImageLoaded(true);
+      <Link 
+        to={`/produto/${product.id}`} 
+        style={{ backgroundColor: containerBg }}
+        className="block relative aspect-square overflow-hidden p-3 sm:p-4 border-b border-zinc-100 dark:border-zinc-800/60"
+      >
+        <img
+          src={imgSrc}
+          alt={product.name || 'Produto'}
+          onError={() => {
+            setImgSrc(FALLBACK_IMG);
           }}
-          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''}`}
-          loading="lazy"
+          loading={priority ? 'eager' : 'lazy'}
+          fetchPriority={priority ? 'high' : 'auto'}
           decoding="async"
           referrerPolicy="no-referrer"
+          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''}`}
         />
         {product.available === false && (
           <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full z-10 shadow-lg">

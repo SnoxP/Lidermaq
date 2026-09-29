@@ -10,6 +10,7 @@ import { collection, getDocs, doc, getDoc, setDoc, increment, getCountFromServer
 import { SEO } from '../components/SEO';
 
 import { formatCurrency } from '../utils/format';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 export const AdminDashboard = () => {
   const { user } = useAuth();
@@ -177,7 +178,13 @@ export const AdminDashboard = () => {
                   <tr key={product.id} className="border-b border-zinc-100 dark:border-zinc-800/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
                     <td className="py-4 font-medium text-zinc-900 dark:text-white flex items-center gap-3">
                       <div className="w-10 h-10 bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-hidden shrink-0">
-                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        <OptimizedImage 
+                          src={product.images?.[0] || product.image} 
+                          alt={product.name} 
+                          options={{ width: 80, height: 80, quality: 75, fit: 'cover' }}
+                          containerClassName="w-full h-full"
+                          className="w-full h-full object-cover" 
+                        />
                       </div>
                       <span className="truncate max-w-[200px]">{product.name}</span>
                     </td>

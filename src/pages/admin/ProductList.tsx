@@ -7,6 +7,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 
 import { formatCurrency } from '../../utils/format';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const ProductList = () => {
   const { products: contextProducts, loading: contextLoading } = useProducts();
@@ -244,14 +245,12 @@ export const ProductList = () => {
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-neutral-bg dark:bg-zinc-800 rounded-lg overflow-hidden shrink-0">
                             {(product.images?.[0] || product.image) ? (
-                              <img 
+                              <OptimizedImage 
                                 src={product.images?.[0] || product.image} 
                                 alt={product.name} 
+                                options={{ width: 96, height: 96, quality: 75, fit: 'cover' }}
+                                containerClassName="w-full h-full"
                                 className="w-full h-full object-cover" 
-                                referrerPolicy="no-referrer"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e2e8f0/64748b?text=Sem+Imagem';
-                                }}
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-primary/20 dark:text-zinc-700"><Package size={20} /></div>
