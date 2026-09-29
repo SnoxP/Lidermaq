@@ -1,0 +1,820 @@
+=== ESTRUTURA E CÓDIGO WEB DA LIDERMAQ ===
+Use este documento para recriar o visual exato no Android Jetpack Compose.
+
+==================================================
+ARQUIVO: src/index.css
+==================================================
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --color-primary: #09090b; /* Zinc 950 */
+  --color-accent: #f27d26; /* Laranja Lidermaq */
+  --color-neutral-bg: #fafafa; /* Zinc 50 */
+  --animate-spin-slow: spin 3s linear infinite;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  
+  .dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply font-sans bg-white text-zinc-900 transition-colors duration-500 antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-white/5;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 hover:brightness-110 hover:shadow-lg hover:shadow-accent/20 active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  .card-premium {
+    @apply bg-white dark:bg-zinc-900 rounded-[2rem] border border-zinc-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 dark:hover:shadow-black/50 transition-all duration-500 overflow-hidden;
+  }
+
+  .section-padding {
+    @apply py-24 md:py-32;
+  }
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-br from-zinc-900 to-zinc-500 dark:from-white dark:to-zinc-500;
+}
+-e 
+
+
+==================================================
+ARQUIVO: src/pages/Home.tsx
+==================================================
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowRight, MessageCircle, Shield, Truck, PenTool as Tool, Star, CreditCard, Package, DollarSign, Layers, Utensils, ShoppingCart, Coffee, Briefcase, Snowflake, Settings, Store, Flame, Zap } from 'lucide-react';
+import { ProductCard } from '../components/ProductCard';
+import { useProducts } from '../hooks/useProducts';
+import { SEO } from '../components/SEO';
+import { db } from '../services/firebase';
+import { doc, updateDoc, increment, setDoc, getDoc } from 'firebase/firestore';
+
+export const Home = () => {
+  const { products, loading: productsLoading } = useProducts();
+  const featuredProducts = products.slice(0, 4);
+
+  useEffect(() => {
+    const incrementViews = async () => {
+      if (!db) return;
+      try {
+        const statsRef = doc(db, 'settings', 'stats');
+        const statsSnap = await getDoc(statsRef);
+        if (statsSnap.exists()) {
+          await updateDoc(statsRef, {
+            totalViews: increment(1)
+          });
+        } else {
+          await setDoc(statsRef, { totalViews: 1 });
+        }
+      } catch (error) {
+        // Ignorando erro de permissão silenciosamente para não poluir o console
+      }
+    };
+
+    incrementViews();
+  }, []);
+
+  return (
+    <div>
+      <SEO />
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white dark:via-zinc-950/20 dark:to-zinc-950 z-10" />
+          <motion.img 
+            initial={{ scale: 1.2, opacity: 0 }}
+            animate={{ scale: 1.1, opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            src="https://i.ibb.co/XZ4RD5j4/hero-desktop.png" 
+            alt="Lidermaq Empresa" 
+            className="md:hidden w-full h-full object-cover object-bottom origin-bottom"
+            fetchPriority="high"
+            loading="eager"
+            referrerPolicy="no-referrer"
+          />
+          <motion.img 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            src="https://i.ibb.co/XZ4RD5j4/hero-desktop.png" 
+            alt="Lidermaq Empresa" 
+            className="hidden md:block w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+
+        <div className="container mx-auto px-4 relative z-20">
+          <div className="max-w-4xl">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[0.9] text-zinc-900 dark:text-white font-display">
+                EQUIPANDO O SEU <br />
+                <span className="text-accent">SUCESSO.</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-black dark:text-white mb-10 max-w-2xl leading-relaxed">
+                As melhores soluções em máquinas e equipamentos para padarias, açougues, supermercados e cozinhas industriais.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/catalogo" className="btn-primary group">
+                  Ver Catálogo Completo
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <a href="https://wa.me/5589999170800" className="btn-secondary">
+                  <MessageCircle size={20} /> Solicitar Orçamento
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 hidden md:block"
+        >
+          <div className="w-6 h-10 border-2 border-zinc-400 rounded-full flex justify-center p-1">
+            <div className="w-1 h-2 bg-accent rounded-full" />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Motivos para escolher a Lidermaq */}
+      <section className="py-12 bg-white dark:bg-zinc-900 border-y border-zinc-200 dark:border-white/5">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-black text-center mb-10 dark:text-white font-display">MOTIVOS PARA ESCOLHER A <span className="text-accent">LIDERMAQ</span></h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Star size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">+ DE 10 ANOS DE TRADIÇÃO</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Shield size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">FOCO NA SUA SATISFAÇÃO</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><CreditCard size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">FACILIDADE NO PAGAMENTO</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Package size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">PRODUTOS À PRONTA-ENTREGA</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><DollarSign size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">PREÇO JUSTO</span>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-accent/10 text-accent rounded-full flex items-center justify-center"><Layers size={24} /></div>
+              <span className="text-sm font-bold dark:text-white uppercase tracking-wider">VARIEDADE DE ITENS</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categorias */}
+      <section className="py-16 bg-zinc-50 dark:bg-zinc-950">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">CATEGORIAS</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: 'Açougues', icon: Flame, img: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Lanchonetes', icon: Coffee, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Padarias', icon: Utensils, img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Restaurantes', icon: Utensils, img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Supermercados', icon: ShoppingCart, img: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=400&h=400&auto=format&fit=crop' },
+              { name: 'Móveis Para Escritório', icon: Briefcase, img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=400&h=400&auto=format&fit=crop' }
+            ].map((seg, i) => (
+              <Link key={i} to={`/catalogo?cat=${seg.name}`} className="relative overflow-hidden rounded-2xl aspect-square group">
+                <div className="absolute inset-0 bg-zinc-900/60 group-hover:bg-zinc-900/40 transition-colors z-10" />
+                <img src={seg.img} alt={seg.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white p-4 text-center">
+                  <seg.icon size={32} className="mb-3 opacity-80" />
+                  <span className="font-bold text-lg leading-tight">{seg.name}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Segmentos */}
+      <section className="py-16 bg-white dark:bg-zinc-900 border-y border-zinc-200 dark:border-white/5">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-12 dark:text-white font-display">SEGMENTOS</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: 'Refrigeração Comercial', icon: Snowflake, query: 'refrigeracao' },
+              { name: 'Maquinário de Produção', icon: Settings, query: 'maquina' },
+              { name: 'Expositores de Alimentos', icon: Store, query: 'expositor' },
+              { name: 'Equipamentos para Cocção', icon: Flame, query: 'fogao' },
+              { name: 'Portáteis Industriais', icon: Zap, query: 'liquidificador' },
+              { name: 'Mobiliário Comercial', icon: Briefcase, query: 'mesa' }
+            ].map((cat, i) => (
+              <Link key={i} to={`/catalogo?q=${cat.query}`} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl p-6 flex flex-col items-center text-center gap-4 hover:border-accent hover:shadow-lg hover:-translate-y-1 transition-all group">
+                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:bg-accent group-hover:text-white transition-colors">
+                  <cat.icon size={32} />
+                </div>
+                <span className="font-bold text-sm dark:text-white">{cat.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="pt-20 pb-6 md:pb-12 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div>
+              <span className="text-accent font-bold uppercase tracking-widest text-sm mb-2 block">Destaques</span>
+              <h2 className="text-4xl font-black tracking-tighter dark:text-white">LINHAS EM EVIDÊNCIA</h2>
+            </div>
+            <Link to="/catalogo" className="text-primary dark:text-white font-bold flex items-center gap-2 hover:text-accent transition-colors group">
+              Ver catálogo completo <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
+            {productsLoading ? (
+              Array(4).fill(0).map((_, i) => (
+                <div key={i} className="h-80 bg-white rounded-3xl animate-pulse" />
+              ))
+            ) : (
+              featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} gridCols={2} />
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Marcas */}
+      <section className="py-8 md:py-12 bg-zinc-50 dark:bg-zinc-950">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-xl md:text-2xl font-black mb-6 md:mb-8 dark:text-white font-display">TRABALHAMOS COM AS MELHORES MARCAS</h2>
+          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+            {['GELOPAR', 'VENÂNCIO', 'METVISA', 'SKYSEN', 'PROGÁS', 'BRAESI'].map((brand, i) => (
+              <span key={i} className="text-lg md:text-xl font-black text-zinc-800 dark:text-zinc-200 tracking-widest">{brand}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="pt-10 pb-10 bg-neutral-bg dark:bg-neutral-800 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="relative block rounded-2xl overflow-hidden shadow-xl border border-zinc-200 dark:border-white/5 bg-zinc-900 max-w-3xl mx-auto"
+          >
+            <Link to="/produto/1QEP7nmIfy8w5WfhApeA" className="block w-full h-full">
+              <img 
+                src="https://i.ibb.co/q2j76FQ/Cn-P-13032026-203914.png" 
+                alt="Assistência Técnica Lidermaq" 
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="py-20 bg-accent">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tighter">FIQUE POR DENTRO DAS NOVIDADES</h2>
+          <p className="text-white/80 mb-10 max-w-2xl mx-auto">Assine nossa newsletter e receba ofertas exclusivas e dicas de decoração diretamente no seu e-mail.</p>
+          <form className="max-w-xl mx-auto flex flex-col sm:flex-row gap-4">
+            <input 
+              type="email" 
+              placeholder="Seu melhor e-mail" 
+              className="flex-1 px-6 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:bg-white/20 transition-all"
+              required
+            />
+            <button type="submit" className="bg-white text-accent px-10 py-4 rounded-xl font-bold hover:bg-primary hover:text-white transition-all">
+              Assinar Agora
+            </button>
+          </form>
+        </div>
+      </section>
+    </div>
+  );
+};
+-e 
+
+
+==================================================
+ARQUIVO: src/components/ProductCard.tsx
+==================================================
+import React, { memo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, Edit2, Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Product } from '../data/mockData';
+import { useAuth } from '../contexts/AuthContext';
+import { useFavorites } from '../contexts/FavoritesContext';
+
+export interface ProductCardProps {
+  product: Product;
+  gridCols?: number;
+}
+
+export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols = 1 }) => {
+  const { user } = useAuth();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const navigate = useNavigate();
+  const isAdmin = user?.isAdmin;
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  
+  const isFav = isFavorite(product.id);
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    if (isFav) {
+      removeFromFavorites(product.id);
+    } else {
+      addToFavorites(product);
+    }
+  };
+
+  return (
+    <motion.div 
+      whileHover={{ y: -10 }}
+      className="card-premium group product-card-item"
+    >
+      <Link to={`/produto/${product.id}`} className="block relative aspect-square overflow-hidden bg-white">
+        {!isImageLoaded && (
+          <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
+        )}
+        <img 
+          src={product.images?.[0] || product.image || 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem'} 
+          alt={product.name}
+          onLoad={() => setIsImageLoaded(true)}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem';
+            setIsImageLoaded(true);
+          }}
+          className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''}`}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+        />
+        {product.available === false && (
+          <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full z-10 shadow-lg">
+            Esgotado
+          </div>
+        )}
+        <div className={`absolute ${gridCols >= 3 ? 'top-2 left-2 sm:top-4 sm:left-4' : 'top-4 left-4'} ${gridCols >= 3 ? 'hidden sm:block' : ''}`}>
+          <span className={`bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md text-zinc-900 dark:text-white ${gridCols >= 3 ? 'text-[8px] px-2 py-0.5 sm:text-[10px] sm:px-3 sm:py-1' : 'text-[10px] px-3 py-1'} font-black uppercase tracking-widest rounded-full border border-white/20`}>
+            {product.category || 'Geral'}
+          </span>
+        </div>
+        <button
+          onClick={handleToggleFavorite}
+          className={`absolute ${gridCols >= 3 ? 'top-2 right-2 sm:top-4 sm:right-4' : 'top-4 right-4'} w-8 h-8 sm:w-10 sm:h-10 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 dark:text-white shadow-sm border border-white/20 hover:bg-white dark:hover:bg-zinc-800 transition-colors z-20`}
+          title={isFav ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+        >
+          <Heart size={gridCols >= 3 ? 14 : 18} className={`transition-colors ${isFav ? 'fill-accent text-accent' : 'text-zinc-600 dark:text-zinc-400'}`} />
+        </button>
+      </Link>
+      
+      <div className={`${gridCols >= 3 ? 'p-2 sm:p-6' : gridCols === 2 ? 'p-3 sm:p-6' : 'p-6'}`}>
+        <div className="flex items-center gap-2 mb-1">
+          <span className={`${gridCols >= 4 ? 'text-[7px] sm:text-[10px]' : gridCols === 3 ? 'text-[8px] sm:text-[10px]' : 'text-[10px]'} font-bold text-accent uppercase tracking-widest line-clamp-1`}>{product.brand || 'Lidermaq'}</span>
+        </div>
+        <Link to={`/produto/${product.id}`}>
+          <h3 className={`${gridCols >= 4 ? 'text-xs sm:text-lg' : gridCols === 3 ? 'text-sm sm:text-lg' : gridCols === 2 ? 'text-base sm:text-lg' : 'text-lg'} font-bold mb-2 group-hover:text-accent transition-colors line-clamp-1 dark:text-white font-display`}>
+            {product.name || 'Produto sem nome'}
+          </h3>
+        </Link>
+        <div className={`${gridCols >= 2 ? 'hidden sm:block' : 'block'} mb-4`}>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+            {product.description || 'Sem descrição disponível.'}
+          </p>
+        </div>
+        
+        <div className={`flex ${gridCols >= 3 ? 'flex-col items-start gap-2 sm:flex-row sm:items-end sm:justify-end' : gridCols === 2 ? 'flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-end' : 'items-end justify-end'} pt-3 sm:pt-4 border-t border-zinc-100 dark:border-white/5`}>
+            <div className={`flex items-center ${gridCols >= 4 ? 'gap-1 sm:gap-2' : gridCols === 3 ? 'gap-1 sm:gap-2' : 'gap-2'} w-full sm:w-auto justify-end mt-2 sm:mt-0`}>
+              {isAdmin && (
+                <Link 
+                  to={`/admin/editar-produto/${product.id}`}
+                  className={`${gridCols >= 4 ? 'w-7 h-7 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : gridCols === 3 ? 'w-8 h-8 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : 'w-10 h-10 rounded-xl'} bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all`}
+                  title="Editar Produto"
+                >
+                  <Edit2 className={`${gridCols >= 4 ? 'w-3 h-3 sm:w-[18px] sm:h-[18px]' : gridCols === 3 ? 'w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]' : 'w-[18px] h-[18px]'}`} />
+                </Link>
+              )}
+              <Link 
+                to={`/produto/${product.id}`}
+                className={`${gridCols >= 4 ? 'w-7 h-7 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : gridCols === 3 ? 'w-8 h-8 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl' : 'w-10 h-10 rounded-xl'} bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-accent hover:text-white transition-all`}
+              >
+                <ArrowRight className={`${gridCols >= 4 ? 'w-3 h-3 sm:w-5 sm:h-5' : gridCols === 3 ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-5 h-5'}`} />
+              </Link>
+            </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+-e 
+
+
+==================================================
+ARQUIVO: src/components/Header.tsx
+==================================================
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Phone, User, LogOut, LayoutDashboard, Sun, Moon, Monitor, LogIn, Search, ChevronDown, Store, Heart } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+
+export const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/catalogo?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const categories = [
+    { name: 'Refrigeração Comercial', path: '/catalogo?q=refrigeracao' },
+    { name: 'Maquinário de Produção', path: '/catalogo?q=maquina' },
+    { name: 'Expositores de Alimentos', path: '/catalogo?q=expositor' },
+    { name: 'Equipamentos para Cocção', path: '/catalogo?q=fogao' },
+    { name: 'Portáteis Industriais', path: '/catalogo?q=liquidificador' },
+    { name: 'Mobiliário Comercial', path: '/catalogo?q=mesa' }
+  ];
+
+  return (
+    <>
+      <header className="w-full z-[70] bg-white dark:bg-zinc-950 shadow-md sticky top-0">
+        {/* Middle Bar */}
+        <div className="container mx-auto px-4 py-4 md:py-6 flex items-center justify-between gap-4 md:gap-8">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3 shrink-0">
+            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden bg-accent text-white">
+              <Store size={24} className="md:w-7 md:h-7" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl md:text-3xl font-black tracking-tighter font-display leading-none">
+                <span className="text-accent">LIDER</span><span className="text-zinc-900 dark:text-white">MAQ</span>
+              </span>
+              <span className="text-[9px] md:text-[10px] font-medium font-sans text-zinc-900 dark:text-white tracking-[0.3em] leading-none mt-1">
+                EQUIPAMENTOS
+              </span>
+            </div>
+          </Link>
+
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl relative">
+            <input 
+              type="text" 
+              placeholder="O que você está procurando?" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full py-3 pl-6 pr-12 text-sm focus:outline-none focus:border-accent dark:focus:border-accent transition-colors dark:text-white"
+            />
+            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-accent transition-colors">
+              <Search size={20} />
+            </button>
+          </form>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 md:gap-6 shrink-0">
+            {/* User Auth Menu */}
+            <div className="relative hidden sm:block">
+              <button 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-3 text-left group"
+              >
+                <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:text-accent transition-colors">
+                  <User size={20} />
+                </div>
+                <div className="hidden lg:block">
+                  <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Bem-vindo</p>
+                  <p className="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-accent transition-colors">
+                    {user ? 'Minha Conta' : 'Entre ou Cadastre-se'}
+                  </p>
+                </div>
+              </button>
+              
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="fixed inset-0 z-40"
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-white/10 p-2 z-[60] overflow-hidden"
+                    >
+                    <div className="px-5 py-4 border-b border-zinc-100 dark:border-white/5 mb-2">
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Conta Lidermaq</p>
+                      <p className="text-sm font-bold truncate dark:text-white">{user?.email || 'Visitante'}</p>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      {user ? (
+                        <>
+                          <Link 
+                            to="/perfil" 
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
+                          >
+                            <User size={16} /> Meu Perfil
+                          </Link>
+                          {user.isAdmin && (
+                            <Link 
+                              to="/admin" 
+                              onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
+                            >
+                              <LayoutDashboard size={16} /> Painel Administrativo
+                            </Link>
+                          )}
+                          <button 
+                            onClick={() => {
+                              logout();
+                              setIsUserMenuOpen(false);
+                            }}
+                            className="w-full flex items-center gap-3 px-5 py-3 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
+                          >
+                            <LogOut size={16} /> Sair da conta
+                          </button>
+                        </>
+                      ) : (
+                        <Link 
+                          to={`/login?redirect=${encodeURIComponent(location.pathname)}`}
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
+                        >
+                          <LogIn size={16} /> Fazer Login
+                        </Link>
+                      )}
+                    </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Hamburger Menu */}
+            <button 
+              className="p-2 text-zinc-600 dark:text-zinc-300 hover:text-accent transition-colors"
+              onClick={() => setIsOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Search Bar */}
+        <div className="md:hidden px-4 pb-4">
+          <form onSubmit={handleSearch} className="relative">
+            <input 
+              type="text" 
+              placeholder="O que você está procurando?" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full py-3 pl-6 pr-12 text-sm focus:outline-none focus:border-accent dark:focus:border-accent transition-colors dark:text-white"
+            />
+            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-accent transition-colors">
+              <Search size={20} />
+            </button>
+          </form>
+        </div>
+
+        {/* Bottom Bar - Categories */}
+        <div className="bg-accent text-white hidden md:block">
+          <div className="container mx-auto px-4">
+            <nav className="flex items-center gap-4 py-3">
+              <div className="relative group">
+                <button className="flex items-center gap-2 font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors">
+                  TODAS AS CATEGORIAS <ChevronDown size={16} />
+                </button>
+                <div className="absolute top-full left-0 w-64 bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200 dark:border-zinc-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 flex flex-col py-2 mt-3 rounded-xl">
+                  {categories.map((cat, i) => (
+                    <Link key={i} to={cat.path} className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-accent dark:hover:text-accent transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-0">
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <Link to="/catalogo" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Catálogo Completo</Link>
+              <Link to="/catalogo?cat=Açougues" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Açougues</Link>
+              <Link to="/catalogo?cat=Padarias" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Padarias</Link>
+              <Link to="/catalogo?cat=Restaurantes" className="font-bold py-2 px-4 bg-black/10 hover:bg-black/20 rounded-lg transition-colors text-sm uppercase tracking-wider">Restaurantes</Link>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120]"
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-[85vw] max-w-sm bg-white dark:bg-zinc-950 shadow-2xl z-[130] overflow-y-auto flex flex-col"
+            >
+              <div className="p-6 flex items-center justify-between border-b border-zinc-100 dark:border-white/5">
+                <span className="text-xl font-black font-display dark:text-white">MENU</span>
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="w-10 h-10 bg-zinc-100 dark:bg-white/5 rounded-full flex items-center justify-center text-zinc-500 hover:bg-accent hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-4">
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Configurações</p>
+                  <div className="flex flex-col px-4">
+                    <button 
+                      onClick={() => toggleTheme()}
+                      className="flex items-center justify-between py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors w-full text-left"
+                    >
+                      <span className="flex items-center gap-3">
+                        {theme === 'dark' ? <Moon size={18} className="text-accent" /> : theme === 'light' ? <Sun size={18} className="text-accent" /> : <Monitor size={18} className="text-accent" />}
+                        Tema do Site
+                      </span>
+                      <span className="text-xs text-zinc-400 capitalize">{theme === 'system' ? 'Sistema' : theme === 'dark' ? 'Escuro' : 'Claro'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Categorias</p>
+                  <div className="flex flex-col">
+                    {categories.map((cat, i) => (
+                      <Link 
+                        key={i} 
+                        to={cat.path} 
+                        onClick={() => setIsOpen(false)}
+                        className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors"
+                      >
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 px-4">Navegação</p>
+                  <div className="flex flex-col">
+                    <Link to="/" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Início</Link>
+                    <Link to="/catalogo" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Catálogo Completo</Link>
+                    <Link to="/favoritos" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3"><Heart size={18} className="text-accent" /> Meus Favoritos</Link>
+                    <Link to="/sobre" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Sobre a Lidermaq</Link>
+                    <Link to="/assistencia" onClick={() => setIsOpen(false)} className="px-4 py-3 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-50 dark:hover:bg-white/5 rounded-xl transition-colors flex items-center gap-3">Assistência Técnica</Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-auto p-6 border-t border-zinc-100 dark:border-white/5 bg-zinc-50 dark:bg-zinc-900">
+                <div className="flex flex-col gap-4">
+                  <a href="https://wa.me/5589999170800" className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
+                    <Phone size={18} className="text-accent" /> (89) 99917-0800
+                  </a>
+                  {user ? (
+                    <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 font-medium">
+                      <LayoutDashboard size={18} className="text-accent" /> Painel Admin
+                    </Link>
+                  ) : (
+                    <Link to={`/login?redirect=${encodeURIComponent(location.pathname)}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 font-medium">
+                      <User size={18} className="text-accent" /> Entrar na Conta
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+-e 
+
+
+==================================================
+ARQUIVO: src/components/MobileHUD.tsx
+==================================================
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Home, Package, Headset, User, LayoutDashboard } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+
+export const MobileHUD = () => {
+  const location = useLocation();
+  const { user } = useAuth();
+
+  const navItems = [
+    { icon: Home, label: 'Início', path: '/' },
+    { icon: Package, label: 'Catálogo', path: '/catalogo' },
+    { icon: Headset, label: 'Suporte', path: '/assistencia' },
+    { icon: User, label: 'Perfil', path: '/perfil' },
+  ];
+
+  // Se for admin, adiciona o painel
+  if (user?.isAdmin) {
+    navItems.splice(2, 0, { icon: LayoutDashboard, label: 'Admin', path: '/admin' });
+  }
+
+  return (
+    <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-xs">
+      <div className="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[2rem] p-1.5 flex items-center justify-around transition-all duration-500">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all duration-300 ${
+                isActive 
+                  ? 'bg-white/60 dark:bg-white/10 text-accent shadow-sm' 
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-accent'
+              }`}
+            >
+              <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+              <span className="text-[9px] font-bold uppercase tracking-widest mt-1">
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+-e 
+
+
