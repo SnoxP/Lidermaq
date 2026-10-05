@@ -174,9 +174,13 @@ export const ProductDetail = () => {
                   fetchPriority="high" 
                   loading="eager" 
                   decoding="async"
-                  referrerPolicy="no-referrer" 
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://placehold.co/800x800/e2e8f0/64748b?text=Sem+Imagem';
+                    const target = e.target as HTMLImageElement;
+                    if (product?.images && product.images.length > 1 && target.src === product.images[0]) {
+                      target.src = product.images[1];
+                    } else {
+                      target.src = 'https://placehold.co/800x800/e2e8f0/64748b?text=Sem+Imagem';
+                    }
                   }}
                   className="w-full h-full object-contain p-8" 
                 />

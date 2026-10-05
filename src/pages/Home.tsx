@@ -45,25 +45,31 @@ export const Home = () => {
             initial={{ scale: 1.2, opacity: 0 }}
             animate={{ scale: 1.1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="https://i.ibb.co/XZ4RD5j4/hero-desktop.png" 
+            src="https://i.ibb.co/jPxvPpn6/Cn-P-05102026-174322.png" 
             alt="Lidermaq Empresa" 
             className="md:hidden w-full h-full object-cover object-bottom origin-bottom"
             fetchPriority="high"
             loading="eager"
             decoding="async"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/assets/hero-desktop.png';
+            }}
           />
           <motion.img 
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5 }}
-            src="https://i.ibb.co/XZ4RD5j4/hero-desktop.png" 
+            src="https://i.ibb.co/jPxvPpn6/Cn-P-05102026-174322.png" 
             alt="Lidermaq Empresa" 
             className="hidden md:block w-full h-full object-cover"
             fetchPriority="high"
             loading="eager"
             decoding="async"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/assets/hero-desktop.png';
+            }}
           />
         </div>
 
@@ -244,10 +250,13 @@ export const Home = () => {
           >
             <Link to="/produto/1QEP7nmIfy8w5WfhApeA" className="block w-full h-full">
               <img 
-                src="https://i.ibb.co/q2j76FQ/Cn-P-13032026-203914.png" 
+                src="/assets/banner-assistencia.png" 
                 alt="Assistência Técnica Lidermaq" 
                 loading="lazy"
                 decoding="async"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://i.ibb.co/q2j76FQ/Cn-P-13032026-203914.png';
+                }}
                 className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
               />
             </Link>

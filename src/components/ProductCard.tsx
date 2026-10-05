@@ -59,12 +59,15 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({ product, gridCols
           src={imgSrc}
           alt={product.name || 'Produto'}
           onError={() => {
-            setImgSrc(FALLBACK_IMG);
+            if (product.images && product.images.length > 1 && imgSrc === product.images[0]) {
+              setImgSrc(product.images[1]);
+            } else {
+              setImgSrc(FALLBACK_IMG);
+            }
           }}
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority ? 'high' : 'auto'}
           decoding="async"
-          referrerPolicy="no-referrer"
           className={`relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 ${product.available === false ? 'opacity-50 grayscale' : ''}`}
         />
         {product.available === false && (
