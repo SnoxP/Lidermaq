@@ -43,11 +43,65 @@ try {
   console.error("Erro ao inicializar Firebase Admin:", error);
 }
 
+const INDEXING_FILE = path.resolve(process.cwd(), 'indexing-state.json');
+
+function getIndexingState(): boolean {
+  try {
+    if (fs.existsSync(INDEXING_FILE)) {
+      const data = JSON.parse(fs.readFileSync(INDEXING_FILE, 'utf8'));
+      return data.allowIndexing !== false;
+    }
+  } catch (e) {
+    // default to true
+  }
+  return true;
+}
+
+function setIndexingState(allow: boolean) {
+  try {
+    fs.writeFileSync(INDEXING_FILE, JSON.stringify({ allowIndexing: allow, updatedAt: new Date().toISOString() }));
+  } catch (e) {
+    console.error("Erro ao salvar indexing state:", e);
+  }
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Middleware to add X-Robots-Tag if indexing is disabled
+  app.use((req, res, next) => {
+    if (!getIndexingState()) {
+      res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+    }
+    next();
+  });
+
+  // Dynamic /robots.txt endpoint
+  app.get("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    const isAllowed = getIndexingState();
+    if (!isAllowed) {
+      res.send("User-agent: *\nDisallow: /\n");
+    } else {
+      const proto = (req.headers['x-forwarded-proto'] as string) || req.protocol || 'https';
+      const host = req.get("host") || 'lidermaq.com.br';
+      res.send(`User-agent: *\nAllow: /\n\nSitemap: ${proto}://${host}/sitemap.xml\n`);
+    }
+  });
+
+  // API to get / set indexing status
+  app.get("/api/indexing-status", (req, res) => {
+    res.json({ allowIndexing: getIndexingState() });
+  });
+
+  app.post("/api/indexing-status", (req, res) => {
+    const { allowIndexing } = req.body;
+    setIndexingState(allowIndexing !== false);
+    res.json({ success: true, allowIndexing: getIndexingState() });
+  });
 
   // API route to check env vars
   app.get("/api/check-env", (req, res) => {
@@ -56,6 +110,7 @@ async function startServer() {
       secretKeySet: !!process.env.RECAPTCHA_SECRET_KEY,
       siteKeyPrefix: process.env.VITE_RECAPTCHA_SITE_KEY ? process.env.VITE_RECAPTCHA_SITE_KEY.substring(0, 5) : null,
       secretKeyPrefix: process.env.RECAPTCHA_SECRET_KEY ? process.env.RECAPTCHA_SECRET_KEY.substring(0, 5) : null,
+      allowIndexing: getIndexingState()
     });
   });
 
