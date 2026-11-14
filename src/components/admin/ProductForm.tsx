@@ -29,7 +29,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   const [targetIsVariant, setTargetIsVariant] = useState(false);
   
   const navigate = useNavigate();
-  const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
+  const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'zybfr2hk';
+  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'lidermaq_preset';
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -76,40 +77,39 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
   }, [isEdit, productId]);
 
   const uploadFile = async (uploadId: string, file: File, onSuccess: (url: string) => void) => {
-    if (!IMGBB_API_KEY || IMGBB_API_KEY === "sua_chave_aqui") {
-      alert("Chave de API do ImgBB não configurada. Por favor, adicione VITE_IMGBB_API_KEY ao seu .env");
-      return;
-    }
-
     setIsUploading(uploadId);
     try {
-      // Comprime a imagem antes de subir
       const options = {
-        maxSizeMB: 0.2, // ~200kb
-        maxWidthOrHeight: 1024,
+        maxSizeMB: 0.8,
+        maxWidthOrHeight: 1600,
         useWebWorker: true,
       };
       
       const compressedFile = await imageCompression(file, options);
 
       const formData = new FormData();
-      formData.append('image', compressedFile, compressedFile.name);
+      formData.append('file', compressedFile, compressedFile.name);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
-      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
         method: 'POST',
         body: formData
       });
 
       const data = await response.json();
 
-      if (data.success) {
-        onSuccess(data.data.url);
+      if (data.secure_url) {
+        let optUrl = data.secure_url;
+        if (optUrl.includes('/upload/') && !optUrl.includes('/upload/f_auto,q_auto/')) {
+          optUrl = optUrl.replace('/upload/', '/upload/f_auto,q_auto/');
+        }
+        onSuccess(optUrl);
       } else {
         throw new Error(data.error?.message || "Erro no upload");
       }
     } catch (error: any) {
-      console.error("Erro no upload ImgBB:", error);
-      alert(`Falha no upload: ${error.message || "Verifique sua chave de API."}`);
+      console.error("Erro no upload Cloudinary:", error);
+      alert(`Falha no upload para o Cloudinary: ${error.message || "Tente novamente."}`);
     } finally {
       setIsUploading(null);
     }
@@ -240,31 +240,32 @@ export const ProductForm: React.FC<ProductFormProps> = ({ productId, isEdit }) =
 
   const ensureImgBBMirror = async (url: string): Promise<string> => {
     if (!url) return url;
-    if (url.includes('i.ibb.co') || url.includes('imgbb.com')) return url;
-    if (url.startsWith('data:')) return url; // base64
-    if (!url.startsWith('http')) return url; // invalid url
-
-    if (!IMGBB_API_KEY || IMGBB_API_KEY === "sua_chave_aqui") {
-      return url;
-    }
+    if (url.includes('res.cloudinary.com')) return url;
+    if (url.startsWith('data:')) return url;
+    if (!url.startsWith('http')) return url;
 
     try {
       const formData = new FormData();
-      formData.append('image', url);
+      formData.append('file', url);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
-      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
         method: 'POST',
         body: formData
       });
 
       const data = await response.json();
 
-      if (data.success) {
-        return data.data.url;
+      if (data.secure_url) {
+        let optUrl = data.secure_url;
+        if (optUrl.includes('/upload/') && !optUrl.includes('/upload/f_auto,q_auto/')) {
+          optUrl = optUrl.replace('/upload/', '/upload/f_auto,q_auto/');
+        }
+        return optUrl;
       }
       return url;
     } catch (error) {
-      console.error("Erro ao espelhar imagem no ImgBB:", error);
+      console.error("Erro ao espelhar imagem no Cloudinary:", error);
       return url;
     }
   };

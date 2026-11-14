@@ -49,36 +49,37 @@ export const Profile = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
+  const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'zybfr2hk';
+  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'lidermaq_preset';
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!IMGBB_API_KEY || IMGBB_API_KEY === "sua_chave_aqui") {
-      alert("Chave de API do ImgBB não configurada.");
-      return;
-    }
-
     setIsUploading(true);
     try {
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
-      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
         method: 'POST',
         body: formData
       });
 
       const data = await response.json();
 
-      if (data.success) {
-        setPhotoURL(data.data.url);
+      if (data.secure_url) {
+        let optUrl = data.secure_url;
+        if (optUrl.includes('/upload/') && !optUrl.includes('/upload/f_auto,q_auto/')) {
+          optUrl = optUrl.replace('/upload/', '/upload/f_auto,q_auto/');
+        }
+        setPhotoURL(optUrl);
       } else {
         throw new Error(data.error?.message || "Erro no upload");
       }
     } catch (error) {
-      console.error("Erro no upload:", error);
+      console.error("Erro no upload Cloudinary:", error);
       alert("Erro ao fazer upload da imagem.");
     } finally {
       setIsUploading(false);
